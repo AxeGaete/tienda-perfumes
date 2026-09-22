@@ -562,38 +562,34 @@ chipsEstacion.forEach(b => {
 
 document.addEventListener('DOMContentLoaded', cargarCatalogo);
 
-// ================= MÚSICA AMBIENTE (PLAYLIST ZARA) =================
+// ================= MÚSICA AMBIENTE (COMPATIBLE CON CELULARES) =================
 let reproduciendoMusica = false;
 
 window.toggleMusicaAmbiente = function() {
-  const container = document.getElementById('youtube-audio-container');
+  const audio = document.getElementById('mobile-background-audio');
   const label = document.getElementById('ambient-label');
   const btn = document.getElementById('ambient-toggle-btn');
-  const slider = document.getElementById('volume-slider');
   
-  if (!container) return;
+  if (!audio) return;
 
-  // Obtener el valor actual del slider de volumen (convertido a escala de 0 a 100 para YouTube iframe API, o manejado por el navegador)
-  const vol = slider ? slider.value : 5;
+  // Ajustar volumen bien bajo (15%) para que funcione perfectamente como ambiente
+  audio.volume = 0.15;
 
   if (reproduciendoMusica) {
-    container.innerHTML = ''; // Apagar / Detener música por completo
+    audio.pause();
     reproduciendoMusica = false;
-    label.textContent = 'Música Apagada';
+    label.textContent = 'Música Pausada';
     btn.style.backgroundColor = 'var(--c-red-subtle)';
     btn.style.color = 'var(--c-red)';
   } else {
-    // Encender música integrando el mix de YouTube con volumen bajo por defecto
-    container.innerHTML = `<iframe width="0" height="0" src="https://www.youtube.com/embed/D21I7L6HBbg?enablejsapi=1&autoplay=1&loop=1&playlist=D21I7L6HBbg" title="YouTube video player" frameborder="0" allow="autoplay"></iframe>`;
-    reproduciendoMusica = true;
-    label.textContent = 'Reproduciendo ♫';
-    btn.style.backgroundColor = 'var(--c-red)';
-    btn.style.color = '#fff';
+    audio.play().then(() => {
+      reproduciendoMusica = true;
+      label.textContent = 'Reproduciendo ♫';
+      btn.style.backgroundColor = 'var(--c-red)';
+      btn.style.color = '#fff';
+    }).catch(err => {
+      console.log("Restricción de audio en móvil:", err);
+      alert("Tocá de nuevo el botón para activar la música en tu celular.");
+    });
   }
-};
-
-window.cambiarVolumenMusica = function(valor) {
-  // Nota: Los iframes de YouTube incrustados de forma oculta no permiten controlar el volumen exacto por DOM directo debido a restricciones de seguridad de Google,
-  // pero el usuario puede silenciar o bajar el volumen de la pestaña o usar el indicador visual.
-  console.log("Volumen ajustado a:", valor + "%");
 };
