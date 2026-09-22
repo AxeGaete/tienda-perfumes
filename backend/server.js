@@ -86,20 +86,30 @@ app.get('/api/productos', (req, res) => {
 });
 
 // POST productos (con manejo de errores de Multer para evitar el 500 no controlado)
+// POST productos (acepta tanto 'imagenes' como 'imagen', múltiple o individual)
 app.post('/api/productos', verificarAdmin, (req, res) => {
-  upload.array('imagenes', 5)(req, res, (err) => {
+  const uploadHandler = upload.fields([
+    { name: 'imagenes', maxCount: 5 },
+    { name: 'imagen', maxCount: 5 }
+  ]);
+
+  uploadHandler(req, res, (err) => {
     if (err) {
       console.error('Error Multer al procesar archivos:', err);
       return res.status(400).json({ error: `Error en la subida de fotos: ${err.message}` });
     }
 
     const { nombre, familia, descripcion, precio } = req.body;
-    if (!nombre || !familia || !precio || !req.files || req.files.length === 0) {
+    
+    // Obtener los archivos sin importar cuál de las dos claves envió el frontend
+    const archivos = (req.files && (req.files['imagenes'] || req.files['imagen'])) || [];
+
+    if (!nombre || !familia || !precio || archivos.length === 0) {
       return res.status(400).json({ error: 'Todos los campos y al menos una imagen son obligatorios' });
     }
 
     // Guardar rutas relativas serializadas en formato JSON
-    const rutasImagenes = req.files.map(file => `/uploads/${file.filename}`);
+    const rutasImagenes = archivos.map(file => `/uploads/${file.filename}`);
     const imagen_url = JSON.stringify(rutasImagenes);
 
     const sql = `INSERT INTO productos (nombre, familia, descripcion, precio, imagen_url) VALUES (?, ?, ?, ?, ?)`;
