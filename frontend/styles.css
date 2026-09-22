@@ -97,7 +97,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-left: -0.15rem; /* Incrementamos el margen negativo para moverlo más a la izquierda */
+  margin-left: -1.2rem; /* Llevamos el logo un poco más hacia el borde izquierdo */
   padding-left: 0 !important;
   transition: opacity 0.25s ease;
 }
