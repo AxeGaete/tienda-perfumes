@@ -96,9 +96,16 @@
       <p>Filtrá por afinidad olfativa, notas o rango de presupuesto</p>
     </div>
 
+    <!-- Panel de Filtros Específicos -->
     <div class="filters-card">
+      <div class="filters-header">
+        <span class="filters-title">Filtros de Búsqueda Avanzada</span>
+        <button class="btn-reset-filters" id="btn-reset-filtros" onclick="resetearFiltros()">Limpiar Filtros</button>
+      </div>
+
+      <!-- Barra de texto y ordenamiento -->
       <div class="search-sort-bar">
-        <input type="text" id="buscador" placeholder="Buscar por fragancia, acorde o nota..." />
+        <input type="text" id="buscador" placeholder="Buscar por perfume, nota (ej: vainilla, bergamota, cuero)..." />
         <select id="select-orden" class="sort-select">
           <option value="recientes">Más recientes</option>
           <option value="precio-menor">Menor precio</option>
@@ -106,18 +113,46 @@
         </select>
       </div>
 
+      <!-- Selector por Rango de Precio -->
       <div class="price-slider-box">
-        <label for="slider-precio">Presupuesto máximo: <span id="label-precio-max">$150.000</span></label>
+        <label for="slider-precio">Presupuesto máx: <span id="label-precio-max">$150.000</span></label>
         <input type="range" id="slider-precio" min="0" max="150000" step="5000" value="150000">
       </div>
 
-      <div class="category-chips">
-        <button class="chip active" data-categoria="todos">Todos</button>
-        <button class="chip" data-categoria="Cítrico / Acuático">Cítricos & Acuáticos</button>
-        <button class="chip" data-categoria="Oriental / Especiado">Orientales & Especiados</button>
-        <button class="chip" data-categoria="Amaderado">Amaderados</button>
-        <button class="chip" data-categoria="Floral">Florales</button>
-        <button class="chip" data-categoria="Gourmand">Gourmand</button>
+      <!-- Fila 1: Género -->
+      <div class="filter-group">
+        <span class="filter-group-label">Destino / Género:</span>
+        <div class="filter-chips-row" id="chips-genero">
+          <button class="chip active" data-genero="todos">Todos</button>
+          <button class="chip" data-genero="Unisex">Unisex</button>
+          <button class="chip" data-genero="Masculino">Masculino</button>
+          <button class="chip" data-genero="Femenino">Femenino</button>
+        </div>
+      </div>
+
+      <!-- Fila 2: Familia Olfativa -->
+      <div class="filter-group">
+        <span class="filter-group-label">Familia Olfativa:</span>
+        <div class="filter-chips-row" id="chips-familia">
+          <button class="chip active" data-categoria="todos">Todas</button>
+          <button class="chip" data-categoria="Cítrico / Acuático">Cítricos & Acuáticos</button>
+          <button class="chip" data-categoria="Oriental / Especiado">Orientales & Especiados</button>
+          <button class="chip" data-categoria="Amaderado">Amaderados</button>
+          <button class="chip" data-categoria="Floral">Florales</button>
+          <button class="chip" data-categoria="Gourmand">Gourmand</button>
+        </div>
+      </div>
+
+      <!-- Fila 3: Ocasión / Momento -->
+      <div class="filter-group">
+        <span class="filter-group-label">Momento / Estación:</span>
+        <div class="filter-chips-row" id="chips-estacion">
+          <button class="chip active" data-estacion="todos">Cualquiera</button>
+          <button class="chip" data-estacion="Verano / Día">Verano / Día</button>
+          <button class="chip" data-estacion="Invierno / Noche">Invierno / Noche</button>
+          <button class="chip" data-estacion="Eventos / Cita">Ocasiones Especiales</button>
+          <button class="chip" data-estacion="Todo el año">Versátiles</button>
+        </div>
       </div>
     </div>
 

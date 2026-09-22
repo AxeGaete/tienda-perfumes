@@ -86,7 +86,7 @@ app.get('/api/productos', (req, res) => {
 });
 
 // POST productos (con manejo de errores de Multer para evitar el 500 no controlado)
-// POST productos (acepta notas olfativas y múltiples imágenes)
+// POST productos con filtros avanzados y notas olfativas
 app.post('/api/productos', verificarAdmin, (req, res) => {
   const uploadHandler = upload.fields([
     { name: 'imagenes', maxCount: 5 },
@@ -99,7 +99,18 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
       return res.status(400).json({ error: `Error en la subida de fotos: ${err.message}` });
     }
 
-    const { nombre, familia, descripcion, precio, notas_salida, notas_corazon, notas_fondo } = req.body;
+    const { 
+      nombre, 
+      familia, 
+      descripcion, 
+      precio, 
+      genero, 
+      estacion, 
+      notas_salida, 
+      notas_corazon, 
+      notas_fondo 
+    } = req.body;
+
     const archivos = (req.files && (req.files['imagenes'] || req.files['imagen'])) || [];
 
     if (!nombre || !familia || !precio || archivos.length === 0) {
@@ -109,7 +120,9 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
     const rutasImagenes = archivos.map(file => `/uploads/${file.filename}`);
     const imagen_url = JSON.stringify(rutasImagenes);
 
-    const sql = `INSERT INTO productos (nombre, familia, descripcion, precio, imagen_url, notas_salida, notas_corazon, notas_fondo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    const sql = `INSERT INTO productos 
+      (nombre, familia, descripcion, precio, imagen_url, genero, estacion, notas_salida, notas_corazon, notas_fondo) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     db.query(sql, [
       nombre, 
@@ -117,6 +130,8 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
       descripcion || '', 
       precio, 
       imagen_url, 
+      genero || 'Unisex',
+      estacion || 'Todo el año',
       notas_salida || '', 
       notas_corazon || '', 
       notas_fondo || ''
@@ -128,8 +143,7 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
       res.status(201).json({ mensaje: 'Perfume agregado con éxito', id: result.insertId });
     });
   });
-});
-// PUT precio
+});// PUT precio
 app.put('/api/productos/:id', verificarAdmin, (req, res) => {
   const { id } = req.params;
   const { precio } = req.body;

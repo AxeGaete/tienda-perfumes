@@ -1,15 +1,20 @@
 let todosLosProductos = [];
-let categoriaSeleccionada = 'todos';
+let filtroFamilia = 'todos';
+let filtroGenero = 'todos';
+let filtroEstacion = 'todos';
 
-// Elementos de la tienda
+// Elementos de UI
 const gridProductos = document.getElementById('grid-productos');
 const inputBuscador = document.getElementById('buscador');
 const selectOrden = document.getElementById('select-orden');
 const sliderPrecio = document.getElementById('slider-precio');
 const labelPrecioMax = document.getElementById('label-precio-max');
-const botonesCategorias = document.querySelectorAll('.chip');
 
-// Elementos de la sección detalle
+const chipsFamilia = document.querySelectorAll('#chips-familia .chip');
+const chipsGenero = document.querySelectorAll('#chips-genero .chip');
+const chipsEstacion = document.querySelectorAll('#chips-estacion .chip');
+
+// Sección Detalle
 const seccionDetalle = document.getElementById('detalle');
 const detalleImgPrincipal = document.getElementById('detalle-img-principal');
 const detalleThumbnails = document.getElementById('detalle-thumbnails');
@@ -24,12 +29,9 @@ const detalleBtnWsp = document.getElementById('detalle-btn-wsp');
 
 let fotosDetalleActuales = [];
 let indiceFotoDetalle = 0;
-
 const imagenFallback = 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=600&q=80';
 
-// =========================================================
-// CARRUSEL DEL HERO
-// =========================================================
+// ================= CARRUSEL HERO =================
 let slideHeroActual = 0;
 const slidesHero = document.querySelectorAll('.carousel-slide');
 const dotsContainer = document.getElementById('hero-carousel-dots');
@@ -43,37 +45,23 @@ function inicializarCarruselHero() {
     dot.onclick = () => irASlideHero(i);
     dotsContainer.appendChild(dot);
   });
-
-  // Rotación automática cada 4 segundos
-  setInterval(() => {
-    moverCarruselHero(1);
-  }, 4500);
+  setInterval(() => moverCarruselHero(1), 4500);
 }
 
-window.moverCarruselHero = function(direccion) {
+window.moverCarruselHero = function(dir) {
   if (slidesHero.length === 0) return;
-  slideHeroActual = (slideHeroActual + direccion + slidesHero.length) % slidesHero.length;
-  actualizarCarruselHero();
+  slideHeroActual = (slideHeroActual + dir + slidesHero.length) % slidesHero.length;
+  slidesHero.forEach((s, i) => s.classList.toggle('active', i === slideHeroActual));
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === slideHeroActual));
 };
 
-function irASlideHero(indice) {
-  slideHeroActual = indice;
-  actualizarCarruselHero();
+function irASlideHero(idx) {
+  slideHeroActual = idx;
+  slidesHero.forEach((s, i) => s.classList.toggle('active', i === slideHeroActual));
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === slideHeroActual));
 }
 
-function actualizarCarruselHero() {
-  slidesHero.forEach((slide, i) => {
-    slide.classList.toggle('active', i === slideHeroActual);
-  });
-  const dots = document.querySelectorAll('.dot');
-  dots.forEach((dot, i) => {
-    dot.classList.toggle('active', i === slideHeroActual);
-  });
-}
-
-// =========================================================
-// CATÁLOGO Y DETALLES
-// =========================================================
+// ================= CARGA Y RENDER =================
 function obtenerFotos(imagen_url) {
   try {
     const parsed = JSON.parse(imagen_url);
@@ -84,10 +72,10 @@ function obtenerFotos(imagen_url) {
 
 async function cargarCatalogo() {
   try {
-    const respuesta = await fetch('/api/productos');
-    if (!respuesta.ok) throw new Error('Error al consultar productos');
-    todosLosProductos = await respuesta.json();
-    
+    const res = await fetch('/api/productos');
+    if (!res.ok) throw new Error('Error al cargar productos');
+    todosLosProductos = await res.json();
+
     if (todosLosProductos.length > 0 && sliderPrecio) {
       const maximo = Math.max(...todosLosProductos.map(p => Number(p.precio) || 0));
       if (maximo > 150000) {
@@ -96,13 +84,10 @@ async function cargarCatalogo() {
         labelPrecioMax.textContent = `$${maximo.toLocaleString('es-AR')}`;
       }
     }
-    
     aplicarFiltrosYOrden();
-  } catch (error) {
-    console.error('Error al cargar:', error);
-    if (gridProductos) {
-      gridProductos.innerHTML = '<p style="color: #FF4949; grid-column: 1/-1; text-align: center;">Error al cargar las fragancias.</p>';
-    }
+  } catch (err) {
+    console.error(err);
+    if (gridProductos) gridProductos.innerHTML = '<p style="color: #FF4949; text-align: center; grid-column: 1/-1;">Error al cargar las fragancias.</p>';
   }
 }
 
@@ -111,7 +96,11 @@ function renderizarProductos(productos) {
   gridProductos.innerHTML = '';
 
   if (productos.length === 0) {
-    gridProductos.innerHTML = '<p style="color: #6C727F; grid-column: 1/-1; text-align: center; padding: 2rem;">No se encontraron fragancias con esos filtros.</p>';
+    gridProductos.innerHTML = `
+      <div style="grid-column: 1/-1; text-align: center; padding: 3rem 1rem; color: #6C727F;">
+        <p style="font-size: 1.1rem; font-weight: 700; color: #1A1A1E; margin-bottom: 0.5rem;">No se encontraron perfumes con esos filtros exactos.</p>
+        <p style="font-size: 0.9rem;">Probá combinando menos opciones o limpiá los filtros con el botón superior.</p>
+      </div>`;
     return;
   }
 
@@ -128,11 +117,12 @@ function renderizarProductos(productos) {
         <img src="${fotoPortada}" alt="${perfume.nombre}" onerror="this.onerror=null; this.src='${imagenFallback}';">
       </a>
       <div class="product-info">
-        <span class="product-family">${perfume.familia}</span>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+          <span class="product-family">${perfume.familia}</span>
+          <span style="font-size: 0.68rem; font-weight: 700; color: #9E9EA4; text-transform: uppercase;">${perfume.genero || 'Unisex'}</span>
+        </div>
         <h3 class="product-title">
-          <a href="#detalle" class="card-title-link" onclick="mostrarDetalle(${perfume.id})">
-            ${perfume.nombre}
-          </a>
+          <a href="#detalle" class="card-title-link" onclick="mostrarDetalle(${perfume.id})">${perfume.nombre}</a>
         </h3>
         <p class="product-desc">${perfume.descripcion || ''}</p>
         <div class="product-price">$${precioNumero.toLocaleString('es-AR')}</div>
@@ -145,6 +135,7 @@ function renderizarProductos(productos) {
   });
 }
 
+// ================= DETALLE =================
 window.mostrarDetalle = function(id) {
   const perfume = todosLosProductos.find(p => p.id === id);
   if (!perfume) return;
@@ -160,17 +151,14 @@ window.mostrarDetalle = function(id) {
     const thumb = document.createElement('img');
     thumb.src = fotoUrl;
     thumb.className = `detail-thumb ${index === 0 ? 'active' : ''}`;
-    thumb.onerror = function() { this.src = imagenFallback; };
-    
-    thumb.addEventListener('click', () => {
+    thumb.onclick = () => {
       indiceFotoDetalle = index;
       actualizarFotoPrincipalDetalle();
-    });
-
+    };
     detalleThumbnails.appendChild(thumb);
   });
 
-  detalleFamilia.textContent = perfume.familia;
+  detalleFamilia.textContent = `${perfume.familia} • ${perfume.genero || 'Unisex'}`;
   detalleNombre.textContent = perfume.nombre;
   detallePrecio.textContent = `$${precioNumero.toLocaleString('es-AR')}`;
   detalleDescripcion.textContent = perfume.descripcion || '';
@@ -190,36 +178,51 @@ window.mostrarDetalle = function(id) {
   seccionDetalle.style.display = 'block';
 };
 
-window.cambiarFotoDetalle = function(direccion) {
+window.cambiarFotoDetalle = function(dir) {
   if (fotosDetalleActuales.length <= 1) return;
-  indiceFotoDetalle = (indiceFotoDetalle + direccion + fotosDetalleActuales.length) % fotosDetalleActuales.length;
+  indiceFotoDetalle = (indiceFotoDetalle + dir + fotosDetalleActuales.length) % fotosDetalleActuales.length;
   actualizarFotoPrincipalDetalle();
 };
 
 function actualizarFotoPrincipalDetalle() {
   detalleImgPrincipal.src = fotosDetalleActuales[indiceFotoDetalle];
-  detalleImgPrincipal.onerror = function() {
-    this.onerror = null;
-    this.src = imagenFallback;
-  };
-  const thumbs = document.querySelectorAll('.detail-thumb');
-  thumbs.forEach((t, i) => {
+  detalleImgPrincipal.onerror = () => { detalleImgPrincipal.src = imagenFallback; };
+  document.querySelectorAll('.detail-thumb').forEach((t, i) => {
     t.classList.toggle('active', i === indiceFotoDetalle);
   });
 }
 
+// ================= MOTOR DE FILTROS ESPECÍFICOS =================
 function aplicarFiltrosYOrden() {
-  const texto = inputBuscador ? inputBuscador.value.toLowerCase().trim() : '';
+  const query = inputBuscador ? inputBuscador.value.toLowerCase().trim() : '';
   const precioMax = sliderPrecio ? Number(sliderPrecio.value) : Infinity;
   const criterioOrden = selectOrden ? selectOrden.value : 'recientes';
 
-  let filtrados = todosLosProductos.filter(perfume => {
-    const coincideNombre = perfume.nombre ? perfume.nombre.toLowerCase().includes(texto) : false;
-    const coincideCategoria = categoriaSeleccionada === 'todos' || perfume.familia === categoriaSeleccionada;
-    const coincidePrecio = (Number(perfume.precio) || 0) <= precioMax;
-    return coincideNombre && coincideCategoria && coincidePrecio;
+  let filtrados = todosLosProductos.filter(p => {
+    // 1. Coincidencia por texto en nombre, familia, descripción o notas olfativas
+    const enNombre = (p.nombre || '').toLowerCase().includes(query);
+    const enDesc = (p.descripcion || '').toLowerCase().includes(query);
+    const enSalida = (p.notas_salida || '').toLowerCase().includes(query);
+    const enCorazon = (p.notas_corazon || '').toLowerCase().includes(query);
+    const enFondo = (p.notas_fondo || '').toLowerCase().includes(query);
+    const coincideTexto = !query || enNombre || enDesc || enSalida || enCorazon || enFondo;
+
+    // 2. Coincidencia por familia
+    const coincideFamilia = filtroFamilia === 'todos' || p.familia === filtroFamilia;
+
+    // 3. Coincidencia por género
+    const coincideGenero = filtroGenero === 'todos' || (p.genero || 'Unisex') === filtroGenero;
+
+    // 4. Coincidencia por ocasión / estación
+    const coincideEstacion = filtroEstacion === 'todos' || (p.estacion || 'Todo el año') === filtroEstacion;
+
+    // 5. Coincidencia de precio
+    const coincidePrecio = (Number(p.precio) || 0) <= precioMax;
+
+    return coincideTexto && coincideFamilia && coincideGenero && coincideEstacion && coincidePrecio;
   });
 
+  // Ordenamiento
   if (criterioOrden === 'precio-menor') {
     filtrados.sort((a, b) => (Number(a.precio) || 0) - (Number(b.precio) || 0));
   } else if (criterioOrden === 'precio-mayor') {
@@ -231,6 +234,24 @@ function aplicarFiltrosYOrden() {
   renderizarProductos(filtrados);
 }
 
+window.resetearFiltros = function() {
+  filtroFamilia = 'todos';
+  filtroGenero = 'todos';
+  filtroEstacion = 'todos';
+  if (inputBuscador) inputBuscador.value = '';
+  if (sliderPrecio) {
+    sliderPrecio.value = sliderPrecio.max;
+    labelPrecioMax.textContent = `$${Number(sliderPrecio.max).toLocaleString('es-AR')}`;
+  }
+  if (selectOrden) selectOrden.value = 'recientes';
+
+  document.querySelectorAll('.filter-chips-row .chip').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.filter-chips-row .chip[data-categoria="todos"], .filter-chips-row .chip[data-genero="todos"], .filter-chips-row .chip[data-estacion="todos"]').forEach(c => c.classList.add('active'));
+
+  aplicarFiltrosYOrden();
+};
+
+// Eventos
 if (inputBuscador) inputBuscador.addEventListener('input', aplicarFiltrosYOrden);
 if (selectOrden) selectOrden.addEventListener('change', aplicarFiltrosYOrden);
 
@@ -241,11 +262,29 @@ if (sliderPrecio) {
   });
 }
 
-botonesCategorias.forEach(boton => {
-  boton.addEventListener('click', () => {
-    botonesCategorias.forEach(b => b.classList.remove('active'));
-    boton.classList.add('active');
-    categoriaSeleccionada = boton.dataset.categoria;
+chipsFamilia.forEach(b => {
+  b.addEventListener('click', () => {
+    chipsFamilia.forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    filtroFamilia = b.dataset.categoria;
+    aplicarFiltrosYOrden();
+  });
+});
+
+chipsGenero.forEach(b => {
+  b.addEventListener('click', () => {
+    chipsGenero.forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    filtroGenero = b.dataset.genero;
+    aplicarFiltrosYOrden();
+  });
+});
+
+chipsEstacion.forEach(b => {
+  b.addEventListener('click', () => {
+    chipsEstacion.forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    filtroEstacion = b.dataset.estacion;
     aplicarFiltrosYOrden();
   });
 });
