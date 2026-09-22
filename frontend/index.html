@@ -430,17 +430,16 @@
 
   <!-- ================= REPRODUCTOR DE MÚSICA AMBIENTE ================= -->
   <div class="ambient-player-box" id="ambient-player-box">
-    <button class="ambient-toggle-btn" onclick="toggleMusicaAmbiente()" title="Reproducir música ambiente">
-      <svg id="ambient-icon" class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <button class="ambient-toggle-btn" onclick="toggleMusicaAmbiente()" title="Alternar música de fondo">
+      <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
         <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
       </svg>
     </button>
-    <span class="ambient-label" id="ambient-label">Música Ambiente</span>
-    <audio id="background-audio" loop preload="auto">
-      <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-    </audio>
+    <span class="ambient-label" id="ambient-label">Playlist Zara</span>
+    <div id="youtube-audio-container" style="display: none;">
+      <iframe width="0" height="0" src="https://www.youtube.com/embed/D21I7L6HBbg?enablejsapi=1&autoplay=0&loop=1&playlist=D21I7L6HBbg" title="YouTube video player" frameborder="0" allow="autoplay"></iframe>
+    </div>
   </div>
 
   <!-- ================= BOTÓN FLOTANTE DE WHATSAPP ================= -->

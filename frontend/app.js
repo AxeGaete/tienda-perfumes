@@ -562,34 +562,28 @@ chipsEstacion.forEach(b => {
 
 document.addEventListener('DOMContentLoaded', cargarCatalogo);
 
-// ================= MÚSICA AMBIENTE =================
+// ================= PLAYLIST ZARA / MÚSICA AMBIENTE =================
 let reproduciendoMusica = false;
 
 window.toggleMusicaAmbiente = function() {
-  const audio = document.getElementById('background-audio');
+  const container = document.getElementById('youtube-audio-container');
   const label = document.getElementById('ambient-label');
   const btn = document.querySelector('.ambient-toggle-btn');
   
-  if (!audio) return;
-
-  // Volumen bien bajito y sutil (20%)
-  audio.volume = 0.2;
+  if (!container) return;
 
   if (reproduciendoMusica) {
-    audio.pause();
+    container.innerHTML = ''; // Detiene la música al vaciar el iframe
     reproduciendoMusica = false;
-    label.textContent = 'Música Ambiente';
+    label.textContent = 'Playlist Pausada';
     btn.style.backgroundColor = 'var(--c-red-subtle)';
     btn.style.color = 'var(--c-red)';
   } else {
-    audio.play().then(() => {
-      reproduciendoMusica = true;
-      label.textContent = 'Reproduciendo ♫';
-      btn.style.backgroundColor = 'var(--c-red)';
-      btn.style.color = '#fff';
-    }).catch(err => {
-      console.log("Reproducción bloqueada por el navegador:", err);
-      alert("Hacé clic de nuevo para activar la música ambiente.");
-    });
+    // Inicia el mix de YouTube en segundo plano de forma automática
+    container.innerHTML = `<iframe width="0" height="0" src="https://www.youtube.com/embed/D21I7L6HBbg?enablejsapi=1&autoplay=1&loop=1&playlist=D21I7L6HBbg" title="YouTube video player" frameborder="0" allow="autoplay"></iframe>`;
+    reproduciendoMusica = true;
+    label.textContent = 'Sonando ♫ (Zara Mix)';
+    btn.style.backgroundColor = 'var(--c-red)';
+    btn.style.color = '#fff';
   }
 };
