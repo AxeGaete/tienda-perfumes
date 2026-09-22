@@ -562,7 +562,7 @@ chipsEstacion.forEach(b => {
 
 document.addEventListener('DOMContentLoaded', cargarCatalogo);
 
-// ================= REPRODUCTOR DE MÚSICA AMBIENTE FUNCIONAL =================
+// ================= REPRODUCTOR DE MÚSICA AMBIENTE (ESTILO BOUTIQUE / PERFUMERÍA) =================
 let reproduciendoMusica = false;
 let audioAmbiente = null;
 
@@ -572,17 +572,21 @@ window.toggleMusicaAmbiente = function() {
   const slider = document.getElementById('volume-slider');
 
   if (!audioAmbiente) {
-    audioAmbiente = new Audio('https://commondatastorage.googleapis.com/codesign-demos/ambient-lofi.mp3');
+    // Pista de audio estilo lounge / deep house moderno optimizada para tiendas de autor y perfumería
+    audioAmbiente = new Audio('https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf756.mp3?filename=stylish-deep-luxury-chill-113491.mp3');
     audioAmbiente.loop = true;
     
     audioAmbiente.onerror = function() {
-      console.error("Error al reproducir el audio ambiente.");
-      alert("No se pudo cargar el audio. Comprobá tu conexión.");
+      console.error("Error al cargar la pista ambiental.");
+      alert("No se pudo cargar la música de fondo. Verificá tu conexión.");
     };
   }
 
+  // Establecer el volumen según la barra deslizante (por defecto 15% para que sea sutil)
   if (slider) {
     audioAmbiente.volume = parseFloat(slider.value) / 100;
+  } else {
+    audioAmbiente.volume = 0.15;
   }
 
   if (reproduciendoMusica) {
@@ -596,20 +600,21 @@ window.toggleMusicaAmbiente = function() {
   } else {
     audioAmbiente.play().then(() => {
       reproduciendoMusica = true;
-      label.textContent = 'Reproduciendo ♫';
+      label.textContent = 'Sonando ♫';
       if (btn) {
         btn.style.backgroundColor = 'var(--c-red)';
         btn.style.color = '#fff';
       }
     }).catch(err => {
-      console.log("Restricción de reproducción automática del navegador:", err);
-      alert("Hacé clic de nuevo en el botón para activar la música.");
+      console.log("Bloqueo de reproducción por política del navegador:", err);
+      alert("Tocá de nuevo el botón para activar la música ambiental.");
     });
   }
 };
 
 window.cambiarVolumenMusica = function(valor) {
   if (audioAmbiente) {
+    // Modifica el volumen en tiempo real al mover la barra de la interfaz
     audioAmbiente.volume = parseFloat(valor) / 100;
   }
 };
