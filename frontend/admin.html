@@ -226,6 +226,13 @@
       color: var(--text-dark);
       margin-bottom: 0.4rem;
     }
+    .field-hint {
+      display: block;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin-top: -0.8rem;
+      margin-bottom: 1rem;
+    }
     textarea.input-field {
       resize: vertical;
       min-height: 80px;
@@ -256,6 +263,11 @@
       border-bottom: 1px solid var(--c-border);
       vertical-align: middle;
     }
+    .td-img-wrapper {
+      position: relative;
+      width: 50px;
+      height: 50px;
+    }
     .td-img {
       width: 50px;
       height: 50px;
@@ -263,6 +275,18 @@
       object-fit: cover;
       background: var(--c-light);
       display: block;
+    }
+    .td-img-count {
+      position: absolute;
+      bottom: -4px;
+      right: -4px;
+      background: var(--c-red);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 1px 4px;
+      border-radius: 10px;
+      line-height: 1;
     }
     .td-title {
       font-weight: 700;
@@ -392,8 +416,9 @@
             </div>
 
             <div class="form-group">
-              <label>Fotografía</label>
-              <input type="file" id="prod-imagen" class="input-field" accept="image/*" required>
+              <label>Fotografías (1 a 5 imágenes)</label>
+              <input type="file" id="prod-imagen" class="input-field" accept="image/*" multiple required>
+              <span class="field-hint">Mantené presionado Ctrl para seleccionar más de una foto.</span>
             </div>
 
             <button type="submit" class="btn-primary" id="btn-submit-perfume">Cargar al Catálogo</button>
@@ -475,6 +500,17 @@
       window.location.reload();
     }
 
+    // Helper para extraer la foto principal y contar cuántas fotos tiene
+    function extraerFotos(imagen_url) {
+      try {
+        const parsed = JSON.parse(imagen_url);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return { portada: parsed[0], total: parsed.length };
+        }
+      } catch (e) {}
+      return { portada: imagen_url || '', total: 1 };
+    }
+
     async function cargarTablaProductos() {
       const tbody = document.getElementById('tabla-productos');
       tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Cargando catálogo...</td></tr>';
@@ -490,10 +526,14 @@
 
         tbody.innerHTML = '';
         productos.forEach(prod => {
+          const { portada, total } = extraerFotos(prod.imagen_url);
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td>
-              <img src="${prod.imagen_url}" class="td-img" alt="${prod.nombre}">
+              <div class="td-img-wrapper">
+                <img src="${portada}" class="td-img" alt="${prod.nombre}" onerror="this.src='https://via.placeholder.com/50?text=Perfume'">
+                ${total > 1 ? `<span class="td-img-count">+${total}</span>` : ''}
+              </div>
             </td>
             <td>
               <div class="td-title">${prod.nombre}</div>
@@ -518,6 +558,19 @@
 
     async function crearPerfume(e) {
       e.preventDefault();
+      const fileInput = document.getElementById('prod-imagen');
+      const files = fileInput.files;
+
+      if (!files || files.length === 0) {
+        alert('Tenés que seleccionar al menos una fotografía.');
+        return;
+      }
+
+      if (files.length > 5) {
+        alert('Podés subir hasta un máximo de 5 fotos por perfume.');
+        return;
+      }
+
       const btn = document.getElementById('btn-submit-perfume');
       btn.disabled = true;
       btn.textContent = 'Subiendo...';
@@ -527,7 +580,11 @@
       formData.append('familia', document.getElementById('prod-familia').value);
       formData.append('precio', document.getElementById('prod-precio').value);
       formData.append('descripcion', document.getElementById('prod-desc').value.trim());
-      formData.append('imagen', document.getElementById('prod-imagen').files[0]);
+
+      // Adjuntar todas las imágenes seleccionadas bajo el campo 'imagenes'
+      for (let i = 0; i < files.length; i++) {
+        formData.append('imagenes', files[i]);
+      }
 
       try {
         const res = await fetch('/api/productos', {
