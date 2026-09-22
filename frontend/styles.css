@@ -211,7 +211,7 @@ section {
   border-color: var(--color-ruby-red);
 }
 
-/* Grilla y Tarjetas de Perfumes */
+/* Grilla y Tarjetas de Perfumes (Catálogo) */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -475,14 +475,6 @@ section {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
 
-.detail-image-box img {
-  width: 100%;
-  height: 420px;
-  object-fit: cover;
-  border-radius: 8px;
-  background-color: var(--color-light-gray);
-}
-
 .detail-info-box {
   display: flex;
   flex-direction: column;
@@ -549,39 +541,33 @@ section {
   border-color: #bbb;
 }
 
-@media (max-width: 768px) {
-  .detail-container {
-    grid-template-columns: 1fr;
-    padding: 1.5rem;
-    gap: 1.5rem;
-  }
-  .detail-image-box img {
-    height: 300px;
-  }
-  .detail-actions {
-    flex-direction: column;
-    width: 100%;
-  }
-  .detail-actions a {
-    width: 100%;
-    text-align: center;
-  }
-}
-
-/* Galería de Fotos en Detalle */
+/* Galería de Fotos en Detalle (Ajustada para que no deforme) */
 .detail-gallery {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.detail-main-image img {
+.detail-main-image {
   width: 100%;
-  height: 400px;
-  object-fit: cover;
-  border-radius: 8px;
+  height: 420px;
+  background-color: #FAFAFA;
   border: 1px solid var(--color-border-gray);
-  background-color: var(--color-light-gray);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  overflow: hidden;
+}
+
+.detail-main-image img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
   transition: opacity 0.2s ease;
 }
 
@@ -589,17 +575,20 @@ section {
   display: flex;
   gap: 0.8rem;
   overflow-x: auto;
-  padding-bottom: 0.4rem;
+  padding: 0.4rem 0;
+  align-items: center;
 }
 
 .detail-thumb {
-  width: 75px;
-  height: 75px;
-  object-fit: cover;
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  background-color: #FAFAFA;
   border-radius: 6px;
   border: 2px solid var(--color-border-gray);
   cursor: pointer;
-  background-color: var(--color-light-gray);
+  padding: 4px;
+  flex-shrink: 0;
   transition: all 0.2s ease;
 }
 
@@ -611,4 +600,23 @@ section {
 .detail-thumb.active {
   border-color: var(--color-ruby-red);
   box-shadow: 0 0 0 2px rgba(193, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .detail-container {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+  .detail-main-image {
+    height: 320px;
+  }
+  .detail-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  .detail-actions a {
+    width: 100%;
+    text-align: center;
+  }
 }
