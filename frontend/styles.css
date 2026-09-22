@@ -2,6 +2,7 @@
   --bg-main: #FFFFFF;
   --bg-soft: #F8F9FA;
   --bg-card: #FFFFFF;
+  --bg-img-box: #FFFFFF;
   --c-border: #EEEEEE;
   --c-coral: #FF4949;
   --c-red: #C10000;
@@ -22,6 +23,7 @@
   --bg-main: #121212;
   --bg-soft: #1A1A1A;
   --bg-card: #181818;
+  --bg-img-box: #121212;
   --c-border: #2A2A2A;
   --c-coral: #FF5252;
   --c-red: #D32F2F;
@@ -54,7 +56,7 @@ body {
 }
 
 /* =========================================================
-   BARRA DE NAVEGACIÓN FLOTANTE & ICONOS PLANOS ROJOS (LUPA Y CARRITO)
+   1. BARRA DE NAVEGACIÓN CON EFECTO VIDRIO ESMERILADO (GLASSMORPHISM)
    ========================================================= */
 .navbar-wrapper {
   position: fixed;
@@ -70,16 +72,23 @@ body {
 .navbar {
   width: 100%;
   max-width: 1120px;
-  background: var(--bg-main);
-  backdrop-filter: blur(14px);
-  border: 1px solid var(--c-border);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 40px;
   padding: 0.75rem 1.6rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] .navbar {
+  background: rgba(18, 18, 18, 0.82);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
 }
 
 .brand-logo {
@@ -284,7 +293,7 @@ body {
 }
 
 /* =========================================================
-   HERO MODERNO CON CARRUSEL DE FOTOS AJUSTADO
+   HERO & CARRUSEL
    ========================================================= */
 .hero-section {
   padding-top: 8.5rem;
@@ -364,14 +373,10 @@ body {
   height: 440px;
   border-radius: var(--radius-md);
   overflow: hidden;
-  background-color: #FFFFFF;
+  background-color: var(--bg-img-box);
   border: 1px solid var(--c-border);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
   transition: background-color 0.3s ease;
-}
-
-[data-theme="dark"] .carousel-container {
-  background-color: #121212 !important;
 }
 
 .carousel-track {
@@ -488,7 +493,7 @@ body {
 }
 
 /* =========================================================
-   CATÁLOGOS & FILTROS (CON ESPACIADO PROFESIONAL)
+   CATÁLOGOS & FILTROS
    ========================================================= */
 .catalog-section {
   max-width: 1200px;
@@ -715,7 +720,7 @@ body {
 }
 
 /* =========================================================
-   GRILLA DE PERFUMES (CAJA DE FOTO DINÁMICA)
+   2. MICRO-INTERACCIONES 3D Y BADGES MINIMALISTAS EN TARJETAS
    ========================================================= */
 .products-grid {
   display: grid;
@@ -731,12 +736,19 @@ body {
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow-subtle);
-  transition: var(--transition);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.3s ease;
 }
 
 .product-card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-hover);
+  transform: translateY(-8px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+  border-color: var(--c-coral);
+}
+
+[data-theme="dark"] .product-card:hover {
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
   border-color: var(--c-coral);
 }
 
@@ -745,26 +757,22 @@ body {
   align-items: center;
   justify-content: center;
   height: 280px;
-  background-color: #FFFFFF;
+  background-color: var(--bg-img-box);
   padding: 1.5rem;
   text-decoration: none;
   overflow: hidden;
   transition: background-color 0.3s ease;
 }
 
-[data-theme="dark"] .card-image-link {
-  background-color: #121212 !important;
-}
-
 .product-card img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  transition: transform 0.35s ease;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .product-card:hover img {
-  transform: scale(1.06);
+  transform: scale(1.04);
 }
 
 .product-info {
@@ -775,12 +783,17 @@ body {
 }
 
 .product-family {
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
   color: var(--c-coral);
-  letter-spacing: 1px;
-  font-weight: 700;
-  margin-bottom: 0.2rem;
+  letter-spacing: 1.2px;
+  font-weight: 800;
+  margin-bottom: 0.3rem;
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  background-color: var(--c-red-subtle);
+  border-radius: 8px;
+  width: fit-content;
 }
 
 .product-title {
@@ -863,7 +876,7 @@ body {
 }
 
 /* =========================================================
-   SECCIÓN DETALLE ESTILO E-COMMERCE MODERNO
+   SECCIÓN DETALLE
    ========================================================= */
 .detail-section {
   max-width: 1200px;
@@ -893,7 +906,7 @@ body {
   position: relative;
   width: 100%;
   height: 420px;
-  background-color: #FFFFFF;
+  background-color: var(--bg-img-box);
   border: 1px solid var(--c-border);
   border-radius: var(--radius-md);
   display: flex;
@@ -901,10 +914,6 @@ body {
   justify-content: center;
   padding: 2rem;
   transition: background-color 0.3s ease;
-}
-
-[data-theme="dark"] .detail-main-image {
-  background-color: #121212 !important;
 }
 
 .detail-main-image img {
@@ -954,17 +963,13 @@ body {
   width: 65px;
   height: 65px;
   object-fit: contain;
-  background-color: #FFFFFF;
+  background-color: var(--bg-img-box);
   border-radius: 12px;
   border: 2px solid var(--c-border);
   cursor: pointer;
   padding: 4px;
   flex-shrink: 0;
   transition: var(--transition);
-}
-
-[data-theme="dark"] .detail-thumb {
-  background-color: #121212 !important;
 }
 
 .detail-thumb:hover {
@@ -1062,7 +1067,7 @@ body {
 }
 
 /* =========================================================
-   SECCIÓN MÉTODOS DE PAGO CON ICONOS PLANOS ROJOS
+   SECCIÓN MÉTODOS DE PAGO
    ========================================================= */
 .payments-section {
   max-width: 1200px;
@@ -1154,7 +1159,7 @@ body {
 }
 
 /* =========================================================
-   SECCIÓN NOSOTROS CON ICONOS PLANOS ROJOS
+   SECCIÓN NOSOTROS
    ========================================================= */
 .about-section {
   max-width: 1200px;
@@ -1195,7 +1200,7 @@ body {
 }
 
 /* =========================================================
-   FOOTER COMPLETO DE CONTACTO
+   FOOTER
    ========================================================= */
 .footer-master {
   background-color: var(--bg-main);
@@ -1287,7 +1292,7 @@ body {
 }
 
 /* =========================================================
-   CARRITO DE COMPRAS LATERAL (DRAWER)
+   CARRITO LATERAL
    ========================================================= */
 .cart-trigger-btn {
   position: relative;
@@ -1434,15 +1439,11 @@ body {
   width: 65px;
   height: 65px;
   object-fit: contain;
-  background-color: #FFFFFF;
+  background-color: var(--bg-img-box);
   border-radius: var(--radius-sm);
   border: 1px solid var(--c-border);
   padding: 4px;
   transition: background-color 0.3s ease;
-}
-
-[data-theme="dark"] .cart-item-img {
-  background-color: #121212 !important;
 }
 
 .cart-item-details {
@@ -1569,30 +1570,34 @@ body {
 }
 
 /* =========================================================
-   BADGES DE STOCK EN TARJETAS
+   BADGES DE STOCK
    ========================================================= */
 .stock-badge-en {
   font-size: 0.65rem;
   font-weight: 800;
-  background-color: #E3F2FD;
-  color: #1565C0;
-  padding: 0.2rem 0.6rem;
+  padding: 0.25rem 0.7rem;
   border-radius: 10px;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: rgba(21, 101, 192, 0.1);
+  color: #1565C0;
+  border: 1px solid rgba(21, 101, 192, 0.2);
 }
 
 .stock-badge-pocas {
   font-size: 0.65rem;
   font-weight: 800;
-  background-color: #FFF3E0;
-  color: #E65100;
-  padding: 0.2rem 0.6rem;
+  padding: 0.25rem 0.7rem;
   border-radius: 10px;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: rgba(230, 81, 0, 0.1);
+  color: #E65100;
+  border: 1px solid rgba(230, 81, 0, 0.2);
 }
 
 /* =========================================================
-   BOTÓN FLOTANTE DE WHATSAPP (OFICIAL)
+   BOTÓN WHATSAPP
    ========================================================= */
 .whatsapp-float-btn {
   position: fixed;
@@ -1622,7 +1627,7 @@ body {
 }
 
 /* =========================================================
-   RESPONSIVE DESIGN
+   RESPONSIVE
    ========================================================= */
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; padding: 2rem; }
@@ -1633,86 +1638,4 @@ body {
   .hero-buttons { flex-direction: column; }
   .nav-links { display: none; }
   .footer-container { grid-template-columns: 1fr; gap: 2rem; }
-}
-
-/* ================= SECCIÓN DE RESEÑAS ESTILO PARFUM STUDIO ================= */
-.reviews-section-box {
-  max-width: 1100px;
-  margin: 3rem auto 0;
-  background: var(--bg-main);
-  border: 1px solid var(--c-border);
-  border-radius: var(--radius-lg);
-  padding: 2.5rem;
-  box-shadow: var(--shadow-subtle);
-}
-
-.reviews-title {
-  font-size: 1.4rem;
-  font-weight: 800;
-  margin-bottom: 1.5rem;
-  color: var(--text-dark);
-}
-
-.review-item {
-  background: var(--bg-soft);
-  padding: 1.2rem;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--c-border);
-  margin-bottom: 1rem;
-}
-
-.review-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.4rem;
-}
-
-.review-author {
-  font-weight: 700;
-  color: var(--text-dark);
-  font-size: 0.95rem;
-}
-
-.review-stars {
-  color: #f59e0b;
-  font-size: 0.9rem;
-}
-
-.review-comment {
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
-
-.review-form {
-  display: grid;
-  gap: 1rem;
-  max-width: 600px;
-  margin-top: 1rem;
-}
-
-.review-form .input-field {
-  width: 100%;
-  padding: 0.9rem 1.4rem;
-  border-radius: 30px;
-  border: 1px solid var(--c-border);
-  background-color: var(--bg-soft);
-  color: var(--text-dark);
-  font-family: var(--font-base);
-  font-size: 0.9rem;
-  outline: none;
-  transition: var(--transition);
-}
-
-.review-form textarea.input-field {
-  border-radius: var(--radius-md);
-  resize: vertical;
-  min-height: 90px;
-}
-
-.review-form .input-field:focus {
-  border-color: var(--c-coral);
-  background-color: var(--bg-main);
-  box-shadow: 0 0 0 3px rgba(255, 73, 73, 0.18);
 }
