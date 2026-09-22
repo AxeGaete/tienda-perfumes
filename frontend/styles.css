@@ -39,7 +39,7 @@ body {
 }
 
 /* =========================================================
-   BARRA DE NAVEGACIÓN FLOTANTE & LUPA EN HEADER
+   BARRA DE NAVEGACIÓN FLOTANTE & ICONOS PLANOS ROJOS (LUPA Y CARRITO)
    ========================================================= */
 .navbar-wrapper {
   position: fixed;
@@ -144,17 +144,54 @@ body {
   width: 18px;
   height: 18px;
   stroke: var(--c-red);
+  stroke-width: 2.2px;
+  fill: none;
 }
 
 .ui-icon-sm {
   width: 15px;
   height: 15px;
   stroke: var(--c-red);
+  stroke-width: 2px;
+  fill: none;
 }
 
 .ui-icon-btn {
   width: 16px;
   height: 16px;
+  stroke: #ffffff;
+  stroke-width: 2px;
+  fill: none;
+}
+
+.cart-svg {
+  width: 19px;
+  height: 19px;
+  stroke: var(--c-red);
+  stroke-width: 2.2px;
+  fill: none;
+}
+
+.cart-trigger-btn {
+  position: relative;
+  background-color: var(--c-red-subtle);
+  border: 1px solid var(--c-border);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.cart-trigger-btn:hover {
+  background-color: var(--c-red);
+  transform: scale(1.05);
+}
+
+.cart-trigger-btn:hover .cart-svg {
   stroke: #ffffff;
 }
 
