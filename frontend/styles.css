@@ -364,9 +364,14 @@ body {
   height: 440px;
   border-radius: var(--radius-md);
   overflow: hidden;
-  background-color: #121212 !important;
+  background-color: #FFFFFF;
   border: 1px solid var(--c-border);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  transition: background-color 0.3s ease;
+}
+
+[data-theme="dark"] .carousel-container {
+  background-color: #121212 !important;
 }
 
 .carousel-track {
@@ -710,7 +715,7 @@ body {
 }
 
 /* =========================================================
-   GRILLA DE PERFUMES (CAJA DE FOTO NEGRA)
+   GRILLA DE PERFUMES (CAJA DE FOTO DINÁMICA)
    ========================================================= */
 .products-grid {
   display: grid;
@@ -740,10 +745,15 @@ body {
   align-items: center;
   justify-content: center;
   height: 280px;
-  background-color: #121212 !important;
+  background-color: #FFFFFF;
   padding: 1.5rem;
   text-decoration: none;
   overflow: hidden;
+  transition: background-color 0.3s ease;
+}
+
+[data-theme="dark"] .card-image-link {
+  background-color: #121212 !important;
 }
 
 .product-card img {
@@ -883,13 +893,18 @@ body {
   position: relative;
   width: 100%;
   height: 420px;
-  background-color: #121212 !important;
+  background-color: #FFFFFF;
   border: 1px solid var(--c-border);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem;
+  transition: background-color 0.3s ease;
+}
+
+[data-theme="dark"] .detail-main-image {
+  background-color: #121212 !important;
 }
 
 .detail-main-image img {
@@ -939,13 +954,17 @@ body {
   width: 65px;
   height: 65px;
   object-fit: contain;
-  background-color: #121212 !important;
+  background-color: #FFFFFF;
   border-radius: 12px;
   border: 2px solid var(--c-border);
   cursor: pointer;
   padding: 4px;
   flex-shrink: 0;
   transition: var(--transition);
+}
+
+[data-theme="dark"] .detail-thumb {
+  background-color: #121212 !important;
 }
 
 .detail-thumb:hover {
@@ -1415,10 +1434,15 @@ body {
   width: 65px;
   height: 65px;
   object-fit: contain;
-  background-color: #121212 !important;
+  background-color: #FFFFFF;
   border-radius: var(--radius-sm);
   border: 1px solid var(--c-border);
   padding: 4px;
+  transition: background-color 0.3s ease;
+}
+
+[data-theme="dark"] .cart-item-img {
+  background-color: #121212 !important;
 }
 
 .cart-item-details {
