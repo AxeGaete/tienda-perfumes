@@ -192,6 +192,19 @@ app.post('/api/productos/:id/resenas', (req, res) => {
   });
 });
 
+// DELETE reseña por ID (Protegido por admin)
+app.delete('/api/admin/resenas/:id', verificarAdmin, (req, res) => {
+  const { id } = req.params;
+  db.query('DELETE FROM resenas WHERE id = ?', [id], (err, result) => {
+    if (err) {
+      console.error('Error al eliminar reseña:', err);
+      return res.status(500).json({ error: 'Error al eliminar la reseña' });
+    }
+    if (result.affectedRows === 0) return res.status(404).json({ error: 'Reseña no encontrada' });
+    res.json({ mensaje: 'Reseña eliminada con éxito' });
+  });
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor activo en el puerto ${PORT}`);
