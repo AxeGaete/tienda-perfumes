@@ -1651,3 +1651,44 @@ body {
   background: linear-gradient(90deg, transparent, var(--c-border), transparent);
   border: none;
 }
+
+/* =========================================================
+   FORMULARIO DE RESEÑAS Y VALORACIONES CORREGIDO
+   ========================================================= */
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 600px;
+  margin-top: 1rem;
+}
+
+.review-form .input-field {
+  width: 100%;
+  padding: 0.9rem 1.4rem;
+  border-radius: 30px;
+  border: 1px solid var(--c-border);
+  background-color: var(--bg-soft);
+  color: var(--text-dark);
+  font-family: var(--font-base);
+  font-size: 0.9rem;
+  outline: none;
+  transition: var(--transition);
+}
+
+.review-form select.input-field {
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+.review-form textarea.input-field {
+  border-radius: var(--radius-md);
+  resize: vertical;
+  min-height: 100px;
+}
+
+.review-form .input-field:focus {
+  border-color: var(--c-coral);
+  background-color: var(--bg-main);
+  box-shadow: 0 0 0 3px rgba(255, 73, 73, 0.18);
+}
