@@ -1467,6 +1467,29 @@ body {
 }
 
 /* =========================================================
+   BADGES DE STOCK EN TARJETAS
+   ========================================================= */
+.stock-badge-en {
+  font-size: 0.65rem;
+  font-weight: 800;
+  background-color: #E3F2FD;
+  color: #1565C0;
+  padding: 0.2rem 0.6rem;
+  border-radius: 10px;
+  text-transform: uppercase;
+}
+
+.stock-badge-pocas {
+  font-size: 0.65rem;
+  font-weight: 800;
+  background-color: #FFF3E0;
+  color: #E65100;
+  padding: 0.2rem 0.6rem;
+  border-radius: 10px;
+  text-transform: uppercase;
+}
+
+/* =========================================================
    BOTÓN FLOTANTE DE WHATSAPP (OFICIAL)
    ========================================================= */
 .whatsapp-float-btn {

@@ -237,10 +237,11 @@ function armarCarruselHero(productos) {
   track.innerHTML = '';
   dotsContainer.innerHTML = '';
 
-  let perfumesParaHero = productos.filter(p => p.destacado_hero === 1 || p.destacado_hero === true || p.destacado_hero === '1');
+  let disponibles = productos.filter(p => (p.estado_stock || 'En Stock') !== 'Sin Stock');
+  let perfumesParaHero = disponibles.filter(p => p.destacado_hero === 1 || p.destacado_hero === true || p.destacado_hero === '1');
 
   if (perfumesParaHero.length === 0) {
-    perfumesParaHero = productos.slice(0, 5);
+    perfumesParaHero = disponibles.slice(0, 5);
   }
 
   if (perfumesParaHero.length === 0) {
@@ -352,6 +353,14 @@ function renderizarProductos(productos) {
     const fotoPortada = fotos[0];
     const precioNumero = Number(perfume.precio) || 0;
     const tipoFragancia = perfume.tipo || 'Diseñador';
+    const stockVal = perfume.estado_stock || 'En Stock';
+
+    let badgeStockHTML = '';
+    if (stockVal === 'Pocas Unidades') {
+      badgeStockHTML = `<span class="stock-badge-pocas">Pocas Unidades</span>`;
+    } else {
+      badgeStockHTML = `<span class="stock-badge-en">En Stock</span>`;
+    }
 
     tarjeta.innerHTML = `
       <a href="#detalle" class="card-image-link" onclick="mostrarDetalle(${perfume.id})">
@@ -368,7 +377,10 @@ function renderizarProductos(productos) {
           <a href="#detalle" class="card-title-link" onclick="mostrarDetalle(${perfume.id})">${perfume.nombre}</a>
         </h3>
         <p class="product-desc">${perfume.descripcion || ''}</p>
-        <div class="product-price">$${precioNumero.toLocaleString('es-AR')}</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <div class="product-price" style="margin-bottom: 0;">$${precioNumero.toLocaleString('es-AR')}</div>
+          ${badgeStockHTML}
+        </div>
         <div class="card-actions-row">
           <a href="#detalle" class="btn-ver-detalle" onclick="mostrarDetalle(${perfume.id})">
             Ver Detalles
@@ -451,6 +463,10 @@ function aplicarFiltrosYOrden() {
   const criterioOrden = selectOrden ? selectOrden.value : 'recientes';
 
   let filtrados = todosLosProductos.filter(p => {
+    // Excluir automáticamente los perfumes marcados como "Sin Stock" de la tienda pública
+    const stockVal = p.estado_stock || 'En Stock';
+    if (stockVal === 'Sin Stock') return false;
+
     const enNombre = (p.nombre || '').toLowerCase().includes(query);
     const enDesc = (p.descripcion || '').toLowerCase().includes(query);
     const enSalida = (p.notas_salida || '').toLowerCase().includes(query);
