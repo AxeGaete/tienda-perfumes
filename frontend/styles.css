@@ -1575,3 +1575,84 @@ body {
   .nav-links { display: none; }
   .footer-container { grid-template-columns: 1fr; gap: 2rem; }
 }
+
+/* ================= SECCIÓN DE RESEÑAS ESTILO PARFUM STUDIO ================= */
+.reviews-section-box {
+  max-width: 1100px;
+  margin: 3rem auto 0;
+  background: var(--bg-main, #FFFFFF);
+  border: 1px solid var(--c-border, #EEEEEE);
+  border-radius: var(--radius-lg, 24px);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-subtle, 0 4px 20px rgba(0, 0, 0, 0.04));
+}
+
+.reviews-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  color: var(--text-dark, #1A1A1E);
+}
+
+.review-item {
+  background: var(--bg-soft, #F8F9FA);
+  padding: 1.2rem;
+  border-radius: var(--radius-sm, 10px);
+  border: 1px solid var(--c-border, #EEEEEE);
+  margin-bottom: 1rem;
+}
+
+.review-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.review-author {
+  font-weight: 700;
+  color: var(--text-dark, #1A1A1E);
+  font-size: 0.95rem;
+}
+
+.review-stars {
+  color: #f59e0b;
+  font-size: 0.9rem;
+}
+
+.review-comment {
+  color: var(--text-muted, #6C727F);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.review-form {
+  display: grid;
+  gap: 1rem;
+  max-width: 600px;
+  margin-top: 1rem;
+}
+
+.review-form .input-field {
+  width: 100%;
+  padding: 0.9rem 1.4rem;
+  border-radius: 30px;
+  border: 1px solid var(--c-border, #EEEEEE);
+  background-color: var(--bg-soft, #F8F9FA);
+  font-family: var(--font-base);
+  font-size: 0.9rem;
+  outline: none;
+  transition: var(--transition);
+}
+
+.review-form textarea.input-field {
+  border-radius: var(--radius-md, 16px);
+  resize: vertical;
+  min-height: 90px;
+}
+
+.review-form .input-field:focus {
+  border-color: var(--c-coral, #FF4949);
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 73, 73, 0.18);
+}
