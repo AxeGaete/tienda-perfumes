@@ -64,34 +64,75 @@ window.cerrarDetalle = function() {
   }
 };
 
-// ================= CARRUSEL HERO =================
+// ================= CARRUSEL HERO CON PERFUMES SUBIDOS =================
 let slideHeroActual = 0;
-const slidesHero = document.querySelectorAll('.carousel-slide');
-const dotsContainer = document.getElementById('hero-carousel-dots');
+let totalSlidesHero = 0;
+let intervaloHero = null;
 
-function inicializarCarruselHero() {
-  if (!dotsContainer || slidesHero.length === 0) return;
+function armarCarruselHero(productos) {
+  const track = document.getElementById('hero-carousel-track');
+  const dotsContainer = document.getElementById('hero-carousel-dots');
+  if (!track || !dotsContainer) return;
+
+  track.innerHTML = '';
   dotsContainer.innerHTML = '';
-  slidesHero.forEach((_, i) => {
+
+  // Tomamos hasta 5 perfumes subidos para el carrusel
+  const perfumesDestacados = productos.slice(0, 5);
+
+  if (perfumesDestacados.length === 0) {
+    track.innerHTML = `
+      <div class="carousel-slide active">
+        <img src="${imagenFallback}" alt="Perfume">
+        <div class="slide-caption">Catálogo en preparación</div>
+      </div>`;
+    return;
+  }
+
+  totalSlidesHero = perfumesDestacados.length;
+
+  perfumesDestacados.forEach((prod, index) => {
+    const fotos = obtenerFotos(prod.imagen_url);
+    const fotoPortada = fotos[0];
+
+    const slide = document.createElement('div');
+    slide.className = `carousel-slide ${index === 0 ? 'active' : ''}`;
+    slide.style.cursor = 'pointer';
+    slide.onclick = () => mostrarDetalle(prod.id);
+    slide.innerHTML = `
+      <img src="${fotoPortada}" alt="${prod.nombre}" onerror="this.src='${imagenFallback}'">
+      <div class="slide-caption">${prod.nombre} — ${prod.tipo || 'Diseñador'}</div>
+    `;
+    track.appendChild(slide);
+
     const dot = document.createElement('div');
-    dot.className = `dot ${i === 0 ? 'active' : ''}`;
-    dot.onclick = () => irASlideHero(i);
+    dot.className = `dot ${index === 0 ? 'active' : ''}`;
+    dot.onclick = () => irASlideHero(index);
     dotsContainer.appendChild(dot);
   });
-  setInterval(() => moverCarruselHero(1), 4500);
+
+  if (intervaloHero) clearInterval(intervaloHero);
+  if (totalSlidesHero > 1) {
+    intervaloHero = setInterval(() => moverCarruselHero(1), 4000);
+  }
 }
 
 window.moverCarruselHero = function(dir) {
-  if (slidesHero.length === 0) return;
-  slideHeroActual = (slideHeroActual + dir + slidesHero.length) % slidesHero.length;
-  slidesHero.forEach((s, i) => s.classList.toggle('active', i === slideHeroActual));
-  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === slideHeroActual));
+  if (totalSlidesHero <= 1) return;
+  slideHeroActual = (slideHeroActual + dir + totalSlidesHero) % totalSlidesHero;
+  actualizarVistaHero();
 };
 
 function irASlideHero(idx) {
   slideHeroActual = idx;
-  slidesHero.forEach((s, i) => s.classList.toggle('active', i === slideHeroActual));
-  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === slideHeroActual));
+  actualizarVistaHero();
+}
+
+function actualizarVistaHero() {
+  const slides = document.querySelectorAll('#hero-carousel-track .carousel-slide');
+  const dots = document.querySelectorAll('#hero-carousel-dots .dot');
+  slides.forEach((s, i) => s.classList.toggle('active', i === slideHeroActual));
+  dots.forEach((d, i) => d.classList.toggle('active', i === slideHeroActual));
 }
 
 // ================= CARGA Y RENDER =================
@@ -108,6 +149,9 @@ async function cargarCatalogo() {
     const res = await fetch('/api/productos');
     if (!res.ok) throw new Error('Error al cargar productos');
     todosLosProductos = await res.json();
+
+    // Armar el carrusel de bienvenida con los perfumes subidos
+    armarCarruselHero(todosLosProductos);
 
     if (todosLosProductos.length > 0 && sliderPrecio) {
       const maximo = Math.max(...todosLosProductos.map(p => Number(p.precio) || 0));
@@ -244,7 +288,6 @@ function aplicarFiltrosYOrden() {
     const enFondo = (p.notas_fondo || '').toLowerCase().includes(query);
     const coincideTexto = !query || enNombre || enDesc || enSalida || enCorazon || enFondo;
 
-    // Filtro por Tipo (Diseñador, Árabe, Nicho)
     const tipoProducto = (p.tipo || 'Diseñador').toLowerCase();
     const coincideTipo = filtroTipo === 'todos' || tipoProducto.includes(filtroTipo.toLowerCase());
 
@@ -332,7 +375,4 @@ chipsEstacion.forEach(b => {
   });
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-  inicializarCarruselHero();
-  cargarCatalogo();
-});
+document.addEventListener('DOMContentLoaded', cargarCatalogo);
