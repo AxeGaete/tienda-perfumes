@@ -8,7 +8,7 @@
 </head>
 <body>
 
-  <!-- Barra de navegación fija con enlaces ancla (href="#...") -->
+  <!-- Barra de navegación fija -->
   <header class="navbar">
     <div class="nav-container">
       <a href="#hero" class="brand-logo">PARFUM STUDIO</a>
@@ -22,7 +22,7 @@
     </div>
   </header>
 
-  <!-- 1. Sección Hero / Inicio -->
+  <!-- 1. Inicio / Hero -->
   <section id="hero" class="hero-section">
     <div class="hero-content">
       <h1>Fragancias que definen tu presencia</h1>
@@ -31,7 +31,7 @@
     </div>
   </section>
 
-  <!-- 2. Sección Catálogo de Productos -->
+  <!-- 2. Catálogo de Productos -->
   <section id="catalogo" class="catalog-section">
     <div class="section-title">
       <h2>Catálogo de Fragancias</h2>
@@ -49,11 +49,41 @@
     </div>
 
     <div id="grid-productos" class="products-grid">
-      <!-- Se cargan automáticamente vía JavaScript -->
+      <!-- Se cargan dinámicamente con app.js -->
     </div>
   </section>
 
-  <!-- 3. Sección Nosotros / Garantía de Calidad -->
+  <!-- 3. Sección Detalle del Perfume Seleccionado (Redirección con href) -->
+  <section id="detalle" class="detail-section" style="display: none;">
+    <div class="section-title">
+      <h2>Detalles de la Fragancia</h2>
+      <p>Información exclusiva de formulación y notas olfativas</p>
+    </div>
+
+    <div class="detail-container">
+      <div class="detail-image-box">
+        <img id="detalle-img" src="" alt="Perfume seleccionado">
+      </div>
+      <div class="detail-info-box">
+        <span id="detalle-familia" class="detail-family"></span>
+        <h1 id="detalle-nombre" class="detail-title"></h1>
+        <p id="detalle-precio" class="detail-price"></p>
+        <div class="detail-divider"></div>
+        <p id="detalle-descripcion" class="detail-description"></p>
+        
+        <div class="detail-actions">
+          <a id="detalle-btn-wsp" href="#" target="_blank" class="btn-primary">
+            Pedir por WhatsApp
+          </a>
+          <a href="#catalogo" class="btn-secondary">
+            ← Volver al Catálogo
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Nosotros / Propuesta de Valor -->
   <section id="nosotros" class="about-section">
     <div class="section-title">
       <h2>Por qué elegirnos</h2>
@@ -75,7 +105,7 @@
     </div>
   </section>
 
-  <!-- 4. Sección Contacto -->
+  <!-- 5. Contacto -->
   <section id="contacto" class="contact-section">
     <div class="section-title">
       <h2>Canales de Contacto</h2>
@@ -87,7 +117,7 @@
         <p>Estamos disponibles por mensajería directa para responder tus preguntas y tomar tus compras.</p>
         
         <div class="contact-methods">
-          <a href="https://wa.me/5491112345678?text=Hola!%20Quería%20hacer%20una%20consulta%20por%20los%20perfumes" target="_blank" class="contact-btn whatsapp-btn">
+          <a href="https://wa.me/5491135890259?text=Hola!%20Quería%20hacer%20una%20consulta%20por%20los%20perfumes" target="_blank" class="contact-btn whatsapp-btn">
             Consultar por WhatsApp
           </a>
           <a href="https://instagram.com" target="_blank" class="contact-btn instagram-btn">
@@ -98,7 +128,6 @@
     </div>
   </section>
 
-  <!-- Pie de página -->
   <footer class="footer">
     <p>&copy; 2026 PARFUM STUDIO. Todos los derechos reservados.</p>
   </footer>
