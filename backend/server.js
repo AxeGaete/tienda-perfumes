@@ -85,8 +85,7 @@ app.get('/api/productos', (req, res) => {
   });
 });
 
-// POST productos (con manejo de errores de Multer para evitar el 500 no controlado)
-// POST productos con filtros avanzados y notas olfativas
+// POST productos (con tipo, filtros avanzados y notas olfativas)
 app.post('/api/productos', verificarAdmin, (req, res) => {
   const uploadHandler = upload.fields([
     { name: 'imagenes', maxCount: 5 },
@@ -104,6 +103,7 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
       familia, 
       descripcion, 
       precio, 
+      tipo,
       genero, 
       estacion, 
       notas_salida, 
@@ -121,8 +121,8 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
     const imagen_url = JSON.stringify(rutasImagenes);
 
     const sql = `INSERT INTO productos 
-      (nombre, familia, descripcion, precio, imagen_url, genero, estacion, notas_salida, notas_corazon, notas_fondo) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      (nombre, familia, descripcion, precio, imagen_url, tipo, genero, estacion, notas_salida, notas_corazon, notas_fondo) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     db.query(sql, [
       nombre, 
@@ -130,6 +130,7 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
       descripcion || '', 
       precio, 
       imagen_url, 
+      tipo || 'Diseñador',
       genero || 'Unisex',
       estacion || 'Todo el año',
       notas_salida || '', 

@@ -1,4 +1,5 @@
 let todosLosProductos = [];
+let filtroTipo = 'todos';
 let filtroFamilia = 'todos';
 let filtroGenero = 'todos';
 let filtroEstacion = 'todos';
@@ -14,6 +15,7 @@ const panelFiltrosDesplegables = document.getElementById('filtros-desplegables')
 const toggleArrow = document.getElementById('toggle-arrow');
 const btnToggleFiltros = document.getElementById('btn-toggle-filtros');
 
+const chipsTipo = document.querySelectorAll('#chips-tipo .chip');
 const chipsFamilia = document.querySelectorAll('#chips-familia .chip');
 const chipsGenero = document.querySelectorAll('#chips-genero .chip');
 const chipsEstacion = document.querySelectorAll('#chips-estacion .chip');
@@ -56,7 +58,6 @@ window.cerrarDetalle = function() {
   if (seccionDetalle) {
     seccionDetalle.style.display = 'none';
   }
-  // Scroll suave hacia el catálogo
   const catalogo = document.getElementById('catalogo');
   if (catalogo) {
     catalogo.scrollIntoView({ behavior: 'smooth' });
@@ -151,7 +152,7 @@ function renderizarProductos(productos) {
       <div class="product-info">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
           <span class="product-family">${perfume.familia}</span>
-          <span style="font-size: 0.68rem; font-weight: 700; color: #9E9EA4; text-transform: uppercase;">${perfume.genero || 'Unisex'}</span>
+          <span style="font-size: 0.7rem; font-weight: 800; background-color: #F1F1F4; padding: 0.15rem 0.5rem; border-radius: 12px; color: var(--c-red); text-transform: uppercase;">${perfume.tipo || 'Diseñador'}</span>
         </div>
         <h3 class="product-title">
           <a href="#detalle" class="card-title-link" onclick="mostrarDetalle(${perfume.id})">${perfume.nombre}</a>
@@ -190,7 +191,7 @@ window.mostrarDetalle = function(id) {
     detalleThumbnails.appendChild(thumb);
   });
 
-  detalleFamilia.textContent = `${perfume.familia} • ${perfume.genero || 'Unisex'}`;
+  detalleFamilia.textContent = `${perfume.familia} • ${perfume.tipo || 'Diseñador'} • ${perfume.genero || 'Unisex'}`;
   detalleNombre.textContent = perfume.nombre;
   detallePrecio.textContent = `$${precioNumero.toLocaleString('es-AR')}`;
   detalleDescripcion.textContent = perfume.descripcion || '';
@@ -239,12 +240,13 @@ function aplicarFiltrosYOrden() {
     const enFondo = (p.notas_fondo || '').toLowerCase().includes(query);
     const coincideTexto = !query || enNombre || enDesc || enSalida || enCorazon || enFondo;
 
+    const coincideTipo = filtroTipo === 'todos' || (p.tipo || 'Diseñador') === filtroTipo;
     const coincideFamilia = filtroFamilia === 'todos' || p.familia === filtroFamilia;
     const coincideGenero = filtroGenero === 'todos' || (p.genero || 'Unisex') === filtroGenero;
     const coincideEstacion = filtroEstacion === 'todos' || (p.estacion || 'Todo el año') === filtroEstacion;
     const coincidePrecio = (Number(p.precio) || 0) <= precioMax;
 
-    return coincideTexto && coincideFamilia && coincideGenero && coincideEstacion && coincidePrecio;
+    return coincideTexto && coincideTipo && coincideFamilia && coincideGenero && coincideEstacion && coincidePrecio;
   });
 
   if (criterioOrden === 'precio-menor') {
@@ -259,6 +261,7 @@ function aplicarFiltrosYOrden() {
 }
 
 window.resetearFiltros = function() {
+  filtroTipo = 'todos';
   filtroFamilia = 'todos';
   filtroGenero = 'todos';
   filtroEstacion = 'todos';
@@ -270,7 +273,7 @@ window.resetearFiltros = function() {
   if (selectOrden) selectOrden.value = 'recientes';
 
   document.querySelectorAll('.filter-chips-row .chip').forEach(c => c.classList.remove('active'));
-  document.querySelectorAll('.filter-chips-row .chip[data-categoria="todos"], .filter-chips-row .chip[data-genero="todos"], .filter-chips-row .chip[data-estacion="todos"]').forEach(c => c.classList.add('active'));
+  document.querySelectorAll('.filter-chips-row .chip[data-tipo="todos"], .filter-chips-row .chip[data-categoria="todos"], .filter-chips-row .chip[data-genero="todos"], .filter-chips-row .chip[data-estacion="todos"]').forEach(c => c.classList.add('active'));
 
   aplicarFiltrosYOrden();
 };
@@ -285,6 +288,15 @@ if (sliderPrecio) {
     aplicarFiltrosYOrden();
   });
 }
+
+chipsTipo.forEach(b => {
+  b.addEventListener('click', () => {
+    chipsTipo.forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    filtroTipo = b.dataset.tipo;
+    aplicarFiltrosYOrden();
+  });
+});
 
 chipsFamilia.forEach(b => {
   b.addEventListener('click', () => {
