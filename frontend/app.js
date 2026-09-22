@@ -189,10 +189,9 @@ function filtrarProductos() {
     const nombreMatch = prod.nombre.toLowerCase().includes(texto);
     const familiaMatch = prod.familia.toLowerCase().includes(texto);
     const descMatch = (prod.descripcion || '').toLowerCase().includes(texto);
-    const notasTexto = (prod.notas_salida + ' ' + prod.notas_corazon + ' ' + prod.notas_fondo).toLowerCase();
-    const notasMatch = notasTexto.includes(texto) || notasTexto.includes(filtroNotaActivo.toLowerCase());
-
-    const coincideTexto = nombreMatch || familiaMatch || descMatch || notasMatch;
+    const notasTexto = ((prod.notas_salida || '') + ' ' + (prod.notas_corazon || '') + ' ' + (prod.notas_fondo || '')).toLowerCase();
+    
+    const coincideTexto = nombreMatch || familiaMatch || descMatch || notasTexto.includes(texto);
     const coincidePrecio = Number(prod.precio) <= precioMaximoFiltro;
     
     const coincideTipo = filtroTipoActivo === 'todos' || prod.tipo === filtroTipoActivo;
