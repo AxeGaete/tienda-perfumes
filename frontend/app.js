@@ -572,7 +572,6 @@ window.toggleMusicaAmbiente = function() {
   const slider = document.getElementById('volume-slider');
 
   if (!audioAmbiente) {
-    // Usamos una pista de audio MP3 estable y de alta calidad ideal para perfumerías y tiendas modernas
     audioAmbiente = new Audio('https://commondatastorage.googleapis.com/codesign-demos/ambient-lofi.mp3');
     audioAmbiente.loop = true;
     
@@ -582,7 +581,6 @@ window.toggleMusicaAmbiente = function() {
     };
   }
 
-  // Sincronizar el volumen actual con el slider
   if (slider) {
     audioAmbiente.volume = parseFloat(slider.value) / 100;
   } else {
@@ -614,7 +612,6 @@ window.toggleMusicaAmbiente = function() {
 
 window.cambiarVolumenMusica = function(valor) {
   if (audioAmbiente) {
-    // Control de volumen en tiempo real y de forma precisa
     audioAmbiente.volume = parseFloat(valor) / 100;
   }
 };

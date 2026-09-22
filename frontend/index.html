@@ -428,25 +428,13 @@
     </div>
   </aside>
 
-  <!-- ================= REPRODUCTOR DE MÚSICA AMBIENTE ================= -->
-  <div class="ambient-player-box" id="ambient-player-box">
-    <button class="ambient-toggle-btn" onclick="toggleMusicaAmbiente()" id="ambient-toggle-btn" title="Reproducir o Pausar">
-      <svg id="ambient-icon" class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-      </svg>
-    </button>
-    
-    <div class="ambient-controls">
-      <span class="ambient-label" id="ambient-label">Playlist Zara</span>
-      <div class="volume-slider-wrapper">
-        <span class="vol-icon">🔈</span>
-        <input type="range" id="volume-slider" min="0" max="100" value="15" oninput="cambiarVolumenMusica(this.value)" title="Ajustar volumen">
-        <span class="vol-icon">🔊</span>
-      </div>
-    </div>
-
-    <div id="youtube-audio-container" style="display: none;"></div>
+  <!-- ================= REPRODUCTOR DE MÚSICA AMBIENTE NATIVO ================= -->
+  <div class="ambient-player-box" id="ambient-player-box" style="padding: 0.6rem 1rem; border-radius: 25px; display: flex; align-items: center; gap: 10px;">
+    <span class="ambient-label" id="ambient-label" style="font-size: 0.75rem; font-weight: 700; color: var(--text-dark);">Música Boutique</span>
+    <audio id="native-audio" controls preload="auto" style="height: 30px; width: 210px;">
+      <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf756.mp3?filename=stylish-deep-luxury-chill-113491.mp3" type="audio/mpeg">
+      Tu navegador no soporta audio.
+    </audio>
   </div>
 
   <!-- ================= BOTÓN FLOTANTE DE WHATSAPP ================= -->
