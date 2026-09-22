@@ -1575,3 +1575,51 @@ body {
   .nav-links { display: none; }
   .footer-container { grid-template-columns: 1fr; gap: 2rem; }
 }
+
+/* =========================================================
+   REPRODUCTOR DE MÚSICA AMBIENTE FLOTANTE
+   ========================================================= */
+.ambient-player-box {
+  position: fixed;
+  bottom: 25px;
+  left: 25px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--c-border);
+  padding: 0.5rem 1rem 0.5rem 0.5rem;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  z-index: 998;
+  transition: var(--transition);
+}
+
+.ambient-toggle-btn {
+  background-color: var(--c-red-subtle);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--c-red);
+  transition: var(--transition);
+}
+
+.ambient-toggle-btn:hover {
+  background-color: var(--c-red);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+.ambient-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.3px;
+  user-select: none;
+}

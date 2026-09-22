@@ -562,3 +562,34 @@ chipsEstacion.forEach(b => {
 });
 
 document.addEventListener('DOMContentLoaded', cargarCatalogo);
+
+// ================= MÚSICA AMBIENTE =================
+let reproduciendoMusica = false;
+
+window.toggleMusicaAmbiente = function() {
+  const audio = document.getElementById('background-audio');
+  const label = document.getElementById('ambient-label');
+  const btn = document.querySelector('.ambient-toggle-btn');
+  
+  if (!audio) return;
+
+  // Volumen bien bajito y sutil (20%)
+  audio.volume = 0.2;
+
+  if (reproduciendoMusica) {
+    audio.pause();
+    reproduciendoMusica = false;
+    label.textContent = 'Música Pausada';
+    btn.style.backgroundColor = 'var(--c-red-subtle)';
+  } else {
+    audio.play().then(() => {
+      reproduciendoMusica = true;
+      label.textContent = 'Reproduciendo ♫';
+      btn.style.backgroundColor = 'var(--c-red)';
+      btn.style.color = '#fff';
+    }).catch(err => {
+      console.log("Reproducción bloqueada por el navegador:", err);
+      alert("Hacé clic de nuevo para activar la música ambiente.");
+    });
+  }
+};
