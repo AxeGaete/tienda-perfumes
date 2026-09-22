@@ -85,7 +85,7 @@ app.get('/api/productos', (req, res) => {
   });
 });
 
-// POST productos (con foto principal ordenada y destacado para hero)
+// POST productos (con foto principal ordenada, destacado hero y estado de stock)
 app.post('/api/productos', verificarAdmin, (req, res) => {
   const uploadHandler = upload.fields([
     { name: 'imagenes', maxCount: 5 },
@@ -110,7 +110,8 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
       notas_corazon, 
       notas_fondo,
       foto_principal_idx,
-      destacado_hero
+      destacado_hero,
+      estado_stock
     } = req.body;
 
     const archivos = (req.files && (req.files['imagenes'] || req.files['imagen'])) || [];
@@ -119,7 +120,6 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
       return res.status(400).json({ error: 'Todos los campos básicos y al menos una imagen son obligatorios' });
     }
 
-    // Ordenar las imágenes para que la seleccionada como principal quede en el índice 0
     let idxPrincipal = parseInt(foto_principal_idx) || 0;
     if (idxPrincipal < 0 || idxPrincipal >= archivos.length) idxPrincipal = 0;
 
@@ -130,10 +130,11 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
     const rutasImagenes = archivosOrdenados.map(file => `/uploads/${file.filename}`);
     const imagen_url = JSON.stringify(rutasImagenes);
     const esHero = (destacado_hero === '1' || destacado_hero === true || destacado_hero === 'true') ? 1 : 0;
+    const stockVal = estado_stock || 'En Stock';
 
     const sql = `INSERT INTO productos 
-      (nombre, familia, descripcion, precio, imagen_url, tipo, genero, estacion, notas_salida, notas_corazon, notas_fondo, destacado_hero) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      (nombre, familia, descripcion, precio, imagen_url, tipo, genero, estacion, notas_salida, notas_corazon, notas_fondo, destacado_hero, estado_stock) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     db.query(sql, [
       nombre, 
@@ -147,7 +148,8 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
       notas_salida || '', 
       notas_corazon || '', 
       notas_fondo || '',
-      esHero
+      esHero,
+      stockVal
     ], (dbErr, result) => {
       if (dbErr) {
         console.error('Error en base de datos al insertar:', dbErr);
@@ -158,7 +160,7 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
   });
 });
 
-// PUT producto completo (información, fotos opcionales y destacado)
+// PUT producto completo (información, fotos opcionales, destacado y estado de stock)
 app.put('/api/productos/:id', verificarAdmin, (req, res) => {
   const uploadHandler = upload.fields([
     { name: 'imagenes', maxCount: 5 },
@@ -184,7 +186,8 @@ app.put('/api/productos/:id', verificarAdmin, (req, res) => {
       notas_corazon, 
       notas_fondo,
       foto_principal_idx,
-      destacado_hero
+      destacado_hero,
+      estado_stock
     } = req.body;
 
     if (!nombre || !familia || !precio) {
@@ -193,6 +196,7 @@ app.put('/api/productos/:id', verificarAdmin, (req, res) => {
 
     const archivos = (req.files && (req.files['imagenes'] || req.files['imagen'])) || [];
     const esHero = (destacado_hero === '1' || destacado_hero === true || destacado_hero === 'true') ? 1 : 0;
+    const stockVal = estado_stock || 'En Stock';
 
     // Si se subieron fotos nuevas, las procesamos y ordenamos
     if (archivos.length > 0) {
@@ -209,13 +213,13 @@ app.put('/api/productos/:id', verificarAdmin, (req, res) => {
       const sql = `UPDATE productos SET 
         nombre = ?, familia = ?, descripcion = ?, precio = ?, tipo = ?, 
         genero = ?, estacion = ?, notas_salida = ?, notas_corazon = ?, 
-        notas_fondo = ?, destacado_hero = ?, imagen_url = ? 
+        notas_fondo = ?, destacado_hero = ?, estado_stock = ?, imagen_url = ? 
         WHERE id = ?`;
 
       db.query(sql, [
         nombre, familia, descripcion || '', precio, tipo || 'Diseñador',
         genero || 'Unisex', estacion || 'Todo el año', notas_salida || '',
-        notas_corazon || '', notas_fondo || '', esHero, imagen_url, id
+        notas_corazon || '', notas_fondo || '', esHero, stockVal, imagen_url, id
       ], (dbErr, result) => {
         if (dbErr) {
           console.error('Error al actualizar perfume con fotos:', dbErr);
@@ -224,17 +228,17 @@ app.put('/api/productos/:id', verificarAdmin, (req, res) => {
         res.json({ mensaje: 'Perfume y fotos actualizados con éxito' });
       });
     } else {
-      // Si no se enviaron fotos nuevas, se conservan las existentes
+      // Si no se enviaron fotos nuevas, se conservan las existentes pero se actualiza el stock y campos
       const sql = `UPDATE productos SET 
         nombre = ?, familia = ?, descripcion = ?, precio = ?, tipo = ?, 
         genero = ?, estacion = ?, notas_salida = ?, notas_corazon = ?, 
-        notas_fondo = ?, destacado_hero = ? 
+        notas_fondo = ?, destacado_hero = ?, estado_stock = ? 
         WHERE id = ?`;
 
       db.query(sql, [
         nombre, familia, descripcion || '', precio, tipo || 'Diseñador',
         genero || 'Unisex', estacion || 'Todo el año', notas_salida || '',
-        notas_corazon || '', notas_fondo || '', esHero, id
+        notas_corazon || '', notas_fondo || '', esHero, stockVal, id
       ], (dbErr, result) => {
         if (dbErr) {
           console.error('Error al actualizar perfume:', dbErr);
