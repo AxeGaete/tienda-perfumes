@@ -469,12 +469,11 @@ function aplicarCupon() {
   const codigo = document.getElementById('cupon-input').value.trim().toUpperCase();
   const msgBox = document.getElementById('cupon-msg');
 
-  // Diccionario secreto de cupones (Código : Porcentaje de descuento)
   const cuponesSecretos = {
-    'PARFUM10': 0.10, // 10% de descuento
-    'VERANO10': 0.10, // 10% de descuento
-    'VIP20': 0.20,    // 20% de descuento exclusivo
-    'REGALO15': 0.15  // 15% de descuento
+    'PARFUM10': 0.10,
+    'VERANO10': 0.10,
+    'VIP20': 0.20,
+    'REGALO15': 0.15
   };
 
   if (cuponesSecretos.hasOwnProperty(codigo)) {
@@ -501,6 +500,9 @@ function actualizarUICarrito() {
   const subtotalPriceBox = document.getElementById('cart-subtotal-price');
   const descuentoRow = document.getElementById('fila-descuento');
   const descuentoPriceBox = document.getElementById('cart-descuento-price');
+  const envioRow = document.getElementById('fila-envio');
+  const envioPriceBox = document.getElementById('cart-envio-price');
+  const selectEnvio = document.getElementById('select-envio');
 
   const totalItems = carrito.reduce((acc, item) => acc + item.cantidad, 0);
 
@@ -515,6 +517,7 @@ function actualizarUICarrito() {
     if (totalPriceBox) totalPriceBox.textContent = '$0';
     if (subtotalRow) subtotalRow.style.display = 'none';
     if (descuentoRow) descuentoRow.style.display = 'none';
+    if (envioRow) envioRow.style.display = 'none';
     return;
   }
 
@@ -541,26 +544,61 @@ function actualizarUICarrito() {
     contenedor.appendChild(div);
   });
 
+  // Calcular costos de envío
+  let costoEnvio = 0;
+  if (selectEnvio) {
+    const valEnvio = selectEnvio.value;
+    if (valEnvio === 'moto_oeste') costoEnvio = 3500;
+    else if (valEnvio === 'moto_caba') costoEnvio = 6500;
+    else if (valEnvio === 'correo') costoEnvio = 9500;
+  }
+
+  let baseCalculo = subtotal;
   if (descuentoActivo > 0) {
     const montoDescuento = subtotal * descuentoActivo;
-    const totalFinal = subtotal - montoDescuento;
+    baseCalculo = subtotal - montoDescuento;
 
     if (subtotalRow) subtotalRow.style.display = 'flex';
     if (subtotalPriceBox) subtotalPriceBox.textContent = `$${subtotal.toLocaleString('es-AR')}`;
     if (descuentoRow) descuentoRow.style.display = 'flex';
     if (descuentoPriceBox) descuentoPriceBox.textContent = `-$${montoDescuento.toLocaleString('es-AR')}`;
-    if (totalPriceBox) totalPriceBox.textContent = `$${totalFinal.toLocaleString('es-AR')}`;
   } else {
     if (subtotalRow) subtotalRow.style.display = 'none';
     if (descuentoRow) descuentoRow.style.display = 'none';
-    if (totalPriceBox) totalPriceBox.textContent = `$${subtotal.toLocaleString('es-AR')}`;
   }
+
+  const totalFinal = baseCalculo + costoEnvio;
+
+  if (envioRow && envioPriceBox) {
+    envioRow.style.display = 'flex';
+    envioPriceBox.textContent = costoEnvio === 0 ? 'Gratis' : `$${costoEnvio.toLocaleString('es-AR')}`;
+  }
+
+  if (totalPriceBox) totalPriceBox.textContent = `$${totalFinal.toLocaleString('es-AR')}`;
 }
 
 function finalizarCompraWhatsApp() {
   if (carrito.length === 0) {
     alert('Tu carrito está vacío.');
     return;
+  }
+
+  const selectEnvio = document.getElementById('select-envio');
+  let textoEnvioSeleccionado = 'Retiro sin cargo en Ciudadela';
+  let costoEnvio = 0;
+
+  if (selectEnvio) {
+    const val = selectEnvio.value;
+    if (val === 'moto_oeste') {
+      costoEnvio = 3500;
+      textoEnvioSeleccionado = 'Envío Express Moto (Ciudadela/Ramos/Haedo) - $3.500';
+    } else if (val === 'moto_caba') {
+      costoEnvio = 6500;
+      textoEnvioSeleccionado = 'Envío Moto CABA - $6.500';
+    } else if (val === 'correo') {
+      costoEnvio = 9500;
+      textoEnvioSeleccionado = 'Envío a todo el país (Correo) - $9.500';
+    }
   }
 
   let mensaje = 'Hola! Quiero realizar el siguiente pedido en Parfum Studio:\n\n';
@@ -571,17 +609,19 @@ function finalizarCompraWhatsApp() {
     mensaje += `▪️ ${item.cantidad}x ${item.nombre} ($${(item.precio * item.cantidad).toLocaleString('es-AR')})\n`;
   });
 
+  mensaje += `\nSubtotal productos: $${subtotal.toLocaleString('es-AR')}`;
+
+  let baseCalculo = subtotal;
   if (descuentoActivo > 0) {
     const descuento = subtotal * descuentoActivo;
-    const total = subtotal - descuento;
-    mensaje += `\nSubtotal: $${subtotal.toLocaleString('es-AR')}`;
+    baseCalculo = subtotal - descuento;
     mensaje += `\nDescuento aplicado: -$${descuento.toLocaleString('es-AR')}`;
-    mensaje += `\n*Total Final: $${total.toLocaleString('es-AR')}*`;
-  } else {
-    mensaje += `\n*Total Final: $${subtotal.toLocaleString('es-AR')}*`;
   }
 
-  mensaje += '\n\n¿Me confirman stock y datos para coordinar el pago y envío?';
+  mensaje += `\nEnvío: ${textoEnvioSeleccionado}`;
+  const totalFinal = baseCalculo + costoEnvio;
+  mensaje += `\n\n*Total Final con Envío: $${totalFinal.toLocaleString('es-AR')}*`;
+  mensaje += '\n\n¿Me confirman datos para coordinar el pago?';
 
   const urlWsp = `https://wa.me/5491135890259?text=${encodeURIComponent(mensaje)}`;
   window.open(urlWsp, '_blank');

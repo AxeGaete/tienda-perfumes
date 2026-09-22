@@ -444,7 +444,7 @@
     </div>
   </footer>
 
-  <!-- ================= CARRITO LATERAL (DRAWER) CON CUPÓN ================= -->
+  <!-- ================= CARRITO LATERAL (DRAWER) CON ENVÍO Y CUPÓN ================= -->
   <div class="cart-overlay" id="cart-overlay" onclick="cerrarCarrito()"></div>
   <aside class="cart-sidebar" id="cart-sidebar">
     <div class="cart-header">
@@ -458,6 +458,17 @@
     <div class="cart-items-container" id="cart-items-container"></div>
 
     <div class="cart-footer">
+      <!-- Calculador de Envío por Zona -->
+      <div class="envio-box" style="background: var(--bg-soft, #F8F9FA); border: 1px solid var(--c-border, #EEEEEE); border-radius: 8px; padding: 0.8rem; margin-bottom: 0.8rem;">
+        <label for="select-envio" style="display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.4rem; color: var(--text-dark);">Método de Envío / Retiro:</label>
+        <select id="select-envio" class="input-field" style="margin-bottom: 0; font-size: 0.85rem; padding: 0.5rem;" onchange="actualizarUICarrito()">
+          <option value="retiro">📦 Retiro sin cargo en Ciudadela</option>
+          <option value="moto_oeste">🏍️ Envío Express Moto (Ciudadela/Ramos/Haedo) - $3.500</option>
+          <option value="moto_caba">🛵 Envío Moto CABA - $6.500</option>
+          <option value="correo">📮 Envío a todo el país (Correo) - $9.500</option>
+        </select>
+      </div>
+
       <!-- Campo de Cupones de Descuento -->
       <div class="cupon-box" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
         <input type="text" id="cupon-input" placeholder="Ingresar cupón" class="input-field" style="margin-bottom:0; font-size:0.85rem; padding:0.6rem;">
@@ -470,8 +481,12 @@
         <span id="cart-subtotal-price">$0</span>
       </div>
       <div id="fila-descuento" class="cart-subtotal-row" style="display: none; font-size: 0.95rem; color: #2E7D32;">
-        <span>Descuento (10%):</span>
+        <span>Descuento:</span>
         <span id="cart-descuento-price">-$0</span>
+      </div>
+      <div class="cart-subtotal-row" id="fila-envio" style="display: none; font-size: 0.95rem; color: var(--text-muted);">
+        <span>Envío:</span>
+        <span id="cart-envio-price">$0</span>
       </div>
 
       <div class="cart-subtotal-row">
