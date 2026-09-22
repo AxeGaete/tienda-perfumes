@@ -130,13 +130,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-dark);
+  color: var(--c-red);
   transition: var(--transition);
 }
 
 .nav-search-btn:hover {
   background: var(--c-red-subtle);
-  color: var(--c-red);
   border-color: var(--c-coral);
   transform: scale(1.05);
 }
@@ -144,16 +143,19 @@ body {
 .ui-icon {
   width: 18px;
   height: 18px;
+  stroke: var(--c-red);
 }
 
 .ui-icon-sm {
   width: 15px;
   height: 15px;
+  stroke: var(--c-red);
 }
 
 .ui-icon-btn {
   width: 16px;
   height: 16px;
+  stroke: #ffffff;
 }
 
 /* =========================================================
@@ -971,7 +973,7 @@ body {
 }
 
 /* =========================================================
-   SECCIÓN MÉTODOS DE PAGO CON ICONOS ESTILIZADOS
+   SECCIÓN MÉTODOS DE PAGO CON ICONOS PLANOS ROJOS
    ========================================================= */
 .payments-section {
   max-width: 1200px;
@@ -1005,10 +1007,10 @@ body {
 
 .payment-icon-wrapper,
 .feature-icon-wrapper {
-  width: 52px;
-  height: 52px;
+  width: 50px;
+  height: 50px;
   background-color: var(--c-red-subtle);
-  border-radius: 14px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1019,13 +1021,15 @@ body {
 .payment-card:hover .payment-icon-wrapper,
 .feature-card:hover .feature-icon-wrapper {
   background-color: var(--c-red);
-  transform: scale(1.05);
+  transform: translateY(-2px);
 }
 
 .brand-svg-icon {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   stroke: var(--c-red);
+  stroke-width: 2px;
+  fill: none;
   transition: var(--transition);
 }
 
@@ -1061,7 +1065,7 @@ body {
 }
 
 /* =========================================================
-   SECCIÓN NOSOTROS CON ICONOS ESTILIZADOS
+   SECCIÓN NOSOTROS CON ICONOS PLANOS ROJOS
    ========================================================= */
 .about-section {
   max-width: 1200px;
@@ -1177,6 +1181,8 @@ body {
   width: 18px;
   height: 18px;
   stroke: var(--c-red);
+  stroke-width: 2px;
+  fill: none;
   flex-shrink: 0;
 }
 
