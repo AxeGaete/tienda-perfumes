@@ -1,4 +1,4 @@
-require('dotenv').config();
+﻿require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
@@ -13,27 +13,39 @@ app.use(express.json());
 
 const ADMIN_SECRET_KEY = process.env.ADMIN_SECRET_KEY || 'perfumeAdmin2026';
 
-// Configuración de conexión MySQL (local o nube TiDB)
-const db = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3306,
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'test',
-  ssl: process.env.DB_HOST && process.env.DB_HOST !== 'localhost' ? { minVersion: 'TLSv1.2', rejectUnauthorized: true } : undefined
-});
+let dbConfig;
+if (process.env.DATABASE_URL) {
+  dbConfig = {
+    uri: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false },
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+  };
+} else {
+  dbConfig = {
+    host: process.env.DB_HOST || 'localhost',
+    port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3306,
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'test',
+    ssl: process.env.DB_HOST && process.env.DB_HOST !== 'localhost' ? { rejectUnauthorized: false } : undefined,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+  };
+}
 
-// Carpeta uploads para imágenes locales
+const db = mysql.createPool(dbConfig);
+
 const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir);
 }
 app.use('/uploads', express.static(uploadsDir));
 
-// Servir archivos estáticos del frontend
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// Configuración de Multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadsDir),
   filename: (req, file, cb) => {
@@ -51,14 +63,12 @@ function verificarAdmin(req, res, next) {
   next();
 }
 
-// Endpoint de login
 app.post('/api/admin/login', (req, res) => {
   const { clave } = req.body;
   if (clave === ADMIN_SECRET_KEY) return res.json({ ok: true });
   res.status(401).json({ error: 'Contraseña incorrecta' });
 });
 
-// GET productos
 app.get('/api/productos', (req, res) => {
   db.query('SELECT * FROM productos', (err, results) => {
     if (err) {
@@ -69,7 +79,6 @@ app.get('/api/productos', (req, res) => {
   });
 });
 
-// POST productos
 app.post('/api/productos', verificarAdmin, upload.single('imagen'), (req, res) => {
   const { nombre, familia, descripcion, precio } = req.body;
   if (!nombre || !familia || !precio || !req.file) {
@@ -78,7 +87,7 @@ app.post('/api/productos', verificarAdmin, upload.single('imagen'), (req, res) =
 
   const imagen_url = `/uploads/${req.file.filename}`;
   const sql = `INSERT INTO productos (nombre, familia, descripcion, precio, imagen_url) VALUES (?, ?, ?, ?, ?)`;
-  
+
   db.query(sql, [nombre, familia, descripcion, precio, imagen_url], (err, result) => {
     if (err) {
       console.error('Error al insertar:', err);
@@ -88,7 +97,6 @@ app.post('/api/productos', verificarAdmin, upload.single('imagen'), (req, res) =
   });
 });
 
-// PUT precio
 app.put('/api/productos/:id', verificarAdmin, (req, res) => {
   const { id } = req.params;
   const { precio } = req.body;
@@ -101,7 +109,6 @@ app.put('/api/productos/:id', verificarAdmin, (req, res) => {
   });
 });
 
-// DELETE producto
 app.delete('/api/productos/:id', verificarAdmin, (req, res) => {
   const { id } = req.params;
   db.query('DELETE FROM productos WHERE id = ?', [id], (err, result) => {
