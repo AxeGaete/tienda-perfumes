@@ -144,15 +144,18 @@ function renderizarProductos(productos) {
     const fotos = obtenerFotos(perfume.imagen_url);
     const fotoPortada = fotos[0];
     const precioNumero = Number(perfume.precio) || 0;
+    const tipoFragancia = perfume.tipo || 'Diseñador';
 
     tarjeta.innerHTML = `
       <a href="#detalle" class="card-image-link" onclick="mostrarDetalle(${perfume.id})">
         <img src="${fotoPortada}" alt="${perfume.nombre}" onerror="this.onerror=null; this.src='${imagenFallback}';">
       </a>
       <div class="product-info">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
           <span class="product-family">${perfume.familia}</span>
-          <span style="font-size: 0.7rem; font-weight: 800; background-color: #F1F1F4; padding: 0.15rem 0.5rem; border-radius: 12px; color: var(--c-red); text-transform: uppercase;">${perfume.tipo || 'Diseñador'}</span>
+          <span style="font-size: 0.68rem; font-weight: 800; background-color: #FFEAEA; color: var(--c-red); padding: 0.15rem 0.6rem; border-radius: 12px; text-transform: uppercase;">
+            ${tipoFragancia}
+          </span>
         </div>
         <h3 class="product-title">
           <a href="#detalle" class="card-title-link" onclick="mostrarDetalle(${perfume.id})">${perfume.nombre}</a>
@@ -191,7 +194,8 @@ window.mostrarDetalle = function(id) {
     detalleThumbnails.appendChild(thumb);
   });
 
-  detalleFamilia.textContent = `${perfume.familia} • ${perfume.tipo || 'Diseñador'} • ${perfume.genero || 'Unisex'}`;
+  const tipoFragancia = perfume.tipo || 'Diseñador';
+  detalleFamilia.textContent = `${perfume.familia} • ${tipoFragancia} • ${perfume.genero || 'Unisex'}`;
   detalleNombre.textContent = perfume.nombre;
   detallePrecio.textContent = `$${precioNumero.toLocaleString('es-AR')}`;
   detalleDescripcion.textContent = perfume.descripcion || '';
@@ -205,7 +209,7 @@ window.mostrarDetalle = function(id) {
   document.getElementById('row-fondo').style.display = perfume.notas_fondo ? 'flex' : 'none';
   detalleFondo.textContent = perfume.notas_fondo || '';
 
-  const mensajeWsp = encodeURIComponent(`¡Hola! Quisiera comprar el perfume ${perfume.nombre} ($${precioNumero.toLocaleString('es-AR')}).`);
+  const mensajeWsp = encodeURIComponent(`¡Hola! Quisiera comprar el perfume ${perfume.nombre} (${tipoFragancia}) por $${precioNumero.toLocaleString('es-AR')}.`);
   detalleBtnWsp.href = `https://wa.me/5491112345678?text=${mensajeWsp}`;
 
   seccionDetalle.style.display = 'block';
@@ -240,7 +244,10 @@ function aplicarFiltrosYOrden() {
     const enFondo = (p.notas_fondo || '').toLowerCase().includes(query);
     const coincideTexto = !query || enNombre || enDesc || enSalida || enCorazon || enFondo;
 
-    const coincideTipo = filtroTipo === 'todos' || (p.tipo || 'Diseñador') === filtroTipo;
+    // Filtro por Tipo (Diseñador, Árabe, Nicho)
+    const tipoProducto = (p.tipo || 'Diseñador').toLowerCase();
+    const coincideTipo = filtroTipo === 'todos' || tipoProducto.includes(filtroTipo.toLowerCase());
+
     const coincideFamilia = filtroFamilia === 'todos' || p.familia === filtroFamilia;
     const coincideGenero = filtroGenero === 'todos' || (p.genero || 'Unisex') === filtroGenero;
     const coincideEstacion = filtroEstacion === 'todos' || (p.estacion || 'Todo el año') === filtroEstacion;

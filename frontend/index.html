@@ -97,9 +97,9 @@
     </div>
 
     <div class="filters-card">
-      <!-- Barra superior compacta visible siempre -->
+      <!-- Barra superior compacta -->
       <div class="search-sort-bar">
-        <input type="text" id="buscador" placeholder="Buscar por nombre, nota (vainilla, bergamota, almizcle)..." />
+        <input type="text" id="buscador" placeholder="Buscar por perfume, marca o notas (ej: almizcle, ámbar)..." />
         <button type="button" class="btn-toggle-filters" id="btn-toggle-filtros" onclick="alternarFiltros()">
           <span class="toggle-icon">⚙</span>
           <span>Filtros</span>
@@ -112,18 +112,31 @@
         </select>
       </div>
 
-      <!-- Bloque colapsable de filtros detallados -->
+      <!-- Panel desplegable con filtros multi-criterio -->
       <div id="filtros-desplegables" class="filters-collapsible" style="display: none;">
         <div class="filters-header">
           <span class="filters-title">Criterios de Búsqueda</span>
           <button class="btn-reset-filters" id="btn-reset-filtros" onclick="resetearFiltros()">Limpiar Filtros</button>
         </div>
 
+        <!-- Presupuesto -->
         <div class="price-slider-box">
           <label for="slider-precio">Presupuesto máx: <span id="label-precio-max">$150.000</span></label>
           <input type="range" id="slider-precio" min="0" max="150000" step="5000" value="150000">
         </div>
 
+        <!-- FILTRO 1: TIPO (Diseñador / Árabe / Nicho) -->
+        <div class="filter-group">
+          <span class="filter-group-label">Tipo de Fragancia:</span>
+          <div class="filter-chips-row" id="chips-tipo">
+            <button class="chip active" data-tipo="todos">Todos los Tipos</button>
+            <button class="chip" data-tipo="Diseñador">Diseñador</button>
+            <button class="chip" data-tipo="Árabe">Árabe</button>
+            <button class="chip" data-tipo="Nicho">Nicho</button>
+          </div>
+        </div>
+
+        <!-- FILTRO 2: GÉNERO -->
         <div class="filter-group">
           <span class="filter-group-label">Destino / Género:</span>
           <div class="filter-chips-row" id="chips-genero">
@@ -134,10 +147,11 @@
           </div>
         </div>
 
+        <!-- FILTRO 3: FAMILIA OLFATIVA -->
         <div class="filter-group">
           <span class="filter-group-label">Familia Olfativa:</span>
           <div class="filter-chips-row" id="chips-familia">
-            <button class="chip active" data-categoria="todos">Todas</button>
+            <button class="chip active" data-categoria="todos">Todas las Familias</button>
             <button class="chip" data-categoria="Cítrico / Acuático">Cítricos & Acuáticos</button>
             <button class="chip" data-categoria="Oriental / Especiado">Orientales & Especiados</button>
             <button class="chip" data-categoria="Amaderado">Amaderados</button>
@@ -146,6 +160,7 @@
           </div>
         </div>
 
+        <!-- FILTRO 4: OCASIÓN / ESTACIÓN -->
         <div class="filter-group">
           <span class="filter-group-label">Momento / Ocasión:</span>
           <div class="filter-chips-row" id="chips-estacion">
@@ -162,7 +177,7 @@
     <div id="grid-productos" class="products-grid"></div>
   </section>
 
-  <!-- 3. Sección Detalle del Perfume (Se oculta al presionar Volver) -->
+  <!-- 3. Sección Detalle del Perfume (Se cierra al presionar Volver) -->
   <section id="detalle" class="detail-section" style="display: none;">
     <div class="detail-card">
       <div class="detail-gallery">
