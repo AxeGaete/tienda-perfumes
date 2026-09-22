@@ -468,10 +468,13 @@
         </select>
       </div>
 
-      <!-- Campo de Cupones de Descuento -->
-      <div class="cupon-box" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
-        <input type="text" id="cupon-input" placeholder="Ingresar cupón" class="input-field" style="margin-bottom:0; font-size:0.85rem; padding:0.6rem;">
-        <button type="button" class="btn-secondary" onclick="aplicarCupon()" style="padding: 0.6rem 1rem; font-size:0.8rem;">Aplicar</button>
+      <!-- Campo de Cupones de Descuento Estilizado -->
+      <div class="cupon-box" style="background: var(--bg-main); border: 1px solid var(--c-border); border-radius: var(--radius-md, 12px); padding: 1rem; margin-bottom: 0.8rem;">
+        <label for="cupon-input" style="display: block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; color: var(--text-dark);">Código de Descuento:</label>
+        <div style="display: flex; gap: 0.5rem;">
+          <input type="text" id="cupon-input" placeholder="Ingresar cupón" class="input-field" style="flex: 1; margin-bottom: 0; font-size: 0.85rem; padding: 0.65rem; border-radius: 8px; border: 1px solid var(--c-border); background: var(--bg-soft, #FAFAFA); color: var(--text-dark);">
+          <button type="button" class="btn-secondary" onclick="aplicarCupon()" style="padding: 0.65rem 1rem; font-size: 0.8rem; border-radius: 8px; cursor: pointer;">Aplicar</button>
+        </div>
       </div>
       <div id="cupon-msg" style="font-size: 0.75rem; font-weight: 700; color: #2E7D32; display: none; margin-bottom: 0.5rem;"></div>
 
