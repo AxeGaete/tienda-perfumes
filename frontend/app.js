@@ -8,6 +8,7 @@ let descuentoActivo = 0; // 0 o 0.10 por el cupón
 document.addEventListener('DOMContentLoaded', () => {
   cargarProductos();
   cargarCarritoDesdeStorage();
+  inicializarFiltrosEventos();
 });
 
 async function cargarProductos() {
@@ -25,8 +26,8 @@ async function cargarProductos() {
 
 // ================= HERO CAROUSEL =================
 function renderizarHeroSlider() {
-  const track = document.getElementById('carousel-track');
-  const dotsContainer = document.getElementById('carousel-dots');
+  const track = document.getElementById('hero-carousel-track');
+  const dotsContainer = document.getElementById('hero-carousel-dots');
   if (!track || !dotsContainer) return;
 
   const destacados = todosLosProductos.filter(p => p.destacado_hero === 1 || p.destacado_hero === '1');
@@ -36,7 +37,7 @@ function renderizarHeroSlider() {
   dotsContainer.innerHTML = '';
 
   if (slidesData.length === 0) {
-    track.innerHTML = '<div class="carousel-slide active"><p>No hay perfumes disponibles</p></div>';
+    track.innerHTML = '<div class="carousel-slide active"><p>No hay perfumes destacados</p></div>';
     return;
   }
 
@@ -52,14 +53,14 @@ function renderizarHeroSlider() {
 
     const dot = document.createElement('div');
     dot.className = `dot ${index === 0 ? 'active' : ''}`;
-    dot.onclick = () => irASlide(index);
+    dot.onclick = () => irASlideHero(index);
     dotsContainer.appendChild(dot);
   });
 
-  iniciarAutoplaySlider();
+  iniciarAutoplayHero();
 }
 
-function cambiarSlide(direccion) {
+function moverCarruselHero(direccion) {
   const slides = document.querySelectorAll('.carousel-slide');
   const dots = document.querySelectorAll('.dot');
   if (slides.length === 0) return;
@@ -71,10 +72,10 @@ function cambiarSlide(direccion) {
 
   slides[slideActualIndex].classList.add('active');
   dots[slideActualIndex].classList.add('active');
-  reiniciarAutoplaySlider();
+  reiniciarAutoplayHero();
 }
 
-function irASlide(index) {
+function irASlideHero(index) {
   const slides = document.querySelectorAll('.carousel-slide');
   const dots = document.querySelectorAll('.dot');
   if (slides.length === 0) return;
@@ -86,61 +87,89 @@ function irASlide(index) {
 
   slides[slideActualIndex].classList.add('active');
   dots[slideActualIndex].classList.add('active');
-  reiniciarAutoplaySlider();
+  reiniciarAutoplayHero();
 }
 
-function iniciarAutoplaySlider() {
+function iniciarAutoplayHero() {
   if (slideInterval) clearInterval(slideInterval);
-  slideInterval = setInterval(() => cambiarSlide(1), 4500);
+  slideInterval = setInterval(() => moverCarruselHero(1), 5000);
 }
 
-function reiniciarAutoplaySlider() {
+function reiniciarAutoplayHero() {
   clearInterval(slideInterval);
-  iniciarAutoplaySlider();
+  iniciarAutoplayHero();
 }
 
-// ================= FILTROS INTELIGENTES Y BÚSQUEDA =================
+// ================= FILTROS Y BÚSQUEDA =================
+let filtroTipoActivo = 'todos';
+let filtroGeneroActivo = 'todos';
 let filtroFamiliaActivo = 'todos';
 let filtroNotaActivo = 'todos';
-let precioMaximoFiltro = 500000;
+let filtroEstacionActivo = 'todos';
+let precioMaximoFiltro = 150000;
 
-function toggleFiltrosColapsables() {
-  const box = document.getElementById('filtros-collapsible');
+function alternarFiltros() {
+  const box = document.getElementById('filtros-desplegables');
   const arrow = document.getElementById('toggle-arrow');
+  const btn = document.getElementById('btn-toggle-filtros');
+  
   if (box.style.display === 'none') {
-    box.style.display = 'flex';
+    box.style.display = 'block';
     arrow.style.transform = 'rotate(180deg)';
+    btn.classList.add('active');
   } else {
     box.style.display = 'none';
     arrow.style.transform = 'rotate(0deg)';
+    btn.classList.remove('active');
   }
 }
 
-function actualizarRangoPrecio(val) {
-  precioMaximoFiltro = Number(val);
-  document.getElementById('precio-valor-label').textContent = `$${precioMaximoFiltro.toLocaleString('es-AR')}`;
-  filtrarProductos();
+function inicializarFiltrosEventos() {
+  const buscador = document.getElementById('buscador');
+  if (buscador) buscador.addEventListener('input', filtrarProductos);
+
+  const selectOrden = document.getElementById('select-orden');
+  if (selectOrden) selectOrden.addEventListener('change', filtrarProductos);
+
+  const slider = document.getElementById('slider-precio');
+  if (slider) {
+    slider.addEventListener('input', (e) => {
+      precioMaximoFiltro = Number(e.target.value);
+      document.getElementById('label-precio-max').textContent = `$${precioMaximoFiltro.toLocaleString('es-AR')}`;
+      filtrarProductos();
+    });
+  }
+
+  configurarChipsGrupo('chips-tipo', 'data-tipo', (val) => { filtroTipoActivo = val; filtrarProductos(); });
+  configurarChipsGrupo('chips-genero', 'data-genero', (val) => { filtroGeneroActivo = val; filtrarProductos(); });
+  configurarChipsGrupo('chips-familia', 'data-categoria', (val) => { filtroFamiliaActivo = val; filtrarProductos(); });
+  configurarChipsGrupo('chips-nota', 'data-nota', (val) => { filtroNotaActivo = val; filtrarProductos(); });
+  configurarChipsGrupo('chips-estacion', 'data-estacion', (val) => { filtroEstacionActivo = val; filtrarProductos(); });
 }
 
-function seleccionarFiltroChip(tipo, valor, elemento) {
-  const contenedor = tipo === 'familia' ? document.getElementById('chips-familia') : document.getElementById('chips-nota');
-  contenedor.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-  elemento.classList.add('active');
-
-  if (tipo === 'familia') filtroFamiliaActivo = valor;
-  if (tipo === 'nota') filtroNotaActivo = valor;
-
-  filtrarProductos();
+function configurarChipsGrupo(containerId, atributo, callback) {
+  const contenedor = document.getElementById(containerId);
+  if (!contenedor) return;
+  contenedor.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      contenedor.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      callback(chip.getAttribute(atributo));
+    });
+  });
 }
 
-function limpiarFiltros() {
+function resetearFiltros() {
   document.getElementById('buscador').value = '';
-  document.getElementById('precio-range').value = 500000;
-  precioMaximoFiltro = 500000;
-  document.getElementById('precio-valor-label').textContent = '$500.000';
-  
+  document.getElementById('slider-precio').value = 150000;
+  precioMaximoFiltro = 150000;
+  document.getElementById('label-precio-max').textContent = '$150.000';
+
+  filtroTipoActivo = 'todos';
+  filtroGeneroActivo = 'todos';
   filtroFamiliaActivo = 'todos';
   filtroNotaActivo = 'todos';
+  filtroEstacionActivo = 'todos';
 
   document.querySelectorAll('.filter-chips-row').forEach(row => {
     row.querySelectorAll('.chip').forEach((c, idx) => {
@@ -154,48 +183,50 @@ function limpiarFiltros() {
 
 function filtrarProductos() {
   const texto = document.getElementById('buscador').value.toLowerCase().trim();
-  const orden = document.getElementById('orden-select').value;
+  const orden = document.getElementById('select-orden').value;
 
   productosFiltrados = todosLosProductos.filter(prod => {
     const nombreMatch = prod.nombre.toLowerCase().includes(texto);
     const familiaMatch = prod.familia.toLowerCase().includes(texto);
     const descMatch = (prod.descripcion || '').toLowerCase().includes(texto);
-    const notasMatch = (prod.notas_salida + ' ' + prod.notas_corazon + ' ' + prod.notas_fondo).toLowerCase().includes(texto);
-    
+    const notasTexto = (prod.notas_salida + ' ' + prod.notas_corazon + ' ' + prod.notas_fondo).toLowerCase();
+    const notasMatch = notasTexto.includes(texto) || notasTexto.includes(filtroNotaActivo.toLowerCase());
+
     const coincideTexto = nombreMatch || familiaMatch || descMatch || notasMatch;
     const coincidePrecio = Number(prod.precio) <= precioMaximoFiltro;
     
+    const coincideTipo = filtroTipoActivo === 'todos' || prod.tipo === filtroTipoActivo;
+    const coincideGenero = filtroGeneroActivo === 'todos' || prod.genero === filtroGeneroActivo;
     const coincideFamilia = filtroFamiliaActivo === 'todos' || prod.familia === filtroFamiliaActivo;
-    const coincideNota = filtroNotaActivo === 'todos' || notasMatch;
+    const coincideNota = filtroNotaActivo === 'todos' || notasTexto.includes(filtroNotaActivo.toLowerCase());
+    const coincideEstacion = filtroEstacionActivo === 'todos' || prod.estacion === filtroEstacionActivo;
 
-    return coincideTexto && coincidePrecio && coincideFamilia && coincideNota;
+    return coincideTexto && coincidePrecio && coincideTipo && coincideGenero && coincideFamilia && coincideNota && coincideEstacion;
   });
 
-  // Ordenamiento
-  if (orden === 'menor-precio') productosFiltrados.sort((a, b) => a.precio - b.precio);
-  if (orden === 'mayor-precio') productosFiltrados.sort((a, b) => b.precio - a.precio);
-  if (orden === 'alfabetico') productosFiltrados.sort((a, b) => a.nombre.localeCompare(b.nombre));
+  if (orden === 'precio-menor') productosFiltrados.sort((a, b) => a.precio - b.precio);
+  if (orden === 'precio-mayor') productosFiltrados.sort((a, b) => b.precio - a.precio);
   if (orden === 'recientes') productosFiltrados.sort((a, b) => b.id - a.id);
 
   renderizarCatalogo();
 }
 
 function renderizarCatalogo() {
-  const grilla = document.getElementById('grilla-productos');
-  if (!grilla) return;
+  const grid = document.getElementById('grid-productos');
+  if (!grid) return;
 
   if (productosFiltrados.length === 0) {
-    grilla.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem;">No se encontraron perfumes con esos filtros.</p>';
+    grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem;">No se encontraron perfumes con esos filtros.</p>';
     return;
   }
 
-  grilla.innerHTML = '';
+  grid.innerHTML = '';
   productosFiltrados.forEach(prod => {
     const fotos = extraerListaFotos(prod.imagen_url);
     const stockVal = prod.estado_stock || 'En Stock';
-    let badgeStockHTML = '';
-    if (stockVal === 'Pocas Unidades') badgeStockHTML = '<span class="stock-badge-pocas">Pocas Unidades</span>';
-    if (stockVal === 'Sin Stock') badgeStockHTML = '<span class="stock-badge-sin" style="background:#FFEBEE; color:#C62828; font-size:0.65rem; font-weight:800; padding:0.2rem 0.6rem; border-radius:10px;">Sin Stock</span>';
+    let stockBadgeHTML = '';
+    if (stockVal === 'Pocas Unidades') stockBadgeHTML = '<span class="stock-badge-pocas">Pocas Unidades</span>';
+    if (stockVal === 'Sin Stock') stockBadgeHTML = '<span class="stock-badge-sin" style="background:#FFEBEE; color:#C62828; font-size:0.65rem; font-weight:800; padding:0.2rem 0.6rem; border-radius:10px;">Sin Stock</span>';
 
     const card = document.createElement('div');
     card.className = 'product-card';
@@ -206,191 +237,182 @@ function renderizarCatalogo() {
       <div class="product-info">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
           <span class="product-family">${prod.familia}</span>
-          ${badgeStockHTML}
+          ${stockBadgeHTML}
         </div>
         <h3 class="product-title"><a href="#" onclick="verDetalle(${prod.id}); return false;" class="card-title-link">${prod.nombre}</a></h3>
         <p class="product-desc">${prod.descripcion || 'Fragancia exclusiva de alta gama.'}</p>
         <div class="product-price">$${Number(prod.precio).toLocaleString('es-AR')}</div>
         <div class="card-actions-row">
           <a href="#" onclick="verDetalle(${prod.id}); return false;" class="btn-ver-detalle">Ver Detalle</a>
-          ${stockVal === 'Sin Stock' 
-            ? `<a href="https://wa.me/5491100000000?text=Hola,%20quiero%20saber%20cuándo%20reingresa%20el%20perfume%20${encodeURIComponent(prod.nombre)}" target="_blank" class="btn-card-add-cart" style="background:#1565C0; text-decoration:none;" title="Avisarme cuando haya stock">📲 Avisar</a>`
+          ${stockVal === 'Sin Stock'
+            ? `<a href="https://wa.me/5491135890259?text=Hola,%20quiero%20saber%20cuándo%20reingresa%20el%20perfume%20${encodeURIComponent(prod.nombre)}" target="_blank" class="btn-card-add-cart" style="background:#1565C0; text-decoration:none;" title="Avisarme cuando haya stock">📲 Avisar</a>`
             : `<button class="btn-card-add-cart" onclick="agregarAlCarrito(${prod.id})" title="Añadir al Carrito"><svg class="ui-icon-btn" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>`
           }
         </div>
       </div>
     `;
-    grilla.appendChild(card);
+    grid.appendChild(card);
   });
 }
 
-function enfocarBuscador() {
+function activarBuscadorHeader() {
   const input = document.getElementById('buscador');
+  document.getElementById('catalogo').scrollIntoView({ behavior: 'smooth' });
   input.focus();
   input.classList.add('highlight');
   setTimeout(() => input.classList.remove('highlight'), 1200);
 }
 
-function mostrarCatalogo(e) {
-  if (e) e.preventDefault();
-  document.getElementById('vista-principal').style.display = 'block';
-  document.getElementById('vista-detalle').style.display = 'none';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+// ================= VISTA DETALLE & RESEÑAS =================
+let productoActualId = null;
+let listaFotosDetalleActuales = [];
+let fotoDetalleIndex = 0;
 
-// ================= VISTA DETALLE DE PRODUCTO & RESEÑAS =================
 async function verDetalle(id) {
   const prod = todosLosProductos.find(p => p.id === id);
   if (!prod) return;
+  productoActualId = id;
 
-  document.getElementById('vista-principal').style.display = 'none';
-  const seccionDetalle = document.getElementById('vista-detalle');
+  document.getElementById('hero').style.display = 'none';
+  document.getElementById('catalogo').style.display = 'none';
+  document.getElementById('pagos').style.display = 'none';
+  document.getElementById('nosotros').style.display = 'none';
+  document.getElementById('contacto').style.display = 'none';
+
+  const seccionDetalle = document.getElementById('detalle');
   seccionDetalle.style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  const fotos = extraerListaFotos(prod.imagen_url);
+  listaFotosDetalleActuales = extraerListaFotos(prod.imagen_url);
+  fotoDetalleIndex = 0;
 
-  // Cargar reseñas desde el backend
-  let resenas = [];
-  try {
-    const res = await fetch(`/api/productos/${id}/resenas`);
-    resenas = await res.json();
-  } catch(err) {}
+  document.getElementById('detalle-img-principal').src = listaFotosDetalleActuales[0];
+  document.getElementById('detalle-familia').textContent = prod.familia;
+  document.getElementById('detalle-nombre').textContent = prod.nombre;
+  document.getElementById('detalle-precio').textContent = `$${Number(prod.precio).toLocaleString('es-AR')}`;
+  document.getElementById('detalle-salida').textContent = prod.notas_salida || 'No especificado';
+  document.getElementById('detalle-corazon').textContent = prod.notas_corazon || 'No especificado';
+  document.getElementById('detalle-fondo').textContent = prod.notas_fondo || 'No especificado';
+  document.getElementById('detalle-descripcion').textContent = prod.descripcion || 'Sin descripción adicional.';
 
-  let promedioEstrellas = 5;
-  if (resenas.length > 0) {
-    const suma = resenas.reduce((acc, r) => acc + Number(r.estrellas), 0);
-    promedioEstrellas = (suma / resenas.length).toFixed(1);
+  // Renderizar miniaturas en detalle
+  const thumbContainer = document.getElementById('detalle-thumbnails');
+  thumbContainer.innerHTML = listaFotosDetalleActuales.map((f, idx) => `
+    <img src="${f}" class="detail-thumb ${idx === 0 ? 'active' : ''}" onclick="seleccionarMiniaturaDetalle(${idx})" alt="Miniatura">
+  `).join('');
+
+  // Botón de compra o alerta stock
+  const actionsBox = document.getElementById('detalle-actions-box');
+  if (prod.estado_stock === 'Sin Stock') {
+    actionsBox.innerHTML = `
+      <a href="https://wa.me/5491135890259?text=Hola,%20quiero%20saber%20cuándo%20reingresa%20${encodeURIComponent(prod.nombre)}" target="_blank" class="btn-primary" style="background:#1565C0; width:100%; text-decoration:none; text-align:center;">📲 Avisarme por WhatsApp cuando haya stock</a>
+      <button type="button" class="btn-secondary" onclick="cerrarDetalle()">← Volver al Catálogo</button>
+    `;
+  } else {
+    actionsBox.innerHTML = `
+      <button type="button" class="btn-primary" onclick="agregarAlCarritoDesdeDetalle(${prod.id})">Agregar al Carrito</button>
+      <button type="button" class="btn-secondary" onclick="cerrarDetalle()">← Volver al Catálogo</button>
+    `;
   }
 
-  seccionDetalle.innerHTML = `
-    <div style="margin-bottom: 2rem;">
-      <a href="#" onclick="mostrarCatalogo(event)" class="btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem;">← Volver al Catálogo</a>
-    </div>
-    <div class="detail-card">
-      <div class="detail-gallery">
-        <div class="detail-main-image" id="main-image-container">
-          <button class="detail-nav-btn prev" onclick="rotarFotoDetalle(-1)">❮</button>
-          <img id="imagen-principal-detalle" src="${fotos[0]}" alt="${prod.nombre}">
-          <button class="detail-nav-btn next" onclick="rotarFotoDetalle(1)">❯</button>
-        </div>
-        <div class="detail-thumbnails" id="thumbnails-container">
-          ${fotos.map((f, idx) => `
-            <img src="${f}" class="detail-thumb ${idx === 0 ? 'active' : ''}" onclick="cambiarFotoPrincipal(${idx}, '${f}')" alt="Miniatura">
-          `).join('')}
-        </div>
-      </div>
-
-      <div class="detail-info-box">
-        <div class="detail-tags">
-          <span class="detail-family">${prod.familia}</span>
-          <span class="badge-tag">${prod.tipo || 'Diseñador'}</span>
-          <span class="badge-tag">⭐ ${promedioEstrellas} (${resenas.length} reseñas)</span>
-        </div>
-        <h1 class="detail-title">${prod.nombre}</h1>
-        <div class="detail-price">$${Number(prod.precio).toLocaleString('es-AR')}</div>
-
-        <div class="notes-pyramid">
-          <div class="note-row"><span class="note-label">Salida:</span><span class="note-value">${prod.notas_salida || 'No especificado'}</span></div>
-          <div class="note-row"><span class="note-label">Corazón:</span><span class="note-value">${prod.notas_corazon || 'No especificado'}</span></div>
-          <div class="note-row"><span class="note-label">Fondo:</span><span class="note-value">${prod.notas_fondo || 'No especificado'}</span></div>
-        </div>
-
-        <p class="detail-description">${prod.descripcion || 'Sin descripción adicional.'}</p>
-
-        <div class="detail-actions">
-          ${prod.estado_stock === 'Sin Stock'
-            ? `<a href="https://wa.me/5491100000000?text=Hola,%20quiero%20saber%20cuándo%20reingresa%20${encodeURIComponent(prod.nombre)}" target="_blank" class="btn-primary" style="background:#1565C0; width:100%;">📲 Avisarme por WhatsApp cuando haya stock</a>`
-            : `<button class="btn-primary" onclick="agregarAlCarritoDesdeDetalle(${prod.id})">Añadir al Carrito</button>`
-          }
-        </div>
-      </div>
-    </div>
-
-    <!-- Sección de Reseñas de Clientes -->
-    <div style="max-width: 1100px; margin: 3rem auto 0; background: var(--bg-main); border: 1px solid var(--c-border); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-subtle);">
-      <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1.5rem;">Opiniones y Calificaciones</h3>
-      
-      <div id="lista-resenas" style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2.5rem;">
-        ${resenas.length === 0 ? '<p style="color: var(--text-muted);">Sé el primero en dejar una reseña para este perfume.</p>' : 
-          resenas.map(r => `
-            <div style="background: var(--bg-soft); padding: 1.2rem; border-radius: var(--radius-sm); border: 1px solid var(--c-border);">
-              <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem;">
-                <strong>${r.autor}</strong>
-                <span style="color: #f59e0b;">${'★'.repeat(r.estrellas)}${'☆'.repeat(5 - r.estrellas)}</span>
-              </div>
-              <p style="color: var(--text-muted); font-size: 0.9rem;">${r.comentario}</p>
-            </div>
-          `).join('')}
-      </div>
-
-      <h4 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Dejanos tu opinión</h4>
-      <form onsubmit="enviarResena(event, ${prod.id})" style="display: grid; gap: 1rem; max-width: 600px;">
-        <input type="text" id="resena-autor" placeholder="Tu Nombre" class="input-field" required style="margin-bottom:0;">
-        <select id="resena-estrellas" class="input-field" required style="margin-bottom:0;">
-          <option value="5">⭐⭐⭐⭐⭐ Excelente (5/5)</option>
-          <option value="4">⭐⭐⭐⭐ Muy Bueno (4/5)</option>
-          <option value="3">⭐⭐⭐ Bueno (3/5)</option>
-          <option value="2">⭐⭐ Regular (2/5)</option>
-          <option value="1">⭐ Malo (1/5)</option>
-        </select>
-        <textarea id="resena-comentario" placeholder="¿Qué te pareció la fijación y el aroma?" class="input-field" required style="margin-bottom:0; min-height:80px;"></textarea>
-        <button type="submit" class="btn-primary" style="width: fit-content;">Publicar Reseña</button>
-      </form>
-    </div>
-  `;
+  cargarResenasProducto(id);
 }
 
-let fotoDetalleIndexActual = 0;
-let fotosDetalleActuales = [];
+function cerrarDetalle() {
+  document.getElementById('detalle').style.display = 'none';
+  document.getElementById('hero').style.display = 'block';
+  document.getElementById('catalogo').style.display = 'block';
+  document.getElementById('pagos').style.display = 'block';
+  document.getElementById('nosotros').style.display = 'block';
+  document.getElementById('contacto').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-function cambiarFotoPrincipal(idx, url) {
-  fotoDetalleIndexActual = idx;
-  document.getElementById('imagen-principal-detalle').src = url;
+function seleccionarMiniaturaDetalle(idx) {
+  fotoDetalleIndex = idx;
+  document.getElementById('detalle-img-principal').src = listaFotosDetalleActuales[idx];
   document.querySelectorAll('.detail-thumb').forEach((t, i) => {
     if (i === idx) t.classList.add('active');
     else t.classList.remove('active');
   });
 }
 
-function rotarFotoDetalle(dir) {
-  const prodIdActual = document.querySelector('.detail-title'); // referencia visual si hace falta
-  // Tomamos las fotos del producto activo actual buscando en la galería
-  const thumbs = document.querySelectorAll('.detail-thumb');
-  if (thumbs.length <= 1) return;
-  fotoDetalleIndexActual = (fotoDetalleIndexActual + dir + thumbs.length) % thumbs.length;
-  thumbs[fotoDetalleIndexActual].click();
+function cambiarFotoDetalle(dir) {
+  if (listaFotosDetalleActuales.length <= 1) return;
+  fotoDetalleIndex = (fotoDetalleIndex + dir + listaFotosDetalleActuales.length) % listaFotosDetalleActuales.length;
+  seleccionarMiniaturaDetalle(fotoDetalleIndex);
 }
 
-async function enviarResena(e, productoId) {
+async function cargarResenasProducto(id) {
+  const listaResenasBox = document.getElementById('lista-resenas');
+  const badgeEstrellas = document.getElementById('detalle-estrellas-badge');
+  try {
+    const res = await fetch(`/api/productos/${id}/resenas`);
+    const resenas = await res.json();
+
+    let promedio = 5;
+    if (resenas.length > 0) {
+      const suma = resenas.reduce((acc, r) => acc + Number(r.estrellas), 0);
+      promedio = (suma / resenas.length).toFixed(1);
+    }
+
+    if (badgeEstrellas) badgeEstrellas.textContent = `⭐ ${promedio} (${resenas.length})`;
+
+    if (resenas.length === 0) {
+      listaResenasBox.innerHTML = '<p style="color: var(--text-muted);">Sé el primero en dejar una reseña para este perfume.</p>';
+      return;
+    }
+
+    listaResenasBox.innerHTML = resenas.map(r => `
+      <div style="background: var(--bg-soft); padding: 1.2rem; border-radius: var(--radius-sm); border: 1px solid var(--c-border);">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem;">
+          <strong>${r.autor}</strong>
+          <span style="color: #f59e0b;">${'★'.repeat(r.estrellas)}${'☆'.repeat(5 - r.estrellas)}</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">${r.comentario}</p>
+      </div>
+    `).join('');
+  } catch (err) {
+    listaResenasBox.innerHTML = '<p style="color: var(--text-muted);">No se pudieron cargar las reseñas.</p>';
+  }
+}
+
+async function enviarResena(e) {
   e.preventDefault();
+  if (!productoActualId) return;
+
   const autor = document.getElementById('resena-autor').value.trim();
   const estrellas = document.getElementById('resena-estrellas').value;
   const comentario = document.getElementById('resena-comentario').value.trim();
 
   try {
-    const res = await fetch(`/api/productos/${productoId}/resenas`, {
+    const res = await fetch(`/api/productos/${productoActualId}/resenas`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ autor, estrellas, comentario })
     });
     if (res.ok) {
       alert('¡Gracias por tu reseña!');
-      verDetalle(productoId);
+      document.getElementById('resena-autor').value = '';
+      document.getElementById('resena-comentario').value = '';
+      cargarResenasProducto(productoActualId);
     } else {
-      alert('Error al enviar reseña');
+      alert('Error al enviar la reseña');
     }
   } catch(err) {
     alert('Error de conexión');
   }
 }
 
-// ================= CARRITO Y CUPÓN DE DESCUENTO =================
-function toggleCart() {
-  const sidebar = document.getElementById('cart-sidebar');
-  const overlay = document.getElementById('cart-overlay');
-  sidebar.classList.toggle('active');
-  overlay.classList.toggle('active');
+// ================= CARRITO Y CUPÓN =================
+function abrirCarrito() {
+  document.getElementById('cart-sidebar').classList.add('active');
+  document.getElementById('cart-overlay').classList.add('active');
+}
+
+function cerrarCarrito() {
+  document.getElementById('cart-sidebar').classList.remove('active');
+  document.getElementById('cart-overlay').classList.remove('active');
 }
 
 function agregarAlCarrito(id) {
@@ -413,12 +435,12 @@ function agregarAlCarrito(id) {
   }
 
   guardarCarritoStorage();
-  actualizarUIcarrito();
-  toggleCart();
+  actualizarUICarrito();
+  abrirCarrito();
 }
 
-function agregarAlCarritoDesdeDetalle(id) {
-  agregarAlCarrito(id);
+function agregarAlCarritoDesdeDetalle() {
+  if (productoActualId) agregarAlCarrito(productoActualId);
 }
 
 function cambiarCantidad(id, delta) {
@@ -429,7 +451,7 @@ function cambiarCantidad(id, delta) {
     carrito = carrito.filter(i => i.id !== id);
   }
   guardarCarritoStorage();
-  actualizarUIcarrito();
+  actualizarUICarrito();
 }
 
 function vaciarCarrito() {
@@ -438,7 +460,7 @@ function vaciarCarrito() {
   document.getElementById('cupon-msg').style.display = 'none';
   document.getElementById('cupon-input').value = '';
   guardarCarritoStorage();
-  actualizarUIcarrito();
+  actualizarUICarrito();
 }
 
 function aplicarCupon() {
@@ -448,6 +470,7 @@ function aplicarCupon() {
   if (codigo === 'PARFUM10' || codigo === 'VERANO10') {
     descuentoActivo = 0.10;
     msgBox.textContent = '¡Cupón aplicado con éxito (-10%)!';
+    msgBox.style.color = '#2E7D32';
     msgBox.style.display = 'block';
   } else {
     descuentoActivo = 0;
@@ -455,13 +478,13 @@ function aplicarCupon() {
     msgBox.style.color = '#C62828';
     msgBox.style.display = 'block';
   }
-  actualizarUIcarrito();
+  actualizarUICarrito();
 }
 
-function actualizarUIcarrito() {
-  const lista = document.getElementById('cart-items-list');
-  const badge = document.getElementById('cart-badge-count');
-  const countLabel = document.getElementById('cart-count-label');
+function actualizarUICarrito() {
+  const contenedor = document.getElementById('cart-items-container');
+  const badge = document.getElementById('cart-badge');
+  const countLabel = document.getElementById('cart-total-items');
   const totalPriceBox = document.getElementById('cart-total-price');
   const subtotalRow = document.getElementById('fila-subtotal');
   const subtotalPriceBox = document.getElementById('cart-subtotal-price');
@@ -470,36 +493,28 @@ function actualizarUIcarrito() {
 
   const totalItems = carrito.reduce((acc, item) => acc + item.cantidad, 0);
 
-  if (totalItems > 0) {
-    badge.style.display = 'flex';
+  if (badge) {
     badge.textContent = totalItems;
-    countLabel.textContent = `(${totalItems} ítems)`;
-  } else {
-    badge.style.display = 'none';
-    countLabel.textContent = '(0 ítems)';
+    badge.style.display = totalItems > 0 ? 'flex' : 'none';
   }
+  if (countLabel) countLabel.textContent = `(${totalItems} productos)`;
 
   if (carrito.length === 0) {
-    lista.innerHTML = `
-      <div class="cart-empty-msg">
-        <svg class="cart-empty-svg" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line></svg>
-        <p>Tu carrito está vacío</p>
-      </div>
-    `;
-    totalPriceBox.textContent = '$0';
-    subtotalRow.style.display = 'none';
-    descuentoRow.style.display = 'none';
+    contenedor.innerHTML = '<p style="text-align: center; color: var(--text-muted); margin-top: 3rem;">Tu carrito está vacío</p>';
+    if (totalPriceBox) totalPriceBox.textContent = '$0';
+    if (subtotalRow) subtotalRow.style.display = 'none';
+    if (descuentoRow) descuentoRow.style.display = 'none';
     return;
   }
 
-  lista.innerHTML = '';
+  contenedor.innerHTML = '';
   let subtotal = 0;
 
   carrito.forEach(item => {
     subtotal += item.precio * item.cantidad;
-    const itemEl = document.createElement('div');
-    itemEl.className = 'cart-item';
-    itemEl.innerHTML = `
+    const div = document.createElement('div');
+    div.className = 'cart-item';
+    div.innerHTML = `
       <img src="${item.imagen}" class="cart-item-img" alt="${item.nombre}">
       <div class="cart-item-details">
         <span class="cart-item-title">${item.nombre}</span>
@@ -512,22 +527,22 @@ function actualizarUIcarrito() {
         <button class="qty-btn" onclick="cambiarCantidad(${item.id}, 1)">+</button>
       </div>
     `;
-    lista.appendChild(itemEl);
+    contenedor.appendChild(div);
   });
 
   if (descuentoActivo > 0) {
     const montoDescuento = subtotal * descuentoActivo;
     const totalFinal = subtotal - montoDescuento;
 
-    subtotalRow.style.display = 'flex';
-    subtotalPriceBox.textContent = `$${subtotal.toLocaleString('es-AR')}`;
-    descuentoRow.style.display = 'flex';
-    descuentoPriceBox.textContent = `-$${montoDescuento.toLocaleString('es-AR')}`;
-    totalPriceBox.textContent = `$${totalFinal.toLocaleString('es-AR')}`;
+    if (subtotalRow) subtotalRow.style.display = 'flex';
+    if (subtotalPriceBox) subtotalPriceBox.textContent = `$${subtotal.toLocaleString('es-AR')}`;
+    if (descuentoRow) descuentoRow.style.display = 'flex';
+    if (descuentoPriceBox) descuentoPriceBox.textContent = `-$${montoDescuento.toLocaleString('es-AR')}`;
+    if (totalPriceBox) totalPriceBox.textContent = `$${totalFinal.toLocaleString('es-AR')}`;
   } else {
-    subtotalRow.style.display = 'none';
-    descuentoRow.style.display = 'none';
-    totalPriceBox.textContent = `$${subtotal.toLocaleString('es-AR')}`;
+    if (subtotalRow) subtotalRow.style.display = 'none';
+    if (descuentoRow) descuentoRow.style.display = 'none';
+    if (totalPriceBox) totalPriceBox.textContent = `$${subtotal.toLocaleString('es-AR')}`;
   }
 }
 
@@ -557,7 +572,7 @@ function finalizarCompraWhatsApp() {
 
   mensaje += '\n\n¿Me confirman stock y datos para coordinar el pago y envío?';
 
-  const urlWsp = `https://wa.me/5491100000000?text=${encodeURIComponent(mensaje)}`;
+  const urlWsp = `https://wa.me/5491135890259?text=${encodeURIComponent(mensaje)}`;
   window.open(urlWsp, '_blank');
 }
 
@@ -570,12 +585,11 @@ function cargarCarritoDesdeStorage() {
   if (guardado) {
     try {
       carrito = JSON.parse(guardado);
-      actualizarUIcarrito();
+      actualizarUICarrito();
     } catch(e) {}
   }
 }
 
-// Utilidad para extraer fotos
 function extraerListaFotos(imagen_url) {
   try {
     const parsed = JSON.parse(imagen_url);
