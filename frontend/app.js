@@ -295,13 +295,11 @@ async function verDetalle(id) {
   document.getElementById('detalle-fondo').textContent = prod.notas_fondo || 'No especificado';
   document.getElementById('detalle-descripcion').textContent = prod.descripcion || 'Sin descripción adicional.';
 
-  // Renderizar miniaturas en detalle
   const thumbContainer = document.getElementById('detalle-thumbnails');
   thumbContainer.innerHTML = listaFotosDetalleActuales.map((f, idx) => `
     <img src="${f}" class="detail-thumb ${idx === 0 ? 'active' : ''}" onclick="seleccionarMiniaturaDetalle(${idx})" alt="Miniatura">
   `).join('');
 
-  // Botón de compra o alerta stock
   const actionsBox = document.getElementById('detalle-actions-box');
   if (prod.estado_stock === 'Sin Stock') {
     actionsBox.innerHTML = `
@@ -348,6 +346,7 @@ async function cargarResenasProducto(id) {
   const badgeEstrellas = document.getElementById('detalle-estrellas-badge');
   try {
     const res = await fetch(`/api/productos/${id}/resenas`);
+    if (!res.ok) throw new Error('Error al obtener reseñas');
     const resenas = await res.json();
 
     let promedio = 5;
@@ -364,15 +363,16 @@ async function cargarResenasProducto(id) {
     }
 
     listaResenasBox.innerHTML = resenas.map(r => `
-      <div style="background: var(--bg-soft); padding: 1.2rem; border-radius: var(--radius-sm); border: 1px solid var(--c-border);">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem;">
-          <strong>${r.autor}</strong>
-          <span style="color: #f59e0b;">${'★'.repeat(r.estrellas)}${'☆'.repeat(5 - r.estrellas)}</span>
+      <div class="review-item">
+        <div class="review-header-row">
+          <span class="review-author">${r.autor}</span>
+          <span class="review-stars">${'★'.repeat(r.estrellas)}${'☆'.repeat(5 - r.estrellas)}</span>
         </div>
-        <p style="color: var(--text-muted); font-size: 0.9rem;">${r.comentario}</p>
+        <p class="review-comment">${r.comentario}</p>
       </div>
     `).join('');
   } catch (err) {
+    console.error(err);
     listaResenasBox.innerHTML = '<p style="color: var(--text-muted);">No se pudieron cargar las reseñas.</p>';
   }
 }
@@ -391,16 +391,19 @@ async function enviarResena(e) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ autor, estrellas, comentario })
     });
+    
+    const data = await res.json();
     if (res.ok) {
       alert('¡Gracias por tu reseña!');
       document.getElementById('resena-autor').value = '';
       document.getElementById('resena-comentario').value = '';
       cargarResenasProducto(productoActualId);
     } else {
-      alert('Error al enviar la reseña');
+      alert('Error: ' + (data.error || 'No se pudo enviar la reseña'));
     }
   } catch(err) {
-    alert('Error de conexión');
+    console.error(err);
+    alert('Error de conexión al enviar la reseña');
   }
 }
 
