@@ -562,51 +562,37 @@ chipsEstacion.forEach(b => {
 
 document.addEventListener('DOMContentLoaded', cargarCatalogo);
 
-// ================= MÚSICA AMBIENTE (ROBUSTA) =================
+// ================= PLAYLIST ZARA (YOUTUBE INCORPORADO) =================
 let reproduciendoMusica = false;
-let audioAmbiente = null;
 
 window.toggleMusicaAmbiente = function() {
+  const container = document.getElementById('youtube-audio-container');
   const label = document.getElementById('ambient-label');
   const btn = document.getElementById('ambient-toggle-btn');
   const slider = document.getElementById('volume-slider');
+  
+  if (!container) return;
 
-  if (!audioAmbiente) {
-    // Usamos una URL directa alternativa con cabeceras abiertas de streaming
-    audioAmbiente = new Audio('https://actions.google.com/sounds/v1/ambiences/coffee_shop.ogg');
-    audioAmbiente.loop = true;
-    
-    audioAmbiente.addEventListener('error', (e) => {
-      console.error("Error al cargar el audio:", e);
-      alert("No se pudo cargar la pista de audio. Verificá la conexión.");
-    });
-  }
-
-  if (slider) {
-    audioAmbiente.volume = parseFloat(slider.value);
-  }
+  const vol = slider ? slider.value : 15;
 
   if (reproduciendoMusica) {
-    audioAmbiente.pause();
+    container.innerHTML = ''; // Apagar / Pausar la música por completo
     reproduciendoMusica = false;
-    label.textContent = 'Música Ambiente';
+    label.textContent = 'Playlist Pausada';
     btn.style.backgroundColor = 'var(--c-red-subtle)';
     btn.style.color = 'var(--c-red)';
   } else {
-    audioAmbiente.play().then(() => {
-      reproduciendoMusica = true;
-      label.textContent = 'Reproduciendo ♫';
-      btn.style.backgroundColor = 'var(--c-red)';
-      btn.style.color = '#fff';
-    }).catch(err => {
-      console.log("Restricción del navegador:", err);
-      alert("Tocá de nuevo el botón para habilitar el sonido.");
-    });
+    // Inserta el video exacto con autoplay y bucle
+    container.innerHTML = `<iframe width="0" height="0" src="https://www.youtube.com/embed/D21I7L6HBbg?autoplay=1&loop=1&playlist=D21I7L6HBbg" title="Zara Playlist" frameborder="0" allow="autoplay"></iframe>`;
+    reproduciendoMusica = true;
+    label.textContent = 'Sonando ♫ (Zara Mix)';
+    btn.style.backgroundColor = 'var(--c-red)';
+    btn.style.color = '#fff';
   }
 };
 
 window.cambiarVolumenMusica = function(valor) {
-  if (audioAmbiente) {
-    audioAmbiente.volume = parseFloat(valor);
-  }
+  // Nota: Los reproductores embebidos de YouTube no permiten cambiar el volumen por código directamente desde la web, 
+  // pero podés regularlo perfectamente con los botones de volumen físicos de tu celular o PC.
+  console.log("Nivel de volumen visual:", valor + "%");
 };
