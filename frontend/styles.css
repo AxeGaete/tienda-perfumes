@@ -5,6 +5,7 @@
   --c-border: #EEEEEE;
   --c-coral: #FF4949;
   --c-red: #C10000;
+  --c-wsp: #25D366;
   --text-dark: #1A1A1E;
   --text-muted: #6C727F;
   --radius-lg: 24px;
@@ -37,7 +38,7 @@ body {
 }
 
 /* =========================================================
-   BARRA DE NAVEGACIÓN FLOTANTE & REDONDEADA
+   BARRA DE NAVEGACIÓN FLOTANTE & LUPA EN HEADER
    ========================================================= */
 .navbar-wrapper {
   position: fixed;
@@ -52,8 +53,8 @@ body {
 
 .navbar {
   width: 100%;
-  max-width: 1100px;
-  background: rgba(255, 255, 255, 0.9);
+  max-width: 1120px;
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(14px);
   border: 1px solid var(--c-border);
   border-radius: 40px;
@@ -112,6 +113,32 @@ body {
   color: #fff !important;
 }
 
+.nav-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.nav-search-btn {
+  background: var(--bg-soft);
+  border: 1px solid var(--c-border);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.nav-search-btn:hover {
+  background: var(--text-dark);
+  color: #fff;
+  border-color: var(--text-dark);
+}
+
 /* =========================================================
    BADGES Y BOTONES REDONDEADOS
    ========================================================= */
@@ -150,6 +177,8 @@ body {
   font-weight: 700;
   transition: var(--transition);
   box-shadow: 0 6px 20px rgba(193, 0, 0, 0.22);
+  border: none;
+  cursor: pointer;
 }
 
 .btn-primary:hover {
@@ -171,6 +200,7 @@ body {
   font-size: 0.88rem;
   font-weight: 600;
   transition: var(--transition);
+  cursor: pointer;
 }
 
 .btn-secondary:hover {
@@ -180,7 +210,7 @@ body {
 }
 
 /* =========================================================
-   HERO MODERNO CON CARRUSEL DE FOTOS
+   HERO MODERNO CON CARRUSEL DE FOTOS AJUSTADO
    ========================================================= */
 .hero-section {
   padding-top: 8.5rem;
@@ -253,14 +283,15 @@ body {
   background-color: var(--c-border);
 }
 
-/* Carrusel en Hero */
 .carousel-container {
   position: relative;
   width: 100%;
-  height: 380px;
+  height: 440px;
   border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  background-color: #FAFAFA;
+  border: 1px solid var(--c-border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
 }
 
 .carousel-track {
@@ -276,7 +307,12 @@ body {
   width: 100%;
   height: 100%;
   opacity: 0;
-  transition: opacity 0.5s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.2rem 2rem 3.5rem;
+  box-sizing: border-box;
+  transition: opacity 0.45s ease-in-out;
 }
 
 .carousel-slide.active {
@@ -284,22 +320,37 @@ body {
 }
 
 .carousel-slide img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.08));
+  transition: transform 0.3s ease;
+}
+
+.carousel-slide:hover img {
+  transform: scale(1.03);
 }
 
 .slide-caption {
   position: absolute;
-  bottom: 1.2rem;
-  left: 1.2rem;
-  background: rgba(255, 255, 255, 0.88);
+  bottom: 1rem;
+  left: 1rem;
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(8px);
-  padding: 0.5rem 1.1rem;
+  padding: 0.45rem 1rem;
   border-radius: 20px;
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--text-dark);
+  border: 1px solid var(--c-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  max-width: calc(100% - 2rem);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .carousel-btn {
@@ -341,7 +392,7 @@ body {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(0, 0, 0, 0.2);
   cursor: pointer;
   transition: var(--transition);
 }
@@ -406,10 +457,10 @@ body {
   transition: var(--transition);
 }
 
-#buscador:focus {
+#buscador:focus, #buscador.highlight {
   border-color: var(--c-coral);
   background-color: #fff;
-  box-shadow: 0 0 0 3px rgba(255, 73, 73, 0.12);
+  box-shadow: 0 0 0 3px rgba(255, 73, 73, 0.18);
 }
 
 .sort-select {
@@ -422,6 +473,90 @@ body {
   font-weight: 600;
   outline: none;
   cursor: pointer;
+}
+
+.btn-toggle-filters {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.4rem;
+  border-radius: 30px;
+  border: 1px solid var(--c-border);
+  background-color: var(--bg-soft);
+  color: var(--text-dark);
+  font-family: var(--font-base);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.btn-toggle-filters:hover,
+.btn-toggle-filters.active {
+  background-color: var(--c-red);
+  color: #fff;
+  border-color: var(--c-red);
+}
+
+.toggle-icon {
+  font-size: 0.95rem;
+}
+
+.toggle-arrow {
+  font-size: 0.7rem;
+  transition: transform 0.2s ease;
+}
+
+.filters-collapsible {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--c-border);
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.filters-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.filters-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  color: var(--text-dark);
+}
+
+.btn-reset-filters {
+  background: transparent;
+  border: none;
+  color: var(--c-red);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  transition: var(--transition);
+}
+
+.btn-reset-filters:hover {
+  background-color: #FFEAEA;
 }
 
 .price-slider-box {
@@ -451,11 +586,24 @@ body {
   cursor: pointer;
 }
 
-.category-chips {
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-group-label {
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+}
+
+.filter-chips-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
-  justify-content: center;
+  gap: 0.45rem;
 }
 
 .chip {
@@ -478,7 +626,7 @@ body {
 }
 
 /* =========================================================
-   GRILLA DE PERFUMES CON CURVAS MODERNAS
+   GRILLA DE PERFUMES
    ========================================================= */
 .products-grid {
   display: grid;
@@ -575,6 +723,13 @@ body {
   margin-bottom: 1.1rem;
 }
 
+.card-actions-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.6rem;
+  margin-top: auto;
+}
+
 .btn-ver-detalle {
   display: block;
   text-align: center;
@@ -595,8 +750,24 @@ body {
   border-color: var(--text-dark);
 }
 
+.btn-card-add-cart {
+  background-color: var(--c-red);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-card-add-cart:hover {
+  background-color: var(--c-coral);
+  transform: scale(1.05);
+}
+
 /* =========================================================
-   SECCIÓN DETALLE & CARRUSEL DE PRODUCTO
+   SECCIÓN DETALLE
    ========================================================= */
 .detail-section {
   max-width: 1200px;
@@ -784,7 +955,71 @@ body {
 }
 
 /* =========================================================
-   SECCIÓN NOSOTROS & CONTACTO
+   SECCIÓN MÉTODOS DE PAGO
+   ========================================================= */
+.payments-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+.payments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.payment-card {
+  background: var(--bg-main);
+  border: 1px solid var(--c-border);
+  padding: 2.5rem 2rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-subtle);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.payment-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--c-coral);
+}
+
+.payment-icon {
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
+}
+
+.payment-card h3 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: 0.6rem;
+  color: var(--text-dark);
+}
+
+.payment-card p {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  margin-bottom: 1.2rem;
+  flex-grow: 1;
+}
+
+.payment-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  background-color: var(--bg-soft);
+  color: var(--c-red);
+  padding: 0.25rem 0.8rem;
+  border-radius: 20px;
+  border: 1px solid #FFE4E4;
+}
+
+/* =========================================================
+   SECCIÓN NOSOTROS
    ========================================================= */
 .about-section {
   max-width: 1200px;
@@ -828,174 +1063,94 @@ body {
   font-size: 0.92rem;
 }
 
-.contact-section {
+/* =========================================================
+   FOOTER COMPLETO DE CONTACTO
+   ========================================================= */
+.footer-master {
+  background-color: #FFFFFF;
+  border-top: 1px solid var(--c-border);
+  padding: 4.5rem 1.5rem 2rem;
+}
+
+.footer-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 4rem 1.5rem 6rem;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1.5fr;
+  gap: 3rem;
+  margin-bottom: 3.5rem;
 }
 
-.contact-card {
-  background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F5 100%);
-  border: 1px solid #FFE4E4;
-  padding: 4rem 2.5rem;
-  border-radius: var(--radius-lg);
-  text-align: center;
-  box-shadow: var(--shadow-subtle);
-}
-
-.contact-card h2 {
-  font-size: 2.2rem;
+.footer-brand {
+  font-size: 1.15rem;
   font-weight: 800;
-  letter-spacing: -0.5px;
+  letter-spacing: 1.5px;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   margin-bottom: 0.8rem;
 }
 
-.contact-card p {
+.footer-desc {
   color: var(--text-muted);
-  font-size: 1.05rem;
-  max-width: 550px;
-  margin: 0 auto 2rem;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  max-width: 320px;
 }
 
-.contact-methods {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-}
-
-/* Footer */
-.footer {
-  text-align: center;
-  padding: 3rem 1.5rem;
-  border-top: 1px solid var(--c-border);
-  background-color: var(--bg-main);
-  color: var(--text-muted);
-  font-size: 0.85rem;
-}
-
-/* =========================================================
-   RESPONSIVE DESIGN
-   ========================================================= */
-@media (max-width: 900px) {
-  .hero-grid { grid-template-columns: 1fr; padding: 2rem; }
-  .hero-text-side h1 { font-size: 2.3rem; }
-  .detail-card { grid-template-columns: 1fr; padding: 2rem; }
-  .search-sort-bar { flex-direction: column; }
-  .price-slider-box { flex-direction: column; align-items: flex-start; }
-  .hero-buttons { flex-direction: column; }
-  .contact-methods { flex-direction: column; }
-  .nav-links { display: none; }
-}
-
-/* Filtros Específicos & Avanzados */
-.filters-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 0.8rem;
-  border-bottom: 1px solid var(--c-border);
-}
-
-.filters-title {
+.footer-col h4 {
   font-size: 0.95rem;
-  font-weight: 800;
-  letter-spacing: -0.2px;
-  color: var(--text-dark);
-}
-
-.btn-reset-filters {
-  background: transparent;
-  border: none;
-  color: var(--c-red);
-  font-size: 0.8rem;
-  font-weight: 700;
-  cursor: pointer;
-  padding: 0.3rem 0.6rem;
-  border-radius: 4px;
-  transition: var(--transition);
-}
-
-.btn-reset-filters:hover {
-  background-color: #FFEAEA;
-}
-
-.filter-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.filter-group-label {
-  font-size: 0.74rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.8px;
+  margin-bottom: 1.2rem;
+  color: var(--text-dark);
+}
+
+.footer-links, .footer-contact-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.footer-links a, .footer-contact-list a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.footer-links a:hover, .footer-contact-list a:hover {
+  color: var(--c-red);
+}
+
+.footer-contact-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
 }
 
-.filter-chips-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
+.contact-icon {
+  font-size: 1rem;
 }
 
-/* Botón de Alternar Filtros */
-.btn-toggle-filters {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.85rem 1.4rem;
-  border-radius: 30px;
-  border: 1px solid var(--c-border);
-  background-color: var(--bg-soft);
-  color: var(--text-dark);
-  font-family: var(--font-base);
-  font-size: 0.85rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: var(--transition);
-  white-space: nowrap;
-}
-
-.btn-toggle-filters:hover,
-.btn-toggle-filters.active {
-  background-color: var(--c-red);
-  color: #fff;
-  border-color: var(--c-red);
-}
-
-.toggle-icon {
-  font-size: 0.95rem;
-}
-
-.toggle-arrow {
-  font-size: 0.7rem;
-  transition: transform 0.2s ease;
-}
-
-/* Panel Colapsable */
-.filters-collapsible {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-  padding-top: 1.2rem;
+.footer-bottom {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 2rem;
   border-top: 1px solid var(--c-border);
-  animation: fadeIn 0.25s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
 }
 
 /* =========================================================
-   CARRITO DE COMPRAS LATERAL (DRAWER) & BADGE
+   CARRITO DE COMPRAS LATERAL (DRAWER)
    ========================================================= */
 .cart-trigger-btn {
   position: relative;
@@ -1039,7 +1194,6 @@ body {
   border: 2px solid #fff;
 }
 
-/* Overlay oscuro de fondo */
 .cart-overlay {
   position: fixed;
   top: 0;
@@ -1059,7 +1213,6 @@ body {
   pointer-events: auto;
 }
 
-/* Panel lateral flotante */
 .cart-sidebar {
   position: fixed;
   top: 0;
@@ -1120,7 +1273,6 @@ body {
   background-color: #FFEAEA;
 }
 
-/* Lista de ítems en el carrito */
 .cart-items-container {
   flex: 1;
   overflow-y: auto;
@@ -1223,7 +1375,6 @@ body {
   opacity: 0.4;
 }
 
-/* Footer del Carrito */
 .cart-footer {
   padding: 1.5rem 1.8rem;
   border-top: 1px solid var(--c-border);
@@ -1270,26 +1421,46 @@ body {
   color: var(--c-red);
 }
 
-/* Boton de Agregar rápido en tarjeta */
-.card-actions-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 0.6rem;
-  margin-top: 0.8rem;
+/* =========================================================
+   BOTÓN FLOTANTE DE WHATSAPP (ESTILO OFICIAL)
+   ========================================================= */
+.whatsapp-float-btn {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 60px;
+  height: 60px;
+  background-color: var(--c-wsp);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 18px rgba(37, 211, 102, 0.45);
+  z-index: 999;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+  text-decoration: none;
 }
 
-.btn-card-add-cart {
-  background-color: var(--c-red);
-  color: #fff;
-  border: none;
-  border-radius: 20px;
-  padding: 0.6rem 0.9rem;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: var(--transition);
+.whatsapp-float-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.6);
 }
 
-.btn-card-add-cart:hover {
-  background-color: var(--c-coral);
-  transform: scale(1.05);
+.whatsapp-float-svg {
+  width: 34px;
+  height: 34px;
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN
+   ========================================================= */
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; padding: 2rem; }
+  .hero-text-side h1 { font-size: 2.3rem; }
+  .detail-card { grid-template-columns: 1fr; padding: 2rem; }
+  .search-sort-bar { flex-direction: column; }
+  .price-slider-box { flex-direction: column; align-items: flex-start; }
+  .hero-buttons { flex-direction: column; }
+  .nav-links { display: none; }
+  .footer-container { grid-template-columns: 1fr; gap: 2rem; }
 }

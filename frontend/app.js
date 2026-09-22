@@ -40,6 +40,22 @@ let fotosDetalleActuales = [];
 let indiceFotoDetalle = 0;
 const imagenFallback = 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=600&q=80';
 
+// ================= LUPA EN EL HEADER =================
+window.activarBuscadorHeader = function() {
+  cerrarDetalle();
+  const catalogo = document.getElementById('catalogo');
+  if (catalogo) {
+    catalogo.scrollIntoView({ behavior: 'smooth' });
+  }
+  if (inputBuscador) {
+    setTimeout(() => {
+      inputBuscador.focus();
+      inputBuscador.classList.add('highlight');
+      setTimeout(() => inputBuscador.classList.remove('highlight'), 1200);
+    }, 400);
+  }
+};
+
 // ================= CARRITO DE COMPRAS =================
 function guardarCarrito() {
   localStorage.setItem('parfum_carrito', JSON.stringify(carrito));
@@ -170,9 +186,9 @@ window.finalizarCompraWhatsApp = function() {
   mensaje += `━━━━━━━━━━━━━━━━━━━━━\n`;
   mensaje += `💰 *TOTAL A ABONAR: $${totalInversion.toLocaleString('es-AR')}*\n`;
   mensaje += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
-  mensaje += `¿Cómo coordinamos el pago y el envío? ¡Muchas gracias!`;
+  mensaje += `¿Cómo coordinamos el pago y la entrega en Ciudadela / envío? ¡Muchas gracias!`;
 
-  const numeroWhatsApp = '5491112345678'; // Reemplazá por tu número si lo deseás
+  const numeroWhatsApp = '5491135890259';
   const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
   window.open(url, '_blank');
 };
@@ -217,10 +233,8 @@ function armarCarruselHero(productos) {
   track.innerHTML = '';
   dotsContainer.innerHTML = '';
 
-  // 1. Filtrar perfumes que tengan la casilla 'destacado_hero' marcada
   let perfumesParaHero = productos.filter(p => p.destacado_hero === 1 || p.destacado_hero === true || p.destacado_hero === '1');
 
-  // 2. Si todavía no marcaste ninguno, usar los últimos subidos como fallback
   if (perfumesParaHero.length === 0) {
     perfumesParaHero = productos.slice(0, 5);
   }
@@ -238,7 +252,7 @@ function armarCarruselHero(productos) {
 
   perfumesParaHero.forEach((prod, index) => {
     const fotos = obtenerFotos(prod.imagen_url);
-    const fotoPortada = fotos[0]; // La foto elegida como principal en admin
+    const fotoPortada = fotos[0];
 
     const slide = document.createElement('div');
     slide.className = `carousel-slide ${index === 0 ? 'active' : ''}`;
@@ -261,6 +275,7 @@ function armarCarruselHero(productos) {
     intervaloHero = setInterval(() => moverCarruselHero(1), 4000);
   }
 }
+
 window.moverCarruselHero = function(dir) {
   if (totalSlidesHero <= 1) return;
   slideHeroActual = (slideHeroActual + dir + totalSlidesHero) % totalSlidesHero;
