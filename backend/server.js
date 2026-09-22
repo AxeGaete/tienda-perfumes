@@ -119,7 +119,6 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
       return res.status(400).json({ error: 'Todos los campos básicos y al menos una imagen son obligatorios' });
     }
 
-    // Se guardan respetando exactamente el orden en que el administrador las organizó
     const rutasImagenes = archivos.map(file => `/uploads/${file.filename}`);
     const imagen_url = JSON.stringify(rutasImagenes);
     const esHero = (destacado_hero === '1' || destacado_hero === true || destacado_hero === 'true') ? 1 : 0;
@@ -195,7 +194,6 @@ app.put('/api/productos/:id', verificarAdmin, (req, res) => {
     const archivosNuevos = (req.files && (req.files['imagenes'] || req.files['imagen'])) || [];
     const nuevasUrls = archivosNuevos.map(file => `/uploads/${file.filename}`);
 
-    // Combinar las fotos existentes reordenadas con las nuevas fotos agregadas
     const imagen_url = JSON.stringify([...fotosAntiguasOrdenadas, ...nuevasUrls]);
     const esHero = (destacado_hero === '1' || destacado_hero === true || destacado_hero === 'true') ? 1 : 0;
     const stockVal = estado_stock || 'En Stock';
@@ -227,6 +225,39 @@ app.delete('/api/productos/:id', verificarAdmin, (req, res) => {
     if (err) return res.status(500).json({ error: 'Error al eliminar' });
     if (result.affectedRows === 0) return res.status(404).json({ error: 'No encontrado' });
     res.json({ mensaje: 'Perfume eliminado con éxito' });
+  });
+});
+
+// ================= ENDPOINTS DE RESEÑAS =================
+
+// GET reseñas de un producto
+app.get('/api/productos/:id/resenas', (req, res) => {
+  const { id } = req.params;
+  db.query('SELECT * FROM resenas WHERE producto_id = ? ORDER BY id DESC', [id], (err, results) => {
+    if (err) {
+      console.error('Error al obtener reseñas:', err);
+      return res.status(500).json({ error: 'Error al cargar reseñas' });
+    }
+    res.json(results);
+  });
+});
+
+// POST crear reseña para un producto
+app.post('/api/productos/:id/resenas', (req, res) => {
+  const { id } = req.params;
+  const { autor, estrellas, comentario } = req.body;
+
+  if (!autor || !estrellas || !comentario) {
+    return res.status(400).json({ error: 'Todos los campos son obligatorios para dejar una reseña' });
+  }
+
+  const sql = 'INSERT INTO resenas (producto_id, autor, estrellas, comentario) VALUES (?, ?, ?, ?)';
+  db.query(sql, [id, autor, parseInt(estrellas), comentario], (err, result) => {
+    if (err) {
+      console.error('Error al guardar reseña:', err);
+      return res.status(500).json({ error: 'Error al guardar la reseña' });
+    }
+    res.status(201).json({ mensaje: 'Reseña agregada con éxito', id: result.insertId });
   });
 });
 
