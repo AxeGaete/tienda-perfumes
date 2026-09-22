@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Tienda de Perfumes</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f6f8; color: #333; }
+    
+    header {
+      background: #111;
+      color: #fff;
+      padding: 1.2rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header h1 { font-size: 1.5rem; letter-spacing: 1px; }
+
+    .btn-ver-carrito {
+      background: #2b7a78;
+      color: #fff;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    main { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+
+    /* Barra de búsqueda y filtros */
+    .filtros-seccion {
+      background: #fff;
+      padding: 1.2rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .buscador-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .buscador-input:focus { border-color: #2b7a78; }
+
+    .familias-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-filtro {
+      background: #eee;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: #444;
+    }
+    .btn-filtro:hover { background: #ddd; }
+    .btn-filtro.activo {
+      background: #2b7a78;
+      color: #fff;
+    }
+
+    /* Grilla de Catálogo */
+    .catalogo {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card:hover { 
+      transform: translateY(-4px); 
+      box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+    }
+
+    .card img { width: 100%; height: 220px; object-fit: cover; }
+    .card-body { padding: 1rem; display: flex; flex-direction: column; flex-grow: 1; }
+    .familia { font-size: 0.75rem; text-transform: uppercase; color: #888; margin-bottom: 0.3rem; }
+    .nombre { font-size: 1.15rem; margin-bottom: 0.5rem; color: #111; }
+    .descripcion { 
+      font-size: 0.85rem; 
+      color: #666; 
+      margin-bottom: 1rem; 
+      flex-grow: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .precio { font-size: 1.25rem; font-weight: 700; color: #2b7a78; margin-bottom: 1rem; }
+
+    .btn-comprar {
+      background-color: #111;
+      color: #fff;
+      border: none;
+      padding: 0.6rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background-color 0.2s ease;
+    }
+    .btn-comprar:hover { background-color: #333; }
+
+    .sin-resultados {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem;
+      color: #777;
+      font-size: 1.1rem;
+    }
+
+    /* Modal / Popup de Detalle */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      z-index: 150;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .modal-overlay.activo {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-contenedor {
+      background: #fff;
+      width: 100%;
+      max-width: 750px;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: row;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      animation: modalEntrada 0.25s ease-out;
+    }
+
+    @keyframes modalEntrada {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-img-col {
+      width: 45%;
+      background: #fafafa;
+    }
+    .modal-img-col img {
+      width: 100%;
+      height: 100%;
+      min-height: 380px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .modal-info-col {
+      width: 55%;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .modal-cerrar {
+      position: absolute;
+      top: 1rem;
+      right: 1.2rem;
+      background: transparent;
+      border: none;
+      font-size: 1.8rem;
+      color: #888;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .modal-cerrar:hover { color: #111; }
+
+    .modal-familia { font-size: 0.8rem; text-transform: uppercase; color: #888; letter-spacing: 0.5px; }
+    .modal-nombre { font-size: 1.6rem; color: #111; margin: 0.3rem 0 0.8rem 0; }
+    .modal-precio { font-size: 1.5rem; font-weight: 700; color: #2b7a78; margin-bottom: 1.2rem; }
+    
+    .modal-seccion-titulo { font-size: 0.85rem; font-weight: 700; color: #444; margin-bottom: 0.3rem; text-transform: uppercase; }
+    .modal-descripcion { font-size: 0.95rem; color: #555; line-height: 1.5; margin-bottom: 1.2rem; }
+
+    /* Pirámide Olfativa */
+    .piramide-olfativa {
+      background: #fbfbfb;
+      border-left: 3px solid #2b7a78;
+      padding: 0.8rem 1rem;
+      border-radius: 0 4px 4px 0;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+    }
+    .piramide-olfativa span strong { color: #222; }
+
+    @media (max-width: 650px) {
+      .modal-contenedor { flex-direction: column; max-height: 90vh; overflow-y: auto; }
+      .modal-img-col { width: 100%; height: 220px; }
+      .modal-img-col img { min-height: 220px; }
+      .modal-info-col { width: 100%; padding: 1.5rem; }
+    }
+
+    /* Panel del Carrito */
+    .carrito-overlay {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 100%;
+      max-width: 380px;
+      height: 100vh;
+      background: #fff;
+      box-shadow: -4px 0 15px rgba(0,0,0,0.2);
+      transition: right 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      z-index: 120;
+    }
+    .carrito-overlay.activo { right: 0; }
+
+    .carrito-header {
+      padding: 1.2rem;
+      background: #111;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn-cerrar {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .carrito-items { flex-grow: 1; overflow-y: auto; padding: 1rem; }
+
+    .item-carrito {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 0.5rem;
+    }
+
+    .item-info h4 { font-size: 0.95rem; margin-bottom: 0.2rem; }
+    .item-info small { color: #666; }
+
+    .btn-eliminar {
+      background: #e63946;
+      color: #fff;
+      border: none;
+      padding: 0.3rem 0.6rem;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .carrito-footer { padding: 1.2rem; background: #fafafa; border-top: 1px solid #ddd; }
+    .total { display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold; margin-bottom: 1rem; }
+
+    .btn-checkout {
+      width: 100%;
+      padding: 0.8rem;
+      background: #25d366;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s ease;
+    }
+    .btn-checkout:hover { background-color: #1ebc59; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>FRAGANCIAS EXCLUSIVAS</h1>
+    <button class="btn-ver-carrito" onclick="alternarCarrito()">
+      Carrito (<span id="cuenta-carrito">0</span>)
+    </button>
+  </header>
+
+  <main>
+    <section class="filtros-seccion">
+      <input 
+        type="text" 
+        id="buscador-input" 
+        class="buscador-input" 
+        placeholder="Buscar perfume por nombre..."
+      >
+      <div class="familias-tags" id="contenedor-filtros">
+        <button class="btn-filtro activo" data-familia="todas">Todas</button>
+        <button class="btn-filtro" data-familia="Cítrico / Acuático">Cítrico / Acuático</button>
+        <button class="btn-filtro" data-familia="Oriental / Especiado">Oriental / Especiado</button>
+        <button class="btn-filtro" data-familia="Amaderado">Amaderado</button>
+        <button class="btn-filtro" data-familia="Floral">Floral</button>
+        <button class="btn-filtro" data-familia="Gourmand">Gourmand</button>
+      </div>
+    </section>
+
+    <section class="catalogo" id="contenedor-perfumes"></section>
+  </main>
+
+  <!-- Modal de Detalle de Perfume -->
+  <div class="modal-overlay" id="modal-detalle" onclick="cerrarModalAfuera(event)">
+    <div class="modal-contenedor">
+      <button class="modal-cerrar" onclick="cerrarModal()">&times;</button>
+      <div class="modal-img-col">
+        <img id="modal-img" src="" alt="Perfume">
+      </div>
+      <div class="modal-info-col">
+        <div>
+          <span class="modal-familia" id="modal-familia"></span>
+          <h2 class="modal-nombre" id="modal-nombre"></h2>
+          <div class="modal-precio" id="modal-precio"></div>
+          
+          <div class="modal-seccion-titulo">Descripción</div>
+          <p class="modal-descripcion" id="modal-descripcion"></p>
+
+          <div class="modal-seccion-titulo">Notas Olfativas</div>
+          <div class="piramide-olfativa" id="modal-piramide">
+            <span><strong>Salida:</strong> Cítricos frescos, Bergamota</span>
+            <span><strong>Corazón:</strong> Flores blancas, Especias suaves</span>
+            <span><strong>Fondo:</strong> Cedro, Ámbar y Almizcle</span>
+          </div>
+        </div>
+
+        <button class="btn-comprar" id="modal-btn-comprar" style="padding: 0.8rem;">Agregar al Carrito</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel lateral del Carrito -->
+  <aside class="carrito-overlay" id="panel-carrito">
+    <div class="carrito-header">
+      <h3>Tu Pedido</h3>
+      <button class="btn-cerrar" onclick="alternarCarrito()">&times;</button>
+    </div>
+    <div class="carrito-items" id="lista-carrito"></div>
+    <div class="carrito-footer">
+      <div class="total">
+        <span>Total:</span>
+        <span id="monto-total">$0</span>
+      </div>
+      <button class="btn-checkout" onclick="enviarPedidoWhatsApp()">Pedir por WhatsApp</button>
+    </div>
+  </aside>
+
+  <script>
+    let perfumesDisponibles = [];
+    let familiaSeleccionada = 'todas';
+    let terminoBusqueda = '';
+    let carrito = JSON.parse(localStorage.getItem('carrito_perfumes')) || [];
+
+    const contenedorPerfumes = document.getElementById('contenedor-perfumes');
+    const inputBuscador = document.getElementById('buscador-input');
+    const botonesFiltro = document.querySelectorAll('.btn-filtro');
+
+    // Elementos del Modal
+    const modalDetalle = document.getElementById('modal-detalle');
+    const modalImg = document.getElementById('modal-img');
+    const modalFamilia = document.getElementById('modal-familia');
+    const modalNombre = document.getElementById('modal-nombre');
+    const modalPrecio = document.getElementById('modal-precio');
+    const modalDescripcion = document.getElementById('modal-descripcion');
+    const modalBtnComprar = document.getElementById('modal-btn-comprar');
+
+    // 1. Obtener catálogo
+    async function obtenerCatalogo() {
+      try {
+        const respuesta = await fetch('http://localhost:3000/api/productos');
+        perfumesDisponibles = await respuesta.json();
+        renderizarCatalogo();
+        actualizarVistaCarrito();
+      } catch (error) {
+        console.error('Error al cargar perfumes:', error);
+      }
+    }
+
+    // 2. Renderizar catálogo
+    function renderizarCatalogo() {
+      contenedorPerfumes.innerHTML = '';
+
+      const productosFiltrados = perfumesDisponibles.filter(producto => {
+        const coincideNombre = producto.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase());
+        const coincideFamilia = (familiaSeleccionada === 'todas') || (producto.familia === familiaSeleccionada);
+        return coincideNombre && coincideFamilia;
+      });
+
+      if (productosFiltrados.length === 0) {
+        contenedorPerfumes.innerHTML = '<p class="sin-resultados">No se encontraron perfumes que coincidan con tu búsqueda.</p>';
+        return;
+      }
+
+      productosFiltrados.forEach(producto => {
+        const card = document.createElement('article');
+        card.className = 'card';
+        
+        // Clic en la tarjeta abre el modal
+        card.onclick = () => abrirModal(producto);
+
+        card.innerHTML = `
+          <img src="${producto.imagen_url}" alt="${producto.nombre}">
+          <div class="card-body">
+            <span class="familia">${producto.familia}</span>
+            <h2 class="nombre">${producto.nombre}</h2>
+            <p class="descripcion">${producto.descripcion}</p>
+            <p class="precio">$${Number(producto.precio).toLocaleString('es-AR')}</p>
+            <button class="btn-comprar" onclick="eventoAgregar(event, ${producto.id})">Agregar al Carrito</button>
+          </div>
+        `;
+        contenedorPerfumes.appendChild(card);
+      });
+    }
+
+    // Evita que al hacer clic en "Agregar al Carrito" se dispare la apertura del modal
+    function eventoAgregar(e, id) {
+      e.stopPropagation();
+      agregarAlCarrito(id);
+    }
+
+    // Modal: abrir con datos dinámicos
+    function abrirModal(producto) {
+      modalImg.src = producto.imagen_url;
+      modalFamilia.textContent = producto.familia;
+      modalNombre.textContent = producto.nombre;
+      modalPrecio.textContent = `$${Number(producto.precio).toLocaleString('es-AR')}`;
+      modalDescripcion.textContent = producto.descripcion || 'Sin descripción detallada disponible.';
+
+      modalBtnComprar.onclick = () => {
+        agregarAlCarrito(producto.id);
+        cerrarModal();
+        alternarCarrito(); // Abre el carrito para ver el producto recién sumado
+      };
+
+      modalDetalle.classList.add('activo');
+    }
+
+    function cerrarModal() {
+      modalDetalle.classList.remove('activo');
+    }
+
+    function cerrarModalAfuera(e) {
+      if (e.target === modalDetalle) {
+        cerrarModal();
+      }
+    }
+
+    // Cerrar modal con tecla Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') cerrarModal();
+    });
+
+    // Buscador
+    inputBuscador.addEventListener('input', (e) => {
+      terminoBusqueda = e.target.value.trim();
+      renderizarCatalogo();
+    });
+
+    // Filtros
+    botonesFiltro.forEach(boton => {
+      boton.addEventListener('click', () => {
+        botonesFiltro.forEach(b => b.classList.remove('activo'));
+        boton.classList.add('activo');
+        familiaSeleccionada = boton.getAttribute('data-familia');
+        renderizarCatalogo();
+      });
+    });
+
+    // Carrito
+    function agregarAlCarrito(id) {
+      const producto = perfumesDisponibles.find(p => p.id === id);
+      if (!producto) return;
+
+      const itemExistente = carrito.find(item => item.id === id);
+      if (itemExistente) {
+        itemExistente.cantidad += 1;
+      } else {
+        carrito.push({
+          id: producto.id,
+          nombre: producto.nombre,
+          precio: Number(producto.precio),
+          cantidad: 1
+        });
+      }
+
+      guardarYActualizar();
+    }
+
+    function eliminarDelCarrito(id) {
+      carrito = carrito.filter(item => item.id !== id);
+      guardarYActualizar();
+    }
+
+    function guardarYActualizar() {
+      localStorage.setItem('carrito_perfumes', JSON.stringify(carrito));
+      actualizarVistaCarrito();
+    }
+
+    function actualizarVistaCarrito() {
+      const lista = document.getElementById('lista-carrito');
+      const cuenta = document.getElementById('cuenta-carrito');
+      const totalSpan = document.getElementById('monto-total');
+
+      lista.innerHTML = '';
+      let sumaTotal = 0;
+      let totalUnidades = 0;
+
+      carrito.forEach(item => {
+        const subtotal = item.precio * item.cantidad;
+        sumaTotal += subtotal;
+        totalUnidades += item.cantidad;
+
+        lista.innerHTML += `
+          <div class="item-carrito">
+            <div class="item-info">
+              <h4>${item.nombre}</h4>
+              <small>${item.cantidad} x $${item.precio.toLocaleString('es-AR')}</small>
+            </div>
+            <button class="btn-eliminar" onclick="eliminarDelCarrito(${item.id})">Quitar</button>
+          </div>
+        `;
+      });
+
+      cuenta.textContent = totalUnidades;
+      totalSpan.textContent = `$${sumaTotal.toLocaleString('es-AR')}`;
+    }
+
+    function alternarCarrito() {
+      document.getElementById('panel-carrito').classList.toggle('activo');
+    }
+
+    function enviarPedidoWhatsApp() {
+      if (carrito.length === 0) {
+        alert('Tu carrito está vacío');
+        return;
+      }
+
+      const telefono = '5491135890259'; // Tu número de WhatsApp real
+
+      let mensaje = '¡Hola! Quiero hacer el siguiente pedido:\n\n';
+      let total = 0;
+
+      carrito.forEach(item => {
+        const subtotal = item.precio * item.cantidad;
+        total += subtotal;
+        mensaje += `• ${item.nombre} (x${item.cantidad}) - $${subtotal.toLocaleString('es-AR')}\n`;
+      });
+
+      mensaje += `\n*Total a pagar: $${total.toLocaleString('es-AR')}*`;
+      mensaje += '\n\n¿Cómo coordinamos el envío y el pago?';
+
+      const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+      window.open(url, '_blank');
+    }
+
+    obtenerCatalogo();
+  </script>
+</body>
+</html>
