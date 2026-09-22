@@ -38,17 +38,17 @@ function renderizarProductos(productos) {
     const mensajeWsp = encodeURIComponent(`¡Hola! Me interesa comprar el perfume ${perfume.nombre} ($${precioNumero.toLocaleString('es-AR')}). ¿Tienen disponibilidad?`);
 
     tarjeta.innerHTML = `
-      <img src="${perfume.imagen_url}" alt="${perfume.nombre}" onerror="this.src='https://via.placeholder.com/300x300?text=Fragancia'">
-      <div class="product-info">
-        <span class="product-family">${perfume.familia}</span>
-        <h3 class="product-title">${perfume.nombre}</h3>
-        <p class="product-desc">${perfume.descripcion || ''}</p>
-        <div class="product-price">$${precioNumero.toLocaleString('es-AR')}</div>
-        <a href="https://wa.me/5491112345678?text=${mensajeWsp}" target="_blank" class="btn-comprar">
-          Consultar / Pedir
-        </a>
-      </div>
-    `;
+          <img src="${perfume.imagen_url}" alt="${perfume.nombre}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=600&q=80';">
+          <div class="product-info">
+            <span class="product-family">${perfume.familia}</span>
+            <h3 class="product-title">${perfume.nombre}</h3>
+            <p class="product-desc">${perfume.descripcion || ''}</p>
+            <div class="product-price">$${precioNumero.toLocaleString('es-AR')}</div>
+            <a href="https://wa.me/5491112345678?text=${mensajeWsp}" target="_blank" class="btn-comprar">
+              Consultar / Pedir
+            </a>
+          </div>
+        `;
     gridProductos.appendChild(tarjeta);
   });
 }

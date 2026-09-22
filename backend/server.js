@@ -1,4 +1,4 @@
-﻿require('dotenv').config();
+require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
@@ -13,6 +13,7 @@ app.use(express.json());
 
 const ADMIN_SECRET_KEY = process.env.ADMIN_SECRET_KEY || 'perfumeAdmin2026';
 
+// Configuración de conexión MySQL (soporta DATABASE_URL o variables individuales)
 let dbConfig;
 if (process.env.DATABASE_URL) {
   dbConfig = {
@@ -38,14 +39,17 @@ if (process.env.DATABASE_URL) {
 
 const db = mysql.createPool(dbConfig);
 
-const uploadsDir = path.join(__dirname, 'uploads');
+// Carpeta uploads con ruta absoluta y creación garantizada
+const uploadsDir = path.resolve(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir);
+  fs.mkdirSync(uploadsDir, { recursive: true });
 }
 app.use('/uploads', express.static(uploadsDir));
 
-app.use(express.static(path.join(__dirname, '../frontend')));
+// Servir archivos estáticos del frontend
+app.use(express.static(path.resolve(__dirname, '../frontend')));
 
+// Configuración de almacenamiento Multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadsDir),
   filename: (req, file, cb) => {
@@ -63,14 +67,16 @@ function verificarAdmin(req, res, next) {
   next();
 }
 
+// Endpoint de login
 app.post('/api/admin/login', (req, res) => {
   const { clave } = req.body;
   if (clave === ADMIN_SECRET_KEY) return res.json({ ok: true });
   res.status(401).json({ error: 'Contraseña incorrecta' });
 });
 
+// GET productos
 app.get('/api/productos', (req, res) => {
-  db.query('SELECT * FROM productos', (err, results) => {
+  db.query('SELECT * FROM productos ORDER BY id DESC', (err, results) => {
     if (err) {
       console.error('Error al consultar:', err);
       return res.status(500).json({ error: err.message });
@@ -79,6 +85,7 @@ app.get('/api/productos', (req, res) => {
   });
 });
 
+// POST productos
 app.post('/api/productos', verificarAdmin, upload.single('imagen'), (req, res) => {
   const { nombre, familia, descripcion, precio } = req.body;
   if (!nombre || !familia || !precio || !req.file) {
@@ -97,6 +104,7 @@ app.post('/api/productos', verificarAdmin, upload.single('imagen'), (req, res) =
   });
 });
 
+// PUT precio
 app.put('/api/productos/:id', verificarAdmin, (req, res) => {
   const { id } = req.params;
   const { precio } = req.body;
@@ -109,6 +117,7 @@ app.put('/api/productos/:id', verificarAdmin, (req, res) => {
   });
 });
 
+// DELETE producto
 app.delete('/api/productos/:id', verificarAdmin, (req, res) => {
   const { id } = req.params;
   db.query('DELETE FROM productos WHERE id = ?', [id], (err, result) => {
