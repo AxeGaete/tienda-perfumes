@@ -562,18 +562,21 @@ chipsEstacion.forEach(b => {
 
 document.addEventListener('DOMContentLoaded', cargarCatalogo);
 
-// ================= MÚSICA AMBIENTE (COMPATIBLE CON CELULARES) =================
+// ================= MÚSICA AMBIENTE (CON CONTROL DE VOLUMEN REAL) =================
 let reproduciendoMusica = false;
 
 window.toggleMusicaAmbiente = function() {
   const audio = document.getElementById('mobile-background-audio');
   const label = document.getElementById('ambient-label');
   const btn = document.getElementById('ambient-toggle-btn');
+  const slider = document.getElementById('volume-slider');
   
   if (!audio) return;
 
-  // Ajustar volumen bien bajo (15%) para que funcione perfectamente como ambiente
-  audio.volume = 0.15;
+  // Tomar el volumen actual del slider (por defecto 0.15 / 15%)
+  if (slider) {
+    audio.volume = parseFloat(slider.value);
+  }
 
   if (reproduciendoMusica) {
     audio.pause();
@@ -588,8 +591,15 @@ window.toggleMusicaAmbiente = function() {
       btn.style.backgroundColor = 'var(--c-red)';
       btn.style.color = '#fff';
     }).catch(err => {
-      console.log("Restricción de audio en móvil:", err);
-      alert("Tocá de nuevo el botón para activar la música en tu celular.");
+      console.log("Restricción de audio:", err);
+      alert("Tocá de nuevo el botón para activar la música.");
     });
+  }
+};
+
+window.cambiarVolumenMusica = function(valor) {
+  const audio = document.getElementById('mobile-background-audio');
+  if (audio) {
+    audio.volume = parseFloat(valor);
   }
 };
