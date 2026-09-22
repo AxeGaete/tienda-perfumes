@@ -562,37 +562,48 @@ chipsEstacion.forEach(b => {
 
 document.addEventListener('DOMContentLoaded', cargarCatalogo);
 
-// ================= PLAYLIST ZARA (YOUTUBE INCORPORADO) =================
+// ================= MÚSICA AMBIENTE (ZARA MIX CON CONTROL DE VOLUMEN REAL) =================
 let reproduciendoMusica = false;
+let audioZara = null;
 
 window.toggleMusicaAmbiente = function() {
-  const container = document.getElementById('youtube-audio-container');
   const label = document.getElementById('ambient-label');
   const btn = document.getElementById('ambient-toggle-btn');
   const slider = document.getElementById('volume-slider');
   
-  if (!container) return;
+  if (!audioZara) {
+    // Usamos una pista de alta calidad con el mismo estilo minimalista deep house de Zara
+    audioZara = new Audio('https://cdn.pixabay.com/download/audio/2023/04/11/audio_4969bcbc7f.mp3?filename=deep-future-bass-143365.mp3');
+    audioZara.loop = true;
+  }
 
-  const vol = slider ? slider.value : 15;
+  // Establecer el volumen según la posición del slider (por defecto bajito)
+  if (slider) {
+    audioZara.volume = parseFloat(slider.value) / 100;
+  }
 
   if (reproduciendoMusica) {
-    container.innerHTML = ''; // Apagar / Pausar la música por completo
+    audioZara.pause();
     reproduciendoMusica = false;
-    label.textContent = 'Playlist Pausada';
+    label.textContent = 'Música Pausada';
     btn.style.backgroundColor = 'var(--c-red-subtle)';
     btn.style.color = 'var(--c-red)';
   } else {
-    // Inserta el video exacto con autoplay y bucle
-    container.innerHTML = `<iframe width="0" height="0" src="https://www.youtube.com/embed/D21I7L6HBbg?autoplay=1&loop=1&playlist=D21I7L6HBbg" title="Zara Playlist" frameborder="0" allow="autoplay"></iframe>`;
-    reproduciendoMusica = true;
-    label.textContent = 'Sonando ♫ (Zara Mix)';
-    btn.style.backgroundColor = 'var(--c-red)';
-    btn.style.color = '#fff';
+    audioZara.play().then(() => {
+      reproduciendoMusica = true;
+      label.textContent = 'Sonando ♫ (Zara Mix)';
+      btn.style.backgroundColor = 'var(--c-red)';
+      btn.style.color = '#fff';
+    }).catch(err => {
+      console.log("Bloqueo de audio:", err);
+      alert("Tocá de nuevo el botón para activar el sonido.");
+    });
   }
 };
 
 window.cambiarVolumenMusica = function(valor) {
-  // Nota: Los reproductores embebidos de YouTube no permiten cambiar el volumen por código directamente desde la web, 
-  // pero podés regularlo perfectamente con los botones de volumen físicos de tu celular o PC.
-  console.log("Nivel de volumen visual:", valor + "%");
+  if (audioZara) {
+    // Convierte el valor de 0 a 100 del slider al rango de volumen web (0.0 a 1.0)
+    audioZara.volume = parseFloat(valor) / 100;
+  }
 };
