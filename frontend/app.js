@@ -674,3 +674,33 @@ function extraerListaFotos(imagen_url) {
   } catch (e) {}
   return [imagen_url || 'https://via.placeholder.com/300?text=Perfume'];
 }
+
+// =========================================================
+// INTERSECTION OBSERVER PARA ANIMACIONES SCROLL-REVEAL
+// =========================================================
+document.addEventListener("DOMContentLoaded", () => {
+  const observerOptions = {
+    root: null,
+    rootMargin: "0px",
+    threshold: 0.15 // Se activa cuando el 15% de la sección es visible
+  };
+
+  const observer = new IntersectionObserver((entries, observerInstance) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("scroll-reveal");
+        // Opcional: dejar de observar una vez que ya apareció
+        observerInstance.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  // Seleccionamos todas las secciones con la clase scroll-reveal
+  const seccionesAnimadas = document.querySelectorAll(".scroll-reveal");
+  seccionesAnimadas.forEach(seccion => {
+    // Inicialmente ocultamos la sección para que la animación la revele
+    seccion.style.opacity = "0";
+    seccion.style.transform = "translateY(25px)";
+    observer.observe(seccion);
+  });
+});
