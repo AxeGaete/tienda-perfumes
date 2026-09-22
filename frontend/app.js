@@ -571,19 +571,16 @@ window.toggleMusicaAmbiente = function() {
   const btn = document.getElementById('ambient-toggle-btn');
   const slider = document.getElementById('volume-slider');
 
-  // Si el objeto de audio no existe, lo creamos con una URL de streaming directa y abierta
   if (!audioAmbiente) {
     audioAmbiente = new Audio('https://commondatastorage.googleapis.com/codesign-demos/ambient-lofi.mp3');
     audioAmbiente.loop = true;
     
-    // Capturar cualquier error de red o reproducción
     audioAmbiente.onerror = function() {
       console.error("Error al reproducir el audio ambiente.");
       alert("No se pudo cargar el audio. Comprobá tu conexión.");
     };
   }
 
-  // Asignar el volumen actual del slider (por defecto convertido de 0-100 a escala 0.0-1.0)
   if (slider) {
     audioAmbiente.volume = parseFloat(slider.value) / 100;
   }
@@ -613,7 +610,6 @@ window.toggleMusicaAmbiente = function() {
 
 window.cambiarVolumenMusica = function(valor) {
   if (audioAmbiente) {
-    // Modifica el volumen en tiempo real al mover la barra deslizable
     audioAmbiente.volume = parseFloat(valor) / 100;
   }
 };
