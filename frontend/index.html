@@ -25,15 +25,15 @@
   <!-- Barra de navegación flotante redondeada -->
   <header class="navbar-wrapper">
     <nav class="navbar">
-      <a href="#hero" class="brand-logo">
+      <a href="#hero" class="brand-logo" onclick="cerrarDetalle()">
         <span class="logo-dot"></span>
         PARFUM STUDIO
       </a>
       <div class="nav-links">
-        <a href="#hero">Inicio</a>
-        <a href="#catalogo">Colección</a>
-        <a href="#nosotros">Nosotros</a>
-        <a href="#contacto">Contacto</a>
+        <a href="#hero" onclick="cerrarDetalle()">Inicio</a>
+        <a href="#catalogo" onclick="cerrarDetalle()">Colección</a>
+        <a href="#nosotros" onclick="cerrarDetalle()">Nosotros</a>
+        <a href="#contacto" onclick="cerrarDetalle()">Contacto</a>
         <a href="admin.html" class="nav-admin-btn">Panel Admin</a>
       </div>
     </nav>
@@ -47,8 +47,8 @@
         <h1>Fragancias que dejan huella a tu paso</h1>
         <p>Inspiraciones de alta gama formuladas en concentración Eau de Parfum. Esencias puras, proyección duradera y máxima sofisticación.</p>
         <div class="hero-buttons">
-          <a href="#catalogo" class="btn-primary">Ver Colección</a>
-          <a href="#contacto" class="btn-secondary">Asesoramiento WhatsApp</a>
+          <a href="#catalogo" class="btn-primary" onclick="cerrarDetalle()">Ver Colección</a>
+          <a href="#contacto" class="btn-secondary" onclick="cerrarDetalle()">Asesoramiento WhatsApp</a>
         </div>
         <div class="hero-stats">
           <div class="stat-item">
@@ -88,24 +88,23 @@
     </div>
   </section>
 
-  <!-- 2. Catálogo con tarjetas estilizadas -->
+  <!-- 2. Catálogo con barra de filtros colapsable -->
   <section id="catalogo" class="catalog-section">
     <div class="section-title">
       <span class="badge-pill-small">Nuestra Galería</span>
       <h2>Colección de Fragancias</h2>
-      <p>Filtrá por afinidad olfativa, notas o rango de presupuesto</p>
+      <p>Buscá tu fragancia favorita o desplegá los filtros para una búsqueda a medida</p>
     </div>
 
-    <!-- Panel de Filtros Específicos -->
     <div class="filters-card">
-      <div class="filters-header">
-        <span class="filters-title">Filtros de Búsqueda Avanzada</span>
-        <button class="btn-reset-filters" id="btn-reset-filtros" onclick="resetearFiltros()">Limpiar Filtros</button>
-      </div>
-
-      <!-- Barra de texto y ordenamiento -->
+      <!-- Barra superior compacta visible siempre -->
       <div class="search-sort-bar">
-        <input type="text" id="buscador" placeholder="Buscar por perfume, nota (ej: vainilla, bergamota, cuero)..." />
+        <input type="text" id="buscador" placeholder="Buscar por nombre, nota (vainilla, bergamota, almizcle)..." />
+        <button type="button" class="btn-toggle-filters" id="btn-toggle-filtros" onclick="alternarFiltros()">
+          <span class="toggle-icon">⚙</span>
+          <span>Filtros</span>
+          <span class="toggle-arrow" id="toggle-arrow">▼</span>
+        </button>
         <select id="select-orden" class="sort-select">
           <option value="recientes">Más recientes</option>
           <option value="precio-menor">Menor precio</option>
@@ -113,45 +112,49 @@
         </select>
       </div>
 
-      <!-- Selector por Rango de Precio -->
-      <div class="price-slider-box">
-        <label for="slider-precio">Presupuesto máx: <span id="label-precio-max">$150.000</span></label>
-        <input type="range" id="slider-precio" min="0" max="150000" step="5000" value="150000">
-      </div>
-
-      <!-- Fila 1: Género -->
-      <div class="filter-group">
-        <span class="filter-group-label">Destino / Género:</span>
-        <div class="filter-chips-row" id="chips-genero">
-          <button class="chip active" data-genero="todos">Todos</button>
-          <button class="chip" data-genero="Unisex">Unisex</button>
-          <button class="chip" data-genero="Masculino">Masculino</button>
-          <button class="chip" data-genero="Femenino">Femenino</button>
+      <!-- Bloque colapsable de filtros detallados -->
+      <div id="filtros-desplegables" class="filters-collapsible" style="display: none;">
+        <div class="filters-header">
+          <span class="filters-title">Criterios de Búsqueda</span>
+          <button class="btn-reset-filters" id="btn-reset-filtros" onclick="resetearFiltros()">Limpiar Filtros</button>
         </div>
-      </div>
 
-      <!-- Fila 2: Familia Olfativa -->
-      <div class="filter-group">
-        <span class="filter-group-label">Familia Olfativa:</span>
-        <div class="filter-chips-row" id="chips-familia">
-          <button class="chip active" data-categoria="todos">Todas</button>
-          <button class="chip" data-categoria="Cítrico / Acuático">Cítricos & Acuáticos</button>
-          <button class="chip" data-categoria="Oriental / Especiado">Orientales & Especiados</button>
-          <button class="chip" data-categoria="Amaderado">Amaderados</button>
-          <button class="chip" data-categoria="Floral">Florales</button>
-          <button class="chip" data-categoria="Gourmand">Gourmand</button>
+        <div class="price-slider-box">
+          <label for="slider-precio">Presupuesto máx: <span id="label-precio-max">$150.000</span></label>
+          <input type="range" id="slider-precio" min="0" max="150000" step="5000" value="150000">
         </div>
-      </div>
 
-      <!-- Fila 3: Ocasión / Momento -->
-      <div class="filter-group">
-        <span class="filter-group-label">Momento / Estación:</span>
-        <div class="filter-chips-row" id="chips-estacion">
-          <button class="chip active" data-estacion="todos">Cualquiera</button>
-          <button class="chip" data-estacion="Verano / Día">Verano / Día</button>
-          <button class="chip" data-estacion="Invierno / Noche">Invierno / Noche</button>
-          <button class="chip" data-estacion="Eventos / Cita">Ocasiones Especiales</button>
-          <button class="chip" data-estacion="Todo el año">Versátiles</button>
+        <div class="filter-group">
+          <span class="filter-group-label">Destino / Género:</span>
+          <div class="filter-chips-row" id="chips-genero">
+            <button class="chip active" data-genero="todos">Todos</button>
+            <button class="chip" data-genero="Unisex">Unisex</button>
+            <button class="chip" data-genero="Masculino">Masculino</button>
+            <button class="chip" data-genero="Femenino">Femenino</button>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <span class="filter-group-label">Familia Olfativa:</span>
+          <div class="filter-chips-row" id="chips-familia">
+            <button class="chip active" data-categoria="todos">Todas</button>
+            <button class="chip" data-categoria="Cítrico / Acuático">Cítricos & Acuáticos</button>
+            <button class="chip" data-categoria="Oriental / Especiado">Orientales & Especiados</button>
+            <button class="chip" data-categoria="Amaderado">Amaderados</button>
+            <button class="chip" data-categoria="Floral">Florales</button>
+            <button class="chip" data-categoria="Gourmand">Gourmand</button>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <span class="filter-group-label">Momento / Ocasión:</span>
+          <div class="filter-chips-row" id="chips-estacion">
+            <button class="chip active" data-estacion="todos">Cualquiera</button>
+            <button class="chip" data-estacion="Verano / Día">Verano / Día</button>
+            <button class="chip" data-estacion="Invierno / Noche">Invierno / Noche</button>
+            <button class="chip" data-estacion="Eventos / Cita">Ocasiones Especiales</button>
+            <button class="chip" data-estacion="Todo el año">Versátiles</button>
+          </div>
         </div>
       </div>
     </div>
@@ -159,7 +162,7 @@
     <div id="grid-productos" class="products-grid"></div>
   </section>
 
-  <!-- 3. Sección Detalle del Perfume con Carrusel Interactivo -->
+  <!-- 3. Sección Detalle del Perfume (Se oculta al presionar Volver) -->
   <section id="detalle" class="detail-section" style="display: none;">
     <div class="detail-card">
       <div class="detail-gallery">
@@ -179,7 +182,6 @@
         <h1 id="detalle-nombre" class="detail-title"></h1>
         <p id="detalle-precio" class="detail-price"></p>
         
-        <!-- Pirámide Olfativa con bordes curvos -->
         <div class="notes-pyramid">
           <div class="note-row" id="row-salida">
             <span class="note-label">Salida</span>
@@ -201,9 +203,9 @@
           <a id="detalle-btn-wsp" href="#" target="_blank" class="btn-primary">
             Pedir por WhatsApp
           </a>
-          <a href="#catalogo" class="btn-secondary">
+          <button type="button" class="btn-secondary" onclick="cerrarDetalle()">
             ← Volver al Catálogo
-          </a>
+          </button>
         </div>
       </div>
     </div>

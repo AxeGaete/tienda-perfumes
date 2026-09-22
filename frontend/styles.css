@@ -938,3 +938,58 @@ body {
   flex-wrap: wrap;
   gap: 0.45rem;
 }
+
+/* Botón de Alternar Filtros */
+.btn-toggle-filters {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.4rem;
+  border-radius: 30px;
+  border: 1px solid var(--c-border);
+  background-color: var(--bg-soft);
+  color: var(--text-dark);
+  font-family: var(--font-base);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.btn-toggle-filters:hover,
+.btn-toggle-filters.active {
+  background-color: var(--c-red);
+  color: #fff;
+  border-color: var(--c-red);
+}
+
+.toggle-icon {
+  font-size: 0.95rem;
+}
+
+.toggle-arrow {
+  font-size: 0.7rem;
+  transition: transform 0.2s ease;
+}
+
+/* Panel Colapsable */
+.filters-collapsible {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--c-border);
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

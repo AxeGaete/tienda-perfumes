@@ -10,6 +10,10 @@ const selectOrden = document.getElementById('select-orden');
 const sliderPrecio = document.getElementById('slider-precio');
 const labelPrecioMax = document.getElementById('label-precio-max');
 
+const panelFiltrosDesplegables = document.getElementById('filtros-desplegables');
+const toggleArrow = document.getElementById('toggle-arrow');
+const btnToggleFiltros = document.getElementById('btn-toggle-filtros');
+
 const chipsFamilia = document.querySelectorAll('#chips-familia .chip');
 const chipsGenero = document.querySelectorAll('#chips-genero .chip');
 const chipsEstacion = document.querySelectorAll('#chips-estacion .chip');
@@ -30,6 +34,34 @@ const detalleBtnWsp = document.getElementById('detalle-btn-wsp');
 let fotosDetalleActuales = [];
 let indiceFotoDetalle = 0;
 const imagenFallback = 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=600&q=80';
+
+// ================= TOGGLE FILTROS =================
+window.alternarFiltros = function() {
+  if (!panelFiltrosDesplegables) return;
+  const estaOculto = panelFiltrosDesplegables.style.display === 'none' || panelFiltrosDesplegables.style.display === '';
+  
+  if (estaOculto) {
+    panelFiltrosDesplegables.style.display = 'flex';
+    toggleArrow.textContent = '▲';
+    btnToggleFiltros.classList.add('active');
+  } else {
+    panelFiltrosDesplegables.style.display = 'none';
+    toggleArrow.textContent = '▼';
+    btnToggleFiltros.classList.remove('active');
+  }
+};
+
+// ================= CERRAR DETALLE =================
+window.cerrarDetalle = function() {
+  if (seccionDetalle) {
+    seccionDetalle.style.display = 'none';
+  }
+  // Scroll suave hacia el catálogo
+  const catalogo = document.getElementById('catalogo');
+  if (catalogo) {
+    catalogo.scrollIntoView({ behavior: 'smooth' });
+  }
+};
 
 // ================= CARRUSEL HERO =================
 let slideHeroActual = 0;
@@ -176,6 +208,7 @@ window.mostrarDetalle = function(id) {
   detalleBtnWsp.href = `https://wa.me/5491112345678?text=${mensajeWsp}`;
 
   seccionDetalle.style.display = 'block';
+  seccionDetalle.scrollIntoView({ behavior: 'smooth' });
 };
 
 window.cambiarFotoDetalle = function(dir) {
@@ -192,14 +225,13 @@ function actualizarFotoPrincipalDetalle() {
   });
 }
 
-// ================= MOTOR DE FILTROS ESPECÍFICOS =================
+// ================= MOTOR DE FILTROS =================
 function aplicarFiltrosYOrden() {
   const query = inputBuscador ? inputBuscador.value.toLowerCase().trim() : '';
   const precioMax = sliderPrecio ? Number(sliderPrecio.value) : Infinity;
   const criterioOrden = selectOrden ? selectOrden.value : 'recientes';
 
   let filtrados = todosLosProductos.filter(p => {
-    // 1. Coincidencia por texto en nombre, familia, descripción o notas olfativas
     const enNombre = (p.nombre || '').toLowerCase().includes(query);
     const enDesc = (p.descripcion || '').toLowerCase().includes(query);
     const enSalida = (p.notas_salida || '').toLowerCase().includes(query);
@@ -207,22 +239,14 @@ function aplicarFiltrosYOrden() {
     const enFondo = (p.notas_fondo || '').toLowerCase().includes(query);
     const coincideTexto = !query || enNombre || enDesc || enSalida || enCorazon || enFondo;
 
-    // 2. Coincidencia por familia
     const coincideFamilia = filtroFamilia === 'todos' || p.familia === filtroFamilia;
-
-    // 3. Coincidencia por género
     const coincideGenero = filtroGenero === 'todos' || (p.genero || 'Unisex') === filtroGenero;
-
-    // 4. Coincidencia por ocasión / estación
     const coincideEstacion = filtroEstacion === 'todos' || (p.estacion || 'Todo el año') === filtroEstacion;
-
-    // 5. Coincidencia de precio
     const coincidePrecio = (Number(p.precio) || 0) <= precioMax;
 
     return coincideTexto && coincideFamilia && coincideGenero && coincideEstacion && coincidePrecio;
   });
 
-  // Ordenamiento
   if (criterioOrden === 'precio-menor') {
     filtrados.sort((a, b) => (Number(a.precio) || 0) - (Number(b.precio) || 0));
   } else if (criterioOrden === 'precio-mayor') {
