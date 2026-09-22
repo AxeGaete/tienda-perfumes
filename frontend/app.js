@@ -562,7 +562,7 @@ chipsEstacion.forEach(b => {
 
 document.addEventListener('DOMContentLoaded', cargarCatalogo);
 
-// ================= REPRODUCTOR DE MÚSICA AMBIENTE (ESTILO BOUTIQUE / PERFUMERÍA) =================
+// ================= REPRODUCTOR DE MÚSICA AMBIENTE MODERNO =================
 let reproduciendoMusica = false;
 let audioAmbiente = null;
 
@@ -572,17 +572,17 @@ window.toggleMusicaAmbiente = function() {
   const slider = document.getElementById('volume-slider');
 
   if (!audioAmbiente) {
-    // Pista de audio estilo lounge / deep house moderno optimizada para tiendas de autor y perfumería
-    audioAmbiente = new Audio('https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf756.mp3?filename=stylish-deep-luxury-chill-113491.mp3');
+    // Usamos una pista de audio MP3 estable y de alta calidad ideal para perfumerías y tiendas modernas
+    audioAmbiente = new Audio('https://commondatastorage.googleapis.com/codesign-demos/ambient-lofi.mp3');
     audioAmbiente.loop = true;
     
     audioAmbiente.onerror = function() {
-      console.error("Error al cargar la pista ambiental.");
-      alert("No se pudo cargar la música de fondo. Verificá tu conexión.");
+      console.error("Error al cargar el archivo de audio.");
+      alert("No se pudo cargar la música de fondo. Comprobá tu conexión.");
     };
   }
 
-  // Establecer el volumen según la barra deslizante (por defecto 15% para que sea sutil)
+  // Sincronizar el volumen actual con el slider
   if (slider) {
     audioAmbiente.volume = parseFloat(slider.value) / 100;
   } else {
@@ -606,15 +606,15 @@ window.toggleMusicaAmbiente = function() {
         btn.style.color = '#fff';
       }
     }).catch(err => {
-      console.log("Bloqueo de reproducción por política del navegador:", err);
-      alert("Tocá de nuevo el botón para activar la música ambiental.");
+      console.log("Bloqueo de reproducción automática:", err);
+      alert("Hacé clic de nuevo en el botón para activar la música.");
     });
   }
 };
 
 window.cambiarVolumenMusica = function(valor) {
   if (audioAmbiente) {
-    // Modifica el volumen en tiempo real al mover la barra de la interfaz
+    // Control de volumen en tiempo real y de forma precisa
     audioAmbiente.volume = parseFloat(valor) / 100;
   }
 };
