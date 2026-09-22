@@ -138,7 +138,11 @@ function actualizarVistaCarrito() {
   if (carrito.length === 0) {
     itemsContainer.innerHTML = `
       <div class="cart-empty-msg">
-        <span class="cart-empty-icon">🛍️</span>
+        <svg class="cart-empty-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
         <p>Tu carrito está vacío.</p>
         <button class="btn-primary" style="padding: 0.6rem 1.4rem; font-size: 0.8rem;" onclick="cerrarCarrito()">Explorar Catálogo</button>
       </div>`;
@@ -370,7 +374,11 @@ function renderizarProductos(productos) {
             Ver Detalles
           </a>
           <button class="btn-card-add-cart" title="Agregar al carrito" onclick="agregarAlCarrito(${perfume.id})">
-            🛒 +
+            <svg class="ui-icon-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="9" cy="21" r="1"></circle>
+              <circle cx="20" cy="21" r="1"></circle>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
           </button>
         </div>
       </div>
