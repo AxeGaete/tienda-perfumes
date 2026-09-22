@@ -1,6 +1,7 @@
 let todosLosProductos = [];
 let categoriaSeleccionada = 'todos';
 
+// Elementos de la tienda
 const gridProductos = document.getElementById('grid-productos');
 const inputBuscador = document.getElementById('buscador');
 const selectOrden = document.getElementById('select-orden');
@@ -21,8 +22,58 @@ const detalleCorazon = document.getElementById('detalle-corazon');
 const detalleFondo = document.getElementById('detalle-fondo');
 const detalleBtnWsp = document.getElementById('detalle-btn-wsp');
 
+let fotosDetalleActuales = [];
+let indiceFotoDetalle = 0;
+
 const imagenFallback = 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=600&q=80';
 
+// =========================================================
+// CARRUSEL DEL HERO
+// =========================================================
+let slideHeroActual = 0;
+const slidesHero = document.querySelectorAll('.carousel-slide');
+const dotsContainer = document.getElementById('hero-carousel-dots');
+
+function inicializarCarruselHero() {
+  if (!dotsContainer || slidesHero.length === 0) return;
+  dotsContainer.innerHTML = '';
+  slidesHero.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = `dot ${i === 0 ? 'active' : ''}`;
+    dot.onclick = () => irASlideHero(i);
+    dotsContainer.appendChild(dot);
+  });
+
+  // Rotación automática cada 4 segundos
+  setInterval(() => {
+    moverCarruselHero(1);
+  }, 4500);
+}
+
+window.moverCarruselHero = function(direccion) {
+  if (slidesHero.length === 0) return;
+  slideHeroActual = (slideHeroActual + direccion + slidesHero.length) % slidesHero.length;
+  actualizarCarruselHero();
+};
+
+function irASlideHero(indice) {
+  slideHeroActual = indice;
+  actualizarCarruselHero();
+}
+
+function actualizarCarruselHero() {
+  slidesHero.forEach((slide, i) => {
+    slide.classList.toggle('active', i === slideHeroActual);
+  });
+  const dots = document.querySelectorAll('.dot');
+  dots.forEach((dot, i) => {
+    dot.classList.toggle('active', i === slideHeroActual);
+  });
+}
+
+// =========================================================
+// CATÁLOGO Y DETALLES
+// =========================================================
 function obtenerFotos(imagen_url) {
   try {
     const parsed = JSON.parse(imagen_url);
@@ -37,10 +88,9 @@ async function cargarCatalogo() {
     if (!respuesta.ok) throw new Error('Error al consultar productos');
     todosLosProductos = await respuesta.json();
     
-    // Si hay productos con precio superior al default, ajustar el máximo del slider
-    if (todosLosProductos.length > 0) {
+    if (todosLosProductos.length > 0 && sliderPrecio) {
       const maximo = Math.max(...todosLosProductos.map(p => Number(p.precio) || 0));
-      if (maximo > 150000 && sliderPrecio) {
+      if (maximo > 150000) {
         sliderPrecio.max = maximo;
         sliderPrecio.value = maximo;
         labelPrecioMax.textContent = `$${maximo.toLocaleString('es-AR')}`;
@@ -61,7 +111,7 @@ function renderizarProductos(productos) {
   gridProductos.innerHTML = '';
 
   if (productos.length === 0) {
-    gridProductos.innerHTML = '<p style="color: #666; grid-column: 1/-1; text-align: center; padding: 2rem;">No se encontraron fragancias con esos filtros.</p>';
+    gridProductos.innerHTML = '<p style="color: #6C727F; grid-column: 1/-1; text-align: center; padding: 2rem;">No se encontraron fragancias con esos filtros.</p>';
     return;
   }
 
@@ -86,11 +136,9 @@ function renderizarProductos(productos) {
         </h3>
         <p class="product-desc">${perfume.descripcion || ''}</p>
         <div class="product-price">$${precioNumero.toLocaleString('es-AR')}</div>
-        <div class="card-buttons">
-          <a href="#detalle" class="btn-ver-detalle" onclick="mostrarDetalle(${perfume.id})">
-            Ver Detalles (${fotos.length} ${fotos.length > 1 ? 'fotos' : 'foto'})
-          </a>
-        </div>
+        <a href="#detalle" class="btn-ver-detalle" onclick="mostrarDetalle(${perfume.id})">
+          Ver Detalles (${fotos.length} ${fotos.length > 1 ? 'fotos' : 'foto'})
+        </a>
       </div>
     `;
     gridProductos.appendChild(tarjeta);
@@ -101,26 +149,22 @@ window.mostrarDetalle = function(id) {
   const perfume = todosLosProductos.find(p => p.id === id);
   if (!perfume) return;
 
-  const fotos = obtenerFotos(perfume.imagen_url);
+  fotosDetalleActuales = obtenerFotos(perfume.imagen_url);
+  indiceFotoDetalle = 0;
   const precioNumero = Number(perfume.precio) || 0;
 
-  detalleImgPrincipal.src = fotos[0];
-  detalleImgPrincipal.onerror = function() {
-    this.onerror = null;
-    this.src = imagenFallback;
-  };
+  actualizarFotoPrincipalDetalle();
 
   detalleThumbnails.innerHTML = '';
-  fotos.forEach((fotoUrl, index) => {
+  fotosDetalleActuales.forEach((fotoUrl, index) => {
     const thumb = document.createElement('img');
     thumb.src = fotoUrl;
     thumb.className = `detail-thumb ${index === 0 ? 'active' : ''}`;
     thumb.onerror = function() { this.src = imagenFallback; };
     
     thumb.addEventListener('click', () => {
-      detalleImgPrincipal.src = fotoUrl;
-      document.querySelectorAll('.detail-thumb').forEach(t => t.classList.remove('active'));
-      thumb.classList.add('active');
+      indiceFotoDetalle = index;
+      actualizarFotoPrincipalDetalle();
     });
 
     detalleThumbnails.appendChild(thumb);
@@ -131,7 +175,6 @@ window.mostrarDetalle = function(id) {
   detallePrecio.textContent = `$${precioNumero.toLocaleString('es-AR')}`;
   detalleDescripcion.textContent = perfume.descripcion || '';
 
-  // Notas estructuradas
   document.getElementById('row-salida').style.display = perfume.notas_salida ? 'flex' : 'none';
   detalleSalida.textContent = perfume.notas_salida || '';
 
@@ -147,6 +190,24 @@ window.mostrarDetalle = function(id) {
   seccionDetalle.style.display = 'block';
 };
 
+window.cambiarFotoDetalle = function(direccion) {
+  if (fotosDetalleActuales.length <= 1) return;
+  indiceFotoDetalle = (indiceFotoDetalle + direccion + fotosDetalleActuales.length) % fotosDetalleActuales.length;
+  actualizarFotoPrincipalDetalle();
+};
+
+function actualizarFotoPrincipalDetalle() {
+  detalleImgPrincipal.src = fotosDetalleActuales[indiceFotoDetalle];
+  detalleImgPrincipal.onerror = function() {
+    this.onerror = null;
+    this.src = imagenFallback;
+  };
+  const thumbs = document.querySelectorAll('.detail-thumb');
+  thumbs.forEach((t, i) => {
+    t.classList.toggle('active', i === indiceFotoDetalle);
+  });
+}
+
 function aplicarFiltrosYOrden() {
   const texto = inputBuscador ? inputBuscador.value.toLowerCase().trim() : '';
   const precioMax = sliderPrecio ? Number(sliderPrecio.value) : Infinity;
@@ -159,7 +220,6 @@ function aplicarFiltrosYOrden() {
     return coincideNombre && coincideCategoria && coincidePrecio;
   });
 
-  // Ordenamiento
   if (criterioOrden === 'precio-menor') {
     filtrados.sort((a, b) => (Number(a.precio) || 0) - (Number(b.precio) || 0));
   } else if (criterioOrden === 'precio-mayor') {
@@ -171,7 +231,6 @@ function aplicarFiltrosYOrden() {
   renderizarProductos(filtrados);
 }
 
-// Event Listeners
 if (inputBuscador) inputBuscador.addEventListener('input', aplicarFiltrosYOrden);
 if (selectOrden) selectOrden.addEventListener('change', aplicarFiltrosYOrden);
 
@@ -191,8 +250,7 @@ botonesCategorias.forEach(boton => {
   });
 });
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', cargarCatalogo);
-} else {
+document.addEventListener('DOMContentLoaded', () => {
+  inicializarCarruselHero();
   cargarCatalogo();
-}
+});

@@ -3,120 +3,148 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PARFUM STUDIO — Haute Parfumerie & Fragancias de Autor</title>
+  <title>PARFUM STUDIO — Fragancias Exclusivas</title>
 
   <!-- Metadatos SEO y OpenGraph -->
-  <meta name="description" content="Inspiraciones de alta gama con máxima fijación y materias primas importadas. Descubrí nuestro catálogo exclusivo y hacé tu pedido por WhatsApp.">
-  <meta property="og:title" content="PARFUM STUDIO — Haute Parfumerie">
-  <meta property="og:description" content="Fragancias de autor y colecciones exclusivas. Concentración Eau de Parfum garantizada.">
+  <meta name="description" content="Descubrí fragancias de autor, máxima fijación y notas olfativas exclusivas.">
+  <meta property="og:title" content="PARFUM STUDIO — Fragancias de Autor">
+  <meta property="og:description" content="Colecciones exclusivas con materias primas importadas.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://tienda-perfumes-an2e.onrender.com">
   <meta property="og:image" content="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1200&q=80">
-  <meta name="twitter:card" content="summary_large_image">
 
-  <!-- Google Fonts: Playfair Display + Plus Jakarta Sans -->
+  <!-- Fuente moderna redondeada -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- Barra de Navegación Boutique -->
-  <header class="navbar">
-    <div class="nav-container">
+  <!-- Barra de navegación flotante redondeada -->
+  <header class="navbar-wrapper">
+    <nav class="navbar">
       <a href="#hero" class="brand-logo">
-        <span class="logo-sub">HAUTE PARFUMERIE</span>
+        <span class="logo-dot"></span>
         PARFUM STUDIO
       </a>
-      <nav class="nav-links">
+      <div class="nav-links">
         <a href="#hero">Inicio</a>
         <a href="#catalogo">Colección</a>
-        <a href="#nosotros">Filosofía</a>
+        <a href="#nosotros">Nosotros</a>
         <a href="#contacto">Contacto</a>
-        <a href="admin.html" class="nav-admin-btn">Atelier Admin</a>
-      </nav>
-    </div>
+        <a href="admin.html" class="nav-admin-btn">Panel Admin</a>
+      </div>
+    </nav>
   </header>
 
-  <!-- 1. Hero Editorial -->
+  <!-- 1. Hero moderno con identidad y carrusel destacado -->
   <section id="hero" class="hero-section">
-    <div class="hero-content">
-      <span class="hero-tag">EDICIÓN LIMITADA & AUTOR</span>
-      <h1>La arquitectura invisible de tu esencia</h1>
-      <p>Creaciones olfativas formuladas en concentración Eau de Parfum con extractos puros y esencias florales de máxima permanencia.</p>
-      <div class="hero-actions">
-        <a href="#catalogo" class="btn-primary">Explorar Colección</a>
-        <a href="#nosotros" class="btn-outline-hero">Nuestra Filosofía</a>
+    <div class="hero-grid">
+      <div class="hero-text-side">
+        <span class="badge-pill">Colección 2026</span>
+        <h1>Fragancias que dejan huella a tu paso</h1>
+        <p>Inspiraciones de alta gama formuladas en concentración Eau de Parfum. Esencias puras, proyección duradera y máxima sofisticación.</p>
+        <div class="hero-buttons">
+          <a href="#catalogo" class="btn-primary">Ver Colección</a>
+          <a href="#contacto" class="btn-secondary">Asesoramiento WhatsApp</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-num">+24hs</span>
+            <span class="stat-desc">Fijación en piel</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-num">100%</span>
+            <span class="stat-desc">Esencias importadas</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carrusel de fotos en el Hero -->
+      <div class="hero-carousel-side">
+        <div class="carousel-container" id="hero-carousel">
+          <div class="carousel-track" id="hero-carousel-track">
+            <div class="carousel-slide active">
+              <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=800&q=80" alt="Perfume 1">
+              <div class="slide-caption">Línea Niche & Autor</div>
+            </div>
+            <div class="carousel-slide">
+              <img src="https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=800&q=80" alt="Perfume 2">
+              <div class="slide-caption">Esencias Orientales & Maderas</div>
+            </div>
+            <div class="carousel-slide">
+              <img src="https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=800&q=80" alt="Perfume 3">
+              <div class="slide-caption">Aromas Cítricos & Mediterráneos</div>
+            </div>
+          </div>
+          <button class="carousel-btn prev" onclick="moverCarruselHero(-1)">&#10094;</button>
+          <button class="carousel-btn next" onclick="moverCarruselHero(1)">&#10095;</button>
+          <div class="carousel-dots" id="hero-carousel-dots"></div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- 2. Catálogo / Colección -->
+  <!-- 2. Catálogo con tarjetas estilizadas -->
   <section id="catalogo" class="catalog-section">
     <div class="section-title">
-      <span class="section-subtitle">Catálogo Selecto</span>
-      <h2>Nuestras Creaciones</h2>
-      <div class="title-divider"></div>
-      <p>Filtrá por afinidad olfativa, intensidad o rango de inversión</p>
+      <span class="badge-pill-small">Nuestra Galería</span>
+      <h2>Colección de Fragancias</h2>
+      <p>Filtrá por afinidad olfativa, notas o rango de presupuesto</p>
     </div>
 
-    <div class="filters-container">
+    <div class="filters-card">
       <div class="search-sort-bar">
-        <input type="text" id="buscador" placeholder="Buscar por fragancia o acorde..." />
+        <input type="text" id="buscador" placeholder="Buscar por fragancia, acorde o nota..." />
         <select id="select-orden" class="sort-select">
-          <option value="recientes">Recientes</option>
-          <option value="precio-menor">Menor Inversión</option>
-          <option value="precio-mayor">Mayor Inversión</option>
+          <option value="recientes">Más recientes</option>
+          <option value="precio-menor">Menor precio</option>
+          <option value="precio-mayor">Mayor precio</option>
         </select>
       </div>
 
-      <div class="price-slider-wrapper">
-        <label for="slider-precio">Presupuesto hasta: <span id="label-precio-max">$150.000</span></label>
+      <div class="price-slider-box">
+        <label for="slider-precio">Presupuesto máximo: <span id="label-precio-max">$150.000</span></label>
         <input type="range" id="slider-precio" min="0" max="150000" step="5000" value="150000">
       </div>
 
       <div class="category-chips">
-        <button class="chip active" data-categoria="todos">Todas las Familias</button>
+        <button class="chip active" data-categoria="todos">Todos</button>
         <button class="chip" data-categoria="Cítrico / Acuático">Cítricos & Acuáticos</button>
         <button class="chip" data-categoria="Oriental / Especiado">Orientales & Especiados</button>
-        <button class="chip" data-categoria="Amaderado">Amaderados & Nobles</button>
-        <button class="chip" data-categoria="Floral">Florales & Absolutos</button>
-        <button class="chip" data-categoria="Gourmand">Gourmand & Dulces</button>
+        <button class="chip" data-categoria="Amaderado">Amaderados</button>
+        <button class="chip" data-categoria="Floral">Florales</button>
+        <button class="chip" data-categoria="Gourmand">Gourmand</button>
       </div>
     </div>
 
     <div id="grid-productos" class="products-grid"></div>
   </section>
 
-  <!-- 3. Sección Detalle / Ficha Olfativa -->
+  <!-- 3. Sección Detalle del Perfume con Carrusel Interactivo -->
   <section id="detalle" class="detail-section" style="display: none;">
-    <div class="section-title">
-      <span class="section-subtitle">Ficha Técnica</span>
-      <h2>Pirámide & Notas</h2>
-      <div class="title-divider"></div>
-      <p>Composición molecular y evolución de la fragancia en piel</p>
-    </div>
-
-    <div class="detail-container">
+    <div class="detail-card">
       <div class="detail-gallery">
         <div class="detail-main-image">
+          <button class="detail-nav-btn prev" onclick="cambiarFotoDetalle(-1)">&#10094;</button>
           <img id="detalle-img-principal" src="" alt="Perfume seleccionado">
+          <button class="detail-nav-btn next" onclick="cambiarFotoDetalle(1)">&#10095;</button>
         </div>
         <div id="detalle-thumbnails" class="detail-thumbnails"></div>
       </div>
 
       <div class="detail-info-box">
-        <div class="detail-badges">
+        <div class="detail-tags">
           <span id="detalle-familia" class="detail-family"></span>
-          <span class="concentration-badge">Eau de Parfum</span>
+          <span class="badge-tag">Eau de Parfum</span>
         </div>
         <h1 id="detalle-nombre" class="detail-title"></h1>
         <p id="detalle-precio" class="detail-price"></p>
-        <div class="detail-divider"></div>
         
-        <!-- Pirámide Olfativa -->
+        <!-- Pirámide Olfativa con bordes curvos -->
         <div class="notes-pyramid">
           <div class="note-row" id="row-salida">
             <span class="note-label">Salida</span>
@@ -136,71 +164,61 @@
         
         <div class="detail-actions">
           <a id="detalle-btn-wsp" href="#" target="_blank" class="btn-primary">
-            Adquirir por WhatsApp
+            Pedir por WhatsApp
           </a>
           <a href="#catalogo" class="btn-secondary">
-            ← Volver a la Colección
+            ← Volver al Catálogo
           </a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 4. Filosofía / Propuesta de Valor -->
+  <!-- 4. Propuesta de Valor -->
   <section id="nosotros" class="about-section">
     <div class="section-title">
-      <span class="section-subtitle">Excelencia Artesanal</span>
-      <h2>El Manifiesto</h2>
-      <div class="title-divider"></div>
-      <p>El estándar que define la longevidad y proyección de nuestras fragancias</p>
+      <span class="badge-pill-small">Compromiso</span>
+      <h2>¿Por qué elegirnos?</h2>
+      <p>Cuidamos cada aspecto para una experiencia de autor inigualable</p>
     </div>
     <div class="features-grid">
       <div class="feature-card">
-        <div class="feature-number">01</div>
-        <h3>Maceración Prolongada</h3>
-        <p>Cada batch reposa en frío durante semanas para armonizar los aceites aromáticos y alcanzar su máxima profundidad.</p>
+        <div class="feature-icon">✨</div>
+        <h3>Maceración Artesanal</h3>
+        <p>Proceso de reposo controlado que equilibra cada nota olfativa para asegurar máxima fijación en piel.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-number">02</div>
-        <h3>Fijación Superior</h3>
-        <p>Concentraciones premium con base fijadora que aseguran un secado armonioso y estela persistente durante todo el día.</p>
+        <div class="feature-icon">📦</div>
+        <h3>Envíos Cuidados</h3>
+        <p>Packaging premium protegido para que tus fragancias lleguen intactas a cualquier destino.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-number">03</div>
-        <h3>Curaduría a Medida</h3>
-        <p>Asesoramiento personalizado sin intermediarios para ayudarte a encontrar la firma aromática que mejor te represente.</p>
+        <div class="feature-icon">💬</div>
+        <h3>Atención Personalizada</h3>
+        <p>Te ayudamos a elegir la combinación y acordes ideales para tu estilo o para hacer un regalo especial.</p>
       </div>
     </div>
   </section>
 
   <!-- 5. Contacto -->
   <section id="contacto" class="contact-section">
-    <div class="section-title">
-      <span class="section-subtitle">Canal Directo</span>
-      <h2>Atelier & Consultas</h2>
-      <div class="title-divider"></div>
-    </div>
-    <div class="contact-container">
-      <div class="contact-card">
-        <h3>¿Buscás una recomendación olfativa?</h3>
-        <p>Escribinos directamente para coordinar entregas express, consultas sobre acordes o pedidos personalizados.</p>
-        <div class="contact-methods">
-          <a href="https://wa.me/5491112345678?text=Hola!%20Quería%20hacer%20una%20consulta%20por%20los%20perfumes" target="_blank" class="contact-btn whatsapp-btn">
-            Iniciar Conversación por WhatsApp
-          </a>
-          <a href="https://instagram.com" target="_blank" class="contact-btn instagram-btn">
-            Seguinos en Instagram
-          </a>
-        </div>
+    <div class="contact-card">
+      <span class="badge-pill-small">Contacto Directo</span>
+      <h2>¿Tenés dudas o querés coordinar tu compra?</h2>
+      <p>Estamos disponibles por mensajería instantánea para brindarte asesoramiento inmediato.</p>
+      <div class="contact-methods">
+        <a href="https://wa.me/5491112345678?text=Hola!%20Quería%20hacer%20una%20consulta%20por%20los%20perfumes" target="_blank" class="btn-primary">
+          Escribir por WhatsApp
+        </a>
+        <a href="https://instagram.com" target="_blank" class="btn-secondary">
+          Instagram Oficial
+        </a>
       </div>
     </div>
   </section>
 
   <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-brand">PARFUM STUDIO</div>
-      <p>&copy; 2026 PARFUM STUDIO — Haute Parfumerie. Todos los derechos reservados.</p>
-    </div>
+    <p>&copy; 2026 <strong>PARFUM STUDIO</strong> — Todos los derechos reservados.</p>
   </footer>
 
   <script src="app.js"></script>
