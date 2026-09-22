@@ -77,7 +77,7 @@ body {
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 40px;
-  padding: 0.6rem 1rem 0.6rem 0rem; /* Ponemos el padding izquierdo en 0 */
+  padding: 0.6rem 1rem; /* Aplica exactamente 1rem tanto a la izquierda como a la derecha */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -97,7 +97,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding-left: 1.2rem; /* Controla exactamente cuántos píxeles se separa del borde redondeado izquierdo */
+  padding-left: 0; /* Quitamos padding extra para que respete el padding simétrico de la barra */
   transition: opacity 0.25s ease;
 }
 
