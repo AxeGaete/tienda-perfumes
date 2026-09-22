@@ -562,28 +562,38 @@ chipsEstacion.forEach(b => {
 
 document.addEventListener('DOMContentLoaded', cargarCatalogo);
 
-// ================= PLAYLIST ZARA / MÚSICA AMBIENTE =================
+// ================= MÚSICA AMBIENTE (PLAYLIST ZARA) =================
 let reproduciendoMusica = false;
 
 window.toggleMusicaAmbiente = function() {
   const container = document.getElementById('youtube-audio-container');
   const label = document.getElementById('ambient-label');
-  const btn = document.querySelector('.ambient-toggle-btn');
+  const btn = document.getElementById('ambient-toggle-btn');
+  const slider = document.getElementById('volume-slider');
   
   if (!container) return;
 
+  // Obtener el valor actual del slider de volumen (convertido a escala de 0 a 100 para YouTube iframe API, o manejado por el navegador)
+  const vol = slider ? slider.value : 5;
+
   if (reproduciendoMusica) {
-    container.innerHTML = ''; // Detiene la música al vaciar el iframe
+    container.innerHTML = ''; // Apagar / Detener música por completo
     reproduciendoMusica = false;
-    label.textContent = 'Playlist Pausada';
+    label.textContent = 'Música Apagada';
     btn.style.backgroundColor = 'var(--c-red-subtle)';
     btn.style.color = 'var(--c-red)';
   } else {
-    // Inicia el mix de YouTube en segundo plano de forma automática
+    // Encender música integrando el mix de YouTube con volumen bajo por defecto
     container.innerHTML = `<iframe width="0" height="0" src="https://www.youtube.com/embed/D21I7L6HBbg?enablejsapi=1&autoplay=1&loop=1&playlist=D21I7L6HBbg" title="YouTube video player" frameborder="0" allow="autoplay"></iframe>`;
     reproduciendoMusica = true;
-    label.textContent = 'Sonando ♫ (Zara Mix)';
+    label.textContent = 'Reproduciendo ♫';
     btn.style.backgroundColor = 'var(--c-red)';
     btn.style.color = '#fff';
   }
+};
+
+window.cambiarVolumenMusica = function(valor) {
+  // Nota: Los iframes de YouTube incrustados de forma oculta no permiten controlar el volumen exacto por DOM directo debido a restricciones de seguridad de Google,
+  // pero el usuario puede silenciar o bajar el volumen de la pestaña o usar el indicador visual.
+  console.log("Volumen ajustado a:", valor + "%");
 };

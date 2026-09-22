@@ -430,16 +430,23 @@
 
   <!-- ================= REPRODUCTOR DE MÚSICA AMBIENTE ================= -->
   <div class="ambient-player-box" id="ambient-player-box">
-    <button class="ambient-toggle-btn" onclick="toggleMusicaAmbiente()" title="Alternar música de fondo">
-      <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <button class="ambient-toggle-btn" onclick="toggleMusicaAmbiente()" id="ambient-toggle-btn" title="Reproducir o Pausar">
+      <svg id="ambient-icon" class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
         <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
       </svg>
     </button>
-    <span class="ambient-label" id="ambient-label">Playlist Zara</span>
-    <div id="youtube-audio-container" style="display: none;">
-      <iframe width="0" height="0" src="https://www.youtube.com/embed/D21I7L6HBbg?enablejsapi=1&autoplay=0&loop=1&playlist=D21I7L6HBbg" title="YouTube video player" frameborder="0" allow="autoplay"></iframe>
+    
+    <div class="ambient-controls">
+      <span class="ambient-label" id="ambient-label">Música Zara</span>
+      <div class="volume-slider-wrapper">
+        <span class="vol-icon">🔈</span>
+        <input type="range" id="volume-slider" min="0" max="100" value="5" oninput="cambiarVolumenMusica(this.value)" title="Ajustar volumen">
+        <span class="vol-icon">🔊</span>
+      </div>
     </div>
+
+    <div id="youtube-audio-container" style="display: none;"></div>
   </div>
 
   <!-- ================= BOTÓN FLOTANTE DE WHATSAPP ================= -->
