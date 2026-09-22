@@ -85,7 +85,7 @@ app.get('/api/productos', (req, res) => {
   });
 });
 
-// POST productos (con tipo, filtros avanzados y notas olfativas)
+// POST productos (con foto principal ordenada y destacado para hero)
 app.post('/api/productos', verificarAdmin, (req, res) => {
   const uploadHandler = upload.fields([
     { name: 'imagenes', maxCount: 5 },
@@ -108,7 +108,9 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
       estacion, 
       notas_salida, 
       notas_corazon, 
-      notas_fondo 
+      notas_fondo,
+      foto_principal_idx,
+      destacado_hero
     } = req.body;
 
     const archivos = (req.files && (req.files['imagenes'] || req.files['imagen'])) || [];
@@ -117,12 +119,21 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
       return res.status(400).json({ error: 'Todos los campos básicos y al menos una imagen son obligatorios' });
     }
 
-    const rutasImagenes = archivos.map(file => `/uploads/${file.filename}`);
+    // Ordenar las imágenes para que la seleccionada como principal quede en el índice 0
+    let idxPrincipal = parseInt(foto_principal_idx) || 0;
+    if (idxPrincipal < 0 || idxPrincipal >= archivos.length) idxPrincipal = 0;
+
+    const archivosOrdenados = [...archivos];
+    const [fotoElegida] = archivosOrdenados.splice(idxPrincipal, 1);
+    archivosOrdenados.unshift(fotoElegida);
+
+    const rutasImagenes = archivosOrdenados.map(file => `/uploads/${file.filename}`);
     const imagen_url = JSON.stringify(rutasImagenes);
+    const esHero = (destacado_hero === '1' || destacado_hero === true || destacado_hero === 'true') ? 1 : 0;
 
     const sql = `INSERT INTO productos 
-      (nombre, familia, descripcion, precio, imagen_url, tipo, genero, estacion, notas_salida, notas_corazon, notas_fondo) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      (nombre, familia, descripcion, precio, imagen_url, tipo, genero, estacion, notas_salida, notas_corazon, notas_fondo, destacado_hero) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     db.query(sql, [
       nombre, 
@@ -135,7 +146,8 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
       estacion || 'Todo el año',
       notas_salida || '', 
       notas_corazon || '', 
-      notas_fondo || ''
+      notas_fondo || '',
+      esHero
     ], (dbErr, result) => {
       if (dbErr) {
         console.error('Error en base de datos al insertar:', dbErr);

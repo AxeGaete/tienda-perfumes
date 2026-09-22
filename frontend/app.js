@@ -217,9 +217,15 @@ function armarCarruselHero(productos) {
   track.innerHTML = '';
   dotsContainer.innerHTML = '';
 
-  const perfumesDestacados = productos.slice(0, 5);
+  // 1. Filtrar perfumes que tengan la casilla 'destacado_hero' marcada
+  let perfumesParaHero = productos.filter(p => p.destacado_hero === 1 || p.destacado_hero === true || p.destacado_hero === '1');
 
-  if (perfumesDestacados.length === 0) {
+  // 2. Si todavía no marcaste ninguno, usar los últimos subidos como fallback
+  if (perfumesParaHero.length === 0) {
+    perfumesParaHero = productos.slice(0, 5);
+  }
+
+  if (perfumesParaHero.length === 0) {
     track.innerHTML = `
       <div class="carousel-slide active">
         <img src="${imagenFallback}" alt="Perfume">
@@ -228,11 +234,11 @@ function armarCarruselHero(productos) {
     return;
   }
 
-  totalSlidesHero = perfumesDestacados.length;
+  totalSlidesHero = perfumesParaHero.length;
 
-  perfumesDestacados.forEach((prod, index) => {
+  perfumesParaHero.forEach((prod, index) => {
     const fotos = obtenerFotos(prod.imagen_url);
-    const fotoPortada = fotos[0];
+    const fotoPortada = fotos[0]; // La foto elegida como principal en admin
 
     const slide = document.createElement('div');
     slide.className = `carousel-slide ${index === 0 ? 'active' : ''}`;
@@ -255,7 +261,6 @@ function armarCarruselHero(productos) {
     intervaloHero = setInterval(() => moverCarruselHero(1), 4000);
   }
 }
-
 window.moverCarruselHero = function(dir) {
   if (totalSlidesHero <= 1) return;
   slideHeroActual = (slideHeroActual + dir + totalSlidesHero) % totalSlidesHero;
