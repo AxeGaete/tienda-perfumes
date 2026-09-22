@@ -562,48 +562,58 @@ chipsEstacion.forEach(b => {
 
 document.addEventListener('DOMContentLoaded', cargarCatalogo);
 
-// ================= MÚSICA AMBIENTE (ZARA MIX CON CONTROL DE VOLUMEN REAL) =================
+// ================= REPRODUCTOR DE MÚSICA AMBIENTE FUNCIONAL =================
 let reproduciendoMusica = false;
-let audioZara = null;
+let audioAmbiente = null;
 
 window.toggleMusicaAmbiente = function() {
   const label = document.getElementById('ambient-label');
   const btn = document.getElementById('ambient-toggle-btn');
   const slider = document.getElementById('volume-slider');
-  
-  if (!audioZara) {
-    // Usamos una pista de alta calidad con el mismo estilo minimalista deep house de Zara
-    audioZara = new Audio('https://cdn.pixabay.com/download/audio/2023/04/11/audio_4969bcbc7f.mp3?filename=deep-future-bass-143365.mp3');
-    audioZara.loop = true;
+
+  // Si el objeto de audio no existe, lo creamos con una URL de streaming directa y abierta
+  if (!audioAmbiente) {
+    audioAmbiente = new Audio('https://commondatastorage.googleapis.com/codesign-demos/ambient-lofi.mp3');
+    audioAmbiente.loop = true;
+    
+    // Capturar cualquier error de red o reproducción
+    audioAmbiente.onerror = function() {
+      console.error("Error al reproducir el audio ambiente.");
+      alert("No se pudo cargar el audio. Comprobá tu conexión.");
+    };
   }
 
-  // Establecer el volumen según la posición del slider (por defecto bajito)
+  // Asignar el volumen actual del slider (por defecto convertido de 0-100 a escala 0.0-1.0)
   if (slider) {
-    audioZara.volume = parseFloat(slider.value) / 100;
+    audioAmbiente.volume = parseFloat(slider.value) / 100;
   }
 
   if (reproduciendoMusica) {
-    audioZara.pause();
+    audioAmbiente.pause();
     reproduciendoMusica = false;
     label.textContent = 'Música Pausada';
-    btn.style.backgroundColor = 'var(--c-red-subtle)';
-    btn.style.color = 'var(--c-red)';
+    if (btn) {
+      btn.style.backgroundColor = 'var(--c-red-subtle)';
+      btn.style.color = 'var(--c-red)';
+    }
   } else {
-    audioZara.play().then(() => {
+    audioAmbiente.play().then(() => {
       reproduciendoMusica = true;
-      label.textContent = 'Sonando ♫ (Zara Mix)';
-      btn.style.backgroundColor = 'var(--c-red)';
-      btn.style.color = '#fff';
+      label.textContent = 'Reproduciendo ♫';
+      if (btn) {
+        btn.style.backgroundColor = 'var(--c-red)';
+        btn.style.color = '#fff';
+      }
     }).catch(err => {
-      console.log("Bloqueo de audio:", err);
-      alert("Tocá de nuevo el botón para activar el sonido.");
+      console.log("Restricción de reproducción automática del navegador:", err);
+      alert("Hacé clic de nuevo en el botón para activar la música.");
     });
   }
 };
 
 window.cambiarVolumenMusica = function(valor) {
-  if (audioZara) {
-    // Convierte el valor de 0 a 100 del slider al rango de volumen web (0.0 a 1.0)
-    audioZara.volume = parseFloat(valor) / 100;
+  if (audioAmbiente) {
+    // Modifica el volumen en tiempo real al mover la barra deslizable
+    audioAmbiente.volume = parseFloat(valor) / 100;
   }
 };
