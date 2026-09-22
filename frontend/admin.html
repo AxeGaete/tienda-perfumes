@@ -243,7 +243,7 @@
       color: var(--text-dark);
     }
 
-    /* Selector de Foto Principal */
+    /* Selector y Ordenador de Fotos */
     .preview-header {
       font-size: 0.75rem;
       font-weight: 700;
@@ -258,39 +258,56 @@
     }
     .preview-card {
       position: relative;
-      width: 80px;
-      height: 80px;
+      width: 90px;
+      height: 90px;
       border-radius: 8px;
       border: 2px solid var(--c-border);
       background: var(--c-light);
-      cursor: pointer;
       overflow: hidden;
-      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
     .preview-card img {
       width: 100%;
-      height: 100%;
+      height: 60px;
       object-fit: contain;
+      background: #fff;
     }
-    .preview-card.selected {
-      border-color: var(--c-red);
-      box-shadow: 0 0 0 2px rgba(193, 0, 0, 0.25);
+    .preview-card-controls {
+      display: flex;
+      width: 100%;
+      height: 30px;
+      background: #1A1A1E;
     }
-    .badge-cover {
+    .preview-ctrl-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    .preview-ctrl-btn:hover { background: var(--c-red); }
+    .preview-ctrl-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .badge-cover-order {
       position: absolute;
-      top: 2px;
-      left: 2px;
+      top: 3px;
+      left: 3px;
       background: var(--c-red);
       color: #fff;
-      font-size: 0.6rem;
+      font-size: 0.58rem;
       font-weight: 800;
       padding: 1px 4px;
       border-radius: 4px;
       text-transform: uppercase;
-      display: none;
-    }
-    .preview-card.selected .badge-cover {
-      display: block;
     }
 
     /* Tabla */
@@ -409,35 +426,6 @@
       color: var(--text-muted);
     }
     .modal-close:hover { color: var(--c-red); }
-    .current-photos-box {
-      background: #FAFAFA;
-      padding: 0.8rem;
-      border-radius: 6px;
-      border: 1px solid var(--c-border);
-      margin-bottom: 1rem;
-    }
-    .current-photos-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 0.5rem;
-      display: block;
-    }
-    .current-photos-list {
-      display: flex;
-      gap: 0.6rem;
-      overflow-x: auto;
-    }
-    .current-photo-item {
-      width: 60px;
-      height: 60px;
-      object-fit: contain;
-      background: #fff;
-      border: 1px solid var(--c-border);
-      border-radius: 4px;
-      padding: 3px;
-    }
 
     @media (max-width: 860px) {
       .panel-grid { grid-template-columns: 1fr; }
@@ -561,13 +549,13 @@
 
             <div class="form-group">
               <label>Fotografías (1 a 5 imágenes)</label>
-              <input type="file" id="prod-imagen" class="input-field" accept="image/*" multiple required onchange="previsualizarImagenes(event, 'preview-container', 'preview-section')">
-              <span class="field-hint">Mantené presionado Ctrl para seleccionar varias fotos a la vez.</span>
+              <input type="file" id="prod-imagen" class="input-field" accept="image/*" multiple required onchange="manejarSeleccionArchivos(event, 'crear')">
+              <span class="field-hint">La primera foto será la portada. Podés reordenarlas con las flechas.</span>
             </div>
 
-            <div id="preview-section" style="display: none;">
-              <p class="preview-header">👇 Hacé clic en la foto que querés que sea la PORTADA:</p>
-              <div id="preview-container" class="preview-container"></div>
+            <div id="preview-section-crear" style="display: none;">
+              <p class="preview-header">👇 Ordená las fotos (la 1ª es la portada):</p>
+              <div id="preview-container-crear" class="preview-container"></div>
             </div>
 
             <button type="submit" class="btn-primary" id="btn-submit-perfume">Cargar al Catálogo</button>
@@ -689,22 +677,16 @@
           <textarea id="edit-desc" class="input-field"></textarea>
         </div>
 
-        <!-- Muestra las fotos actuales -->
-        <div class="current-photos-box">
-          <span class="current-photos-label">Fotos actuales:</span>
-          <div class="current-photos-list" id="edit-current-photos"></div>
-        </div>
-
-        <!-- Opción para reemplazar fotos -->
         <div class="form-group">
-          <label>Reemplazar Fotografías (Opcional)</label>
-          <input type="file" id="edit-imagen" class="input-field" accept="image/*" multiple onchange="previsualizarImagenes(event, 'edit-preview-container', 'edit-preview-section')">
-          <span class="field-hint">Si no seleccionás archivos, se mantendrán las fotos actuales.</span>
+          <label>Gestionar / Reordenar Fotografías</label>
+          <span class="field-hint">Usá las flechas para cambiar el orden o agregá nuevas fotos abajo.</span>
         </div>
 
-        <div id="edit-preview-section" style="display: none;">
-          <p class="preview-header">👇 Hacé clic en la foto que será la PORTADA nueva:</p>
-          <div id="edit-preview-container" class="preview-container"></div>
+        <div id="preview-section-editar" class="preview-container"></div>
+
+        <div class="form-group">
+          <label>Agregar más fotos (Opcional)</label>
+          <input type="file" id="edit-imagen" class="input-field" accept="image/*" multiple onchange="manejarSeleccionArchivos(event, 'editar')">
         </div>
 
         <button type="submit" class="btn-primary" id="btn-save-edit">Guardar Cambios</button>
@@ -715,8 +697,10 @@
   <script>
     let adminClave = sessionStorage.getItem('admin_token') || '';
     let productosCargados = [];
-    let fotoPrincipalCrear = 0;
-    let fotoPrincipalEditar = 0;
+    
+    // Almacenamiento de archivos y URLs en memoria para reordenar dinámicamente
+    let listaArchivosCrear = []; // Objetos File
+    let listaFotosEditar = [];   // URLs existentes o nuevas
 
     if (adminClave) mostrarPanel();
 
@@ -766,51 +750,111 @@
       window.location.reload();
     }
 
-    function previsualizarImagenes(event, containerId, sectionId) {
-      const container = document.getElementById(containerId);
-      const section = document.getElementById(sectionId);
-      container.innerHTML = '';
+    function manejarSeleccionArchivos(event, modo) {
       const files = event.target.files;
+      if (!files || files.length === 0) return;
 
-      if (!files || files.length === 0) {
-        section.style.display = 'none';
-        return;
-      }
-
-      if (files.length > 5) {
-        alert('Podés subir un máximo de 5 fotos.');
+      if (modo === 'crear') {
+        listaArchivosCrear = Array.from(files);
+        if (listaArchivosCrear.length > 5) {
+          alert('Podés subir un máximo de 5 fotos.');
+          listaArchivosCrear = listaArchivosCrear.slice(0, 5);
+        }
+        renderizarPreviewsCrear();
+      } else if (modo === 'editar') {
+        const nuevosFiles = Array.from(files);
+        if (listaFotosEditar.length + nuevosFiles.length > 5) {
+          alert('El límite máximo es de 5 fotos en total.');
+          return;
+        }
+        nuevosFiles.forEach(file => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            listaFotosEditar.push({ tipo: 'nuevo', file: file, url: e.target.result });
+            renderizarPreviewsEditar();
+          };
+          reader.readAsDataURL(file);
+        });
         event.target.value = '';
+      }
+    }
+
+    function renderizarPreviewsCrear() {
+      const container = document.getElementById('preview-container-crear');
+      const section = document.getElementById('preview-section-crear');
+      container.innerHTML = '';
+
+      if (listaArchivosCrear.length === 0) {
         section.style.display = 'none';
         return;
       }
 
       section.style.display = 'block';
-      if (containerId === 'preview-container') fotoPrincipalCrear = 0;
-      if (containerId === 'edit-preview-container') fotoPrincipalEditar = 0;
-
-      Array.from(files).forEach((file, index) => {
+      listaArchivosCrear.forEach((file, index) => {
         const reader = new FileReader();
         reader.onload = (e) => {
           const card = document.createElement('div');
-          card.className = `preview-card ${index === 0 ? 'selected' : ''}`;
-          card.dataset.idx = index;
+          card.className = 'preview-card';
           card.innerHTML = `
+            ${index === 0 ? '<span class="badge-cover-order">Portada</span>' : ''}
             <img src="${e.target.result}" alt="Preview">
-            <span class="badge-cover">Portada</span>
+            <div class="preview-ctrl-btn-box preview-card-controls">
+              <button type="button" class="preview-ctrl-btn" onclick="moverFotoCrear(${index}, -1)" ${index === 0 ? 'disabled' : ''}>◀</button>
+              <button type="button" class="preview-ctrl-btn" onclick="moverFotoCrear(${index}, 1)" ${index === listaArchivosCrear.length - 1 ? 'disabled' : ''}>▶</button>
+            </div>
           `;
-
-          card.onclick = () => {
-            container.querySelectorAll('.preview-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            if (containerId === 'preview-container') fotoPrincipalCrear = index;
-            if (containerId === 'edit-preview-container') fotoPrincipalEditar = index;
-          };
-
           container.appendChild(card);
         };
         reader.readAsDataURL(file);
       });
     }
+
+    window.moverFotoCrear = function(index, dir) {
+      const nuevoIndex = index + dir;
+      if (nuevoIndex < 0 || nuevoIndex >= listaArchivosCrear.length) return;
+      const temp = listaArchivosCrear[index];
+      listaArchivosCrear[index] = listaArchivosCrear[nuevoIndex];
+      listaArchivosCrear[nuevoIndex] = temp;
+      renderizarPreviewsCrear();
+    };
+
+    function renderizarPreviewsEditar() {
+      const container = document.getElementById('preview-section-editar');
+      container.innerHTML = '';
+
+      listaFotosEditar.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'preview-card';
+        card.innerHTML = `
+          ${index === 0 ? '<span class="badge-cover-order">Portada</span>' : ''}
+          <img src="${item.url}" alt="Preview">
+          <div class="preview-card-controls">
+            <button type="button" class="preview-ctrl-btn" onclick="moverFotoEditar(${index}, -1)" ${index === 0 ? 'disabled' : ''}>◀</button>
+            <button type="button" class="preview-ctrl-btn" onclick="quitarFotoEditar(${index})" title="Eliminar">✕</button>
+            <button type="button" class="preview-ctrl-btn" onclick="moverFotoEditar(${index}, 1)" ${index === listaFotosEditar.length - 1 ? 'disabled' : ''}>▶</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    window.moverFotoEditar = function(index, dir) {
+      const nuevoIndex = index + dir;
+      if (nuevoIndex < 0 || nuevoIndex >= listaFotosEditar.length) return;
+      const temp = listaFotosEditar[index];
+      listaFotosEditar[index] = listaFotosEditar[nuevoIndex];
+      listaFotosEditar[nuevoIndex] = temp;
+      renderizarPreviewsEditar();
+    };
+
+    window.quitarFotoEditar = function(index) {
+      if (listaFotosEditar.length <= 1) {
+        alert('El perfume debe tener al menos una fotografía.');
+        return;
+      }
+      listaFotosEditar.splice(index, 1);
+      renderizarPreviewsEditar();
+    };
 
     function extraerFotos(imagen_url) {
       try {
@@ -880,10 +924,7 @@
 
     async function crearPerfume(e) {
       e.preventDefault();
-      const fileInput = document.getElementById('prod-imagen');
-      const files = fileInput.files;
-
-      if (!files || files.length === 0) {
+      if (listaArchivosCrear.length === 0) {
         alert('Tenés que seleccionar al menos una foto.');
         return;
       }
@@ -905,11 +946,11 @@
       formData.append('notas_corazon', document.getElementById('prod-corazon').value.trim());
       formData.append('notas_fondo', document.getElementById('prod-fondo').value.trim());
       formData.append('destacado_hero', document.getElementById('prod-hero').checked ? '1' : '0');
-      formData.append('foto_principal_idx', fotoPrincipalCrear);
 
-      for (let i = 0; i < files.length; i++) {
-        formData.append('imagenes', files[i]);
-      }
+      // Se envían los archivos en el orden exacto ordenado por el usuario
+      listaArchivosCrear.forEach(file => {
+        formData.append('imagenes', file);
+      });
 
       try {
         const res = await fetch('/api/productos', {
@@ -922,9 +963,8 @@
         if (res.ok) {
           alert('¡Perfume agregado con éxito!');
           document.getElementById('form-nuevo-perfume').reset();
-          document.getElementById('preview-section').style.display = 'none';
-          document.getElementById('preview-container').innerHTML = '';
-          fotoPrincipalCrear = 0;
+          document.getElementById('preview-section-crear').style.display = 'none';
+          listaArchivosCrear = [];
           cargarTablaProductos();
         } else {
           alert('Error: ' + (data.error || 'No se pudo agregar'));
@@ -957,20 +997,10 @@
       document.getElementById('edit-desc').value = prod.descripcion || '';
 
       const { todas } = extraerFotos(prod.imagen_url);
-      const listContainer = document.getElementById('edit-current-photos');
-      listContainer.innerHTML = '';
-      todas.forEach(f => {
-        const img = document.createElement('img');
-        img.src = f;
-        img.className = 'current-photo-item';
-        listContainer.appendChild(img);
-      });
+      listaFotosEditar = todas.map(url => ({ tipo: 'existente', url: url }));
 
+      renderizarPreviewsEditar();
       document.getElementById('edit-imagen').value = '';
-      document.getElementById('edit-preview-section').style.display = 'none';
-      document.getElementById('edit-preview-container').innerHTML = '';
-      fotoPrincipalEditar = 0;
-
       document.getElementById('modal-editar').classList.add('active');
     };
 
@@ -998,14 +1028,18 @@
       formData.append('notas_corazon', document.getElementById('edit-corazon').value.trim());
       formData.append('notas_fondo', document.getElementById('edit-fondo').value.trim());
       formData.append('destacado_hero', document.getElementById('edit-hero').checked ? '1' : '0');
-      formData.append('foto_principal_idx', fotoPrincipalEditar);
 
-      const files = document.getElementById('edit-imagen').files;
-      if (files && files.length > 0) {
-        for (let i = 0; i < files.length; i++) {
-          formData.append('imagenes', files[i]);
+      // Separar fotos existentes (URLs) y nuevos archivos subidos respetando el orden visual actual
+      const urlsExistentes = [];
+      listaFotosEditar.forEach(item => {
+        if (item.tipo === 'existente') {
+          urlsExistentes.push(item.url);
+        } else if (item.tipo === 'nuevo') {
+          formData.append('imagenes', item.file);
         }
-      }
+      });
+
+      formData.append('fotos_existentes', JSON.stringify(urlsExistentes));
 
       try {
         const res = await fetch(`/api/productos/${id}`, {

@@ -85,7 +85,7 @@ app.get('/api/productos', (req, res) => {
   });
 });
 
-// POST productos (con foto principal ordenada, destacado hero y estado de stock)
+// POST productos (con orden exacto de fotografías definido por el admin)
 app.post('/api/productos', verificarAdmin, (req, res) => {
   const uploadHandler = upload.fields([
     { name: 'imagenes', maxCount: 5 },
@@ -109,7 +109,6 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
       notas_salida, 
       notas_corazon, 
       notas_fondo,
-      foto_principal_idx,
       destacado_hero,
       estado_stock
     } = req.body;
@@ -120,14 +119,8 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
       return res.status(400).json({ error: 'Todos los campos básicos y al menos una imagen son obligatorios' });
     }
 
-    let idxPrincipal = parseInt(foto_principal_idx) || 0;
-    if (idxPrincipal < 0 || idxPrincipal >= archivos.length) idxPrincipal = 0;
-
-    const archivosOrdenados = [...archivos];
-    const [fotoElegida] = archivosOrdenados.splice(idxPrincipal, 1);
-    archivosOrdenados.unshift(fotoElegida);
-
-    const rutasImagenes = archivosOrdenados.map(file => `/uploads/${file.filename}`);
+    // Se guardan respetando exactamente el orden en que el administrador las organizó
+    const rutasImagenes = archivos.map(file => `/uploads/${file.filename}`);
     const imagen_url = JSON.stringify(rutasImagenes);
     const esHero = (destacado_hero === '1' || destacado_hero === true || destacado_hero === 'true') ? 1 : 0;
     const stockVal = estado_stock || 'En Stock';
@@ -160,7 +153,7 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
   });
 });
 
-// PUT producto completo (información, fotos opcionales, destacado y estado de stock)
+// PUT producto completo (información, reordenamiento de fotos existentes y/o nuevas imágenes)
 app.put('/api/productos/:id', verificarAdmin, (req, res) => {
   const uploadHandler = upload.fields([
     { name: 'imagenes', maxCount: 5 },
@@ -185,68 +178,45 @@ app.put('/api/productos/:id', verificarAdmin, (req, res) => {
       notas_salida, 
       notas_corazon, 
       notas_fondo,
-      foto_principal_idx,
       destacado_hero,
-      estado_stock
+      estado_stock,
+      fotos_existentes
     } = req.body;
 
     if (!nombre || !familia || !precio) {
       return res.status(400).json({ error: 'Nombre, familia y precio son obligatorios' });
     }
 
-    const archivos = (req.files && (req.files['imagenes'] || req.files['imagen'])) || [];
+    let fotosAntiguasOrdenadas = [];
+    try {
+      fotosAntiguasOrdenadas = JSON.parse(fotos_existentes || '[]');
+    } catch(e) {}
+
+    const archivosNuevos = (req.files && (req.files['imagenes'] || req.files['imagen'])) || [];
+    const nuevasUrls = archivosNuevos.map(file => `/uploads/${file.filename}`);
+
+    // Combinar las fotos existentes reordenadas con las nuevas fotos agregadas
+    const imagen_url = JSON.stringify([...fotosAntiguasOrdenadas, ...nuevasUrls]);
     const esHero = (destacado_hero === '1' || destacado_hero === true || destacado_hero === 'true') ? 1 : 0;
     const stockVal = estado_stock || 'En Stock';
 
-    // Si se subieron fotos nuevas, las procesamos y ordenamos
-    if (archivos.length > 0) {
-      let idxPrincipal = parseInt(foto_principal_idx) || 0;
-      if (idxPrincipal < 0 || idxPrincipal >= archivos.length) idxPrincipal = 0;
+    const sql = `UPDATE productos SET 
+      nombre = ?, familia = ?, descripcion = ?, precio = ?, tipo = ?, 
+      genero = ?, estacion = ?, notas_salida = ?, notas_corazon = ?, 
+      notas_fondo = ?, destacado_hero = ?, estado_stock = ?, imagen_url = ? 
+      WHERE id = ?`;
 
-      const archivosOrdenados = [...archivos];
-      const [fotoElegida] = archivosOrdenados.splice(idxPrincipal, 1);
-      archivosOrdenados.unshift(fotoElegida);
-
-      const rutasImagenes = archivosOrdenados.map(file => `/uploads/${file.filename}`);
-      const imagen_url = JSON.stringify(rutasImagenes);
-
-      const sql = `UPDATE productos SET 
-        nombre = ?, familia = ?, descripcion = ?, precio = ?, tipo = ?, 
-        genero = ?, estacion = ?, notas_salida = ?, notas_corazon = ?, 
-        notas_fondo = ?, destacado_hero = ?, estado_stock = ?, imagen_url = ? 
-        WHERE id = ?`;
-
-      db.query(sql, [
-        nombre, familia, descripcion || '', precio, tipo || 'Diseñador',
-        genero || 'Unisex', estacion || 'Todo el año', notas_salida || '',
-        notas_corazon || '', notas_fondo || '', esHero, stockVal, imagen_url, id
-      ], (dbErr, result) => {
-        if (dbErr) {
-          console.error('Error al actualizar perfume con fotos:', dbErr);
-          return res.status(500).json({ error: 'Error en la base de datos' });
-        }
-        res.json({ mensaje: 'Perfume y fotos actualizados con éxito' });
-      });
-    } else {
-      // Si no se enviaron fotos nuevas, se conservan las existentes pero se actualiza el stock y campos
-      const sql = `UPDATE productos SET 
-        nombre = ?, familia = ?, descripcion = ?, precio = ?, tipo = ?, 
-        genero = ?, estacion = ?, notas_salida = ?, notas_corazon = ?, 
-        notas_fondo = ?, destacado_hero = ?, estado_stock = ? 
-        WHERE id = ?`;
-
-      db.query(sql, [
-        nombre, familia, descripcion || '', precio, tipo || 'Diseñador',
-        genero || 'Unisex', estacion || 'Todo el año', notas_salida || '',
-        notas_corazon || '', notas_fondo || '', esHero, stockVal, id
-      ], (dbErr, result) => {
-        if (dbErr) {
-          console.error('Error al actualizar perfume:', dbErr);
-          return res.status(500).json({ error: 'Error en la base de datos' });
-        }
-        res.json({ mensaje: 'Información del perfume actualizada con éxito' });
-      });
-    }
+    db.query(sql, [
+      nombre, familia, descripcion || '', precio, tipo || 'Diseñador',
+      genero || 'Unisex', estacion || 'Todo el año', notas_salida || '',
+      notas_corazon || '', notas_fondo || '', esHero, stockVal, imagen_url, id
+    ], (dbErr, result) => {
+      if (dbErr) {
+        console.error('Error al actualizar perfume:', dbErr);
+        return res.status(500).json({ error: 'Error en la base de datos' });
+      }
+      res.json({ mensaje: 'Perfume y orden de fotos actualizados con éxito' });
+    });
   });
 });
 
