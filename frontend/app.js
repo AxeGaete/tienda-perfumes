@@ -562,44 +562,47 @@ chipsEstacion.forEach(b => {
 
 document.addEventListener('DOMContentLoaded', cargarCatalogo);
 
-// ================= MÚSICA AMBIENTE (CON CONTROL DE VOLUMEN REAL) =================
+// ================= MÚSICA AMBIENTE (JS DIRECTO) =================
 let reproduciendoMusica = false;
+let audioAmbiente = null;
 
 window.toggleMusicaAmbiente = function() {
-  const audio = document.getElementById('mobile-background-audio');
   const label = document.getElementById('ambient-label');
   const btn = document.getElementById('ambient-toggle-btn');
   const slider = document.getElementById('volume-slider');
-  
-  if (!audio) return;
 
-  // Tomar el volumen actual del slider (por defecto 0.15 / 15%)
+  // Inicializar el objeto de audio si no existe
+  if (!audioAmbiente) {
+    audioAmbiente = new Audio('https://cdn.pixabay.com/download/audio/2023/04/11/audio_4969bcbc7f.mp3?filename=deep-future-bass-143365.mp3');
+    audioAmbiente.loop = true;
+  }
+
+  // Sincronizar volumen inicial o actual del slider
   if (slider) {
-    audio.volume = parseFloat(slider.value);
+    audioAmbiente.volume = parseFloat(slider.value);
   }
 
   if (reproduciendoMusica) {
-    audio.pause();
+    audioAmbiente.pause();
     reproduciendoMusica = false;
     label.textContent = 'Música Pausada';
     btn.style.backgroundColor = 'var(--c-red-subtle)';
     btn.style.color = 'var(--c-red)';
   } else {
-    audio.play().then(() => {
+    audioAmbiente.play().then(() => {
       reproduciendoMusica = true;
       label.textContent = 'Reproduciendo ♫';
       btn.style.backgroundColor = 'var(--c-red)';
       btn.style.color = '#fff';
     }).catch(err => {
-      console.log("Restricción de audio:", err);
+      console.log("Bloqueo de reproducción automática:", err);
       alert("Tocá de nuevo el botón para activar la música.");
     });
   }
 };
 
 window.cambiarVolumenMusica = function(valor) {
-  const audio = document.getElementById('mobile-background-audio');
-  if (audio) {
-    audio.volume = parseFloat(valor);
+  if (audioAmbiente) {
+    audioAmbiente.volume = parseFloat(valor);
   }
 };
