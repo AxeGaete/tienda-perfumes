@@ -338,6 +338,19 @@
       margin-left: 0.3rem;
       text-transform: uppercase;
     }
+    .td-stock-tag {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 10px;
+      margin-top: 3px;
+      text-transform: uppercase;
+    }
+    .stock-en { background: #E3F2FD; color: #1565C0; }
+    .stock-pocas { background: #FFF3E0; color: #E65100; }
+    .stock-sin { background: #FFEBEE; color: #C62828; }
+
     .td-badges { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
     .td-price { font-weight: 800; color: var(--c-red); font-size: 0.95rem; }
     .table-actions { display: flex; gap: 0.4rem; }
@@ -478,6 +491,15 @@
             </div>
 
             <div class="form-group">
+              <label>Estado / Stock Disponible</label>
+              <select id="prod-stock" class="input-field" required>
+                <option value="En Stock">En Stock</option>
+                <option value="Pocas Unidades">Pocas Unidades</option>
+                <option value="Sin Stock">Sin Stock (Ocultar de la tienda)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
               <label>Familia Olfativa</label>
               <select id="prod-familia" class="input-field" required>
                 <option value="Cítrico / Acuático">Cítrico / Acuático</option>
@@ -595,6 +617,15 @@
             <option value="Diseñador">Diseñador</option>
             <option value="Árabe">Árabe</option>
             <option value="Nicho">Nicho / Autor</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Estado / Stock Disponible</label>
+          <select id="edit-stock" class="input-field" required>
+            <option value="En Stock">En Stock</option>
+            <option value="Pocas Unidades">Pocas Unidades</option>
+            <option value="Sin Stock">Sin Stock (Ocultar de la tienda)</option>
           </select>
         </div>
 
@@ -807,6 +838,11 @@
         tbody.innerHTML = '';
         productosCargados.forEach(prod => {
           const { portada, total } = extraerFotos(prod.imagen_url);
+          const stockVal = prod.estado_stock || 'En Stock';
+          let stockClass = 'stock-en';
+          if (stockVal === 'Pocas Unidades') stockClass = 'stock-pocas';
+          if (stockVal === 'Sin Stock') stockClass = 'stock-sin';
+
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td>
@@ -823,6 +859,7 @@
               </div>
               <div class="td-family">${prod.familia}</div>
               <div class="td-badges">${prod.genero || 'Unisex'} • ${prod.estacion || 'Todo el año'}</div>
+              <div><span class="td-stock-tag ${stockClass}">${stockVal}</span></div>
             </td>
             <td>
               <span class="td-price">$${Number(prod.precio).toLocaleString('es-AR')}</span>
@@ -858,6 +895,7 @@
       const formData = new FormData();
       formData.append('nombre', document.getElementById('prod-nombre').value.trim());
       formData.append('tipo', document.getElementById('prod-tipo').value);
+      formData.append('estado_stock', document.getElementById('prod-stock').value);
       formData.append('familia', document.getElementById('prod-familia').value);
       formData.append('genero', document.getElementById('prod-genero').value);
       formData.append('estacion', document.getElementById('prod-estacion').value);
@@ -907,6 +945,7 @@
       document.getElementById('edit-id').value = prod.id;
       document.getElementById('edit-nombre').value = prod.nombre || '';
       document.getElementById('edit-tipo').value = prod.tipo || 'Diseñador';
+      document.getElementById('edit-stock').value = prod.estado_stock || 'En Stock';
       document.getElementById('edit-familia').value = prod.familia || 'Cítrico / Acuático';
       document.getElementById('edit-genero').value = prod.genero || 'Unisex';
       document.getElementById('edit-estacion').value = prod.estacion || 'Todo el año';
@@ -917,7 +956,6 @@
       document.getElementById('edit-fondo').value = prod.notas_fondo || '';
       document.getElementById('edit-desc').value = prod.descripcion || '';
 
-      // Mostrar fotos actuales
       const { todas } = extraerFotos(prod.imagen_url);
       const listContainer = document.getElementById('edit-current-photos');
       listContainer.innerHTML = '';
@@ -928,7 +966,6 @@
         listContainer.appendChild(img);
       });
 
-      // Resetear campo file y previews de edición
       document.getElementById('edit-imagen').value = '';
       document.getElementById('edit-preview-section').style.display = 'none';
       document.getElementById('edit-preview-container').innerHTML = '';
@@ -951,6 +988,7 @@
       const formData = new FormData();
       formData.append('nombre', document.getElementById('edit-nombre').value.trim());
       formData.append('tipo', document.getElementById('edit-tipo').value);
+      formData.append('estado_stock', document.getElementById('edit-stock').value);
       formData.append('familia', document.getElementById('edit-familia').value);
       formData.append('genero', document.getElementById('edit-genero').value);
       formData.append('estacion', document.getElementById('edit-estacion').value);
