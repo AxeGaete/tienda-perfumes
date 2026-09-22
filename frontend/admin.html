@@ -3,348 +3,602 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - Gestión de Perfumes</title>
+  <title>PARFUM STUDIO — Panel de Control</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
   <style>
+    :root {
+      --bg-white: #ffffff;
+      --c-light: #EEEEEE;
+      --c-border: #DEDEDE;
+      --c-coral: #FF4949;
+      --c-red: #C10000;
+      --text-dark: #121214;
+      --text-muted: #6b6b76;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --transition: all 0.22s cubic-bezier(0.2, 0, 0, 1);
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f6f8; color: #333; padding: 2rem 1rem; }
 
-    #pantalla-login {
-      max-width: 400px;
-      margin: 5rem auto;
-      background: #fff;
-      padding: 2.5rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-    #pantalla-login h2 { margin-bottom: 1rem; }
-    #pantalla-login input {
-      width: 100%;
-      padding: 0.7rem;
-      margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 1rem;
-    }
-
-    #panel-admin { display: none; }
-
-    .layout {
-      max-width: 900px;
-      margin: 0 auto;
+    body {
+      font-family: var(--font-body);
+      background-color: var(--c-light);
+      color: var(--text-dark);
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      gap: 2rem;
+      -webkit-font-smoothing: antialiased;
     }
 
-    .top-bar { display: flex; justify-content: space-between; align-items: center; }
-    .card-panel { background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    /* Header */
+    header {
+      background: var(--bg-white);
+      border-bottom: 2px solid var(--c-border);
+      padding: 1.2rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-    h2 { margin-bottom: 1.5rem; text-align: center; color: #111; }
-    .campo { margin-bottom: 1.2rem; display: flex; flex-direction: column; }
-    label { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.4rem; }
-    input, select, textarea { padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px; font-size: 0.95rem; }
-    input[type="file"] { border: none; padding: 0.4rem 0; }
-    textarea { resize: vertical; height: 70px; }
-
-    .btn-principal {
-      width: 100%;
-      background: #2b7a78;
-      color: #fff;
-      border: none;
-      padding: 0.8rem;
+    .brand-logo {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .brand-logo::before {
+      content: '';
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: var(--c-red);
+      border-radius: 50%;
+    }
+    .badge-admin {
+      background: var(--c-light);
+      border: 1px solid var(--c-border);
+      color: var(--c-red);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
       border-radius: 4px;
-      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 0.8rem;
+    }
+
+    .btn-outline {
+      background: var(--bg-white);
+      border: 1.5px solid var(--c-border);
+      color: var(--text-dark);
+      padding: 0.55rem 1.1rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
+      text-decoration: none;
+      transition: var(--transition);
     }
-    .btn-principal:hover { background: #205c5a; }
+    .btn-outline:hover {
+      border-color: var(--c-red);
+      color: var(--c-red);
+    }
 
-    .mensaje { margin-top: 1rem; padding: 0.7rem; border-radius: 4px; text-align: center; font-size: 0.9rem; }
-    .mensaje.exito { background: #d4edda; color: #155724; }
-    .mensaje.error { background: #f8d7da; color: #721c24; }
+    /* Contenedor central */
+    main {
+      max-width: 1100px;
+      margin: 2.5rem auto 4rem;
+      padding: 0 1.5rem;
+      width: 100%;
+      flex-grow: 1;
+    }
 
-    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-    th, td { padding: 0.8rem; text-align: left; border-bottom: 1px solid #eee; }
-    th { background: #fafafa; font-size: 0.85rem; color: #555; text-transform: uppercase; }
-    .img-miniatura { width: 45px; height: 45px; object-fit: cover; border-radius: 4px; }
-    .acciones { display: flex; gap: 0.5rem; }
+    /* Vista de Login */
+    #seccion-login {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 60vh;
+    }
+    .login-card {
+      background: var(--bg-white);
+      border: 2px solid var(--c-border);
+      border-radius: 6px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      text-align: center;
+    }
+    .login-card h2 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .login-card p {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      margin-bottom: 1.8rem;
+    }
+    .input-field {
+      width: 100%;
+      background: var(--c-light);
+      border: 1.5px solid var(--c-border);
+      border-radius: 4px;
+      padding: 0.8rem 1rem;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--text-dark);
+      outline: none;
+      margin-bottom: 1.2rem;
+      transition: var(--transition);
+    }
+    .input-field:focus {
+      background: var(--bg-white);
+      border-color: var(--c-coral);
+      box-shadow: 0 0 0 3px rgba(255, 73, 73, 0.12);
+    }
 
-    .btn-accion { padding: 0.4rem 0.6rem; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
-    .btn-editar { background: #f4a261; color: #fff; }
-    .btn-editar:hover { background: #e76f51; }
-    .btn-borrar { background: #e63946; color: #fff; }
-    .btn-borrar:hover { background: #c92a37; }
+    .btn-primary {
+      width: 100%;
+      background: var(--c-red);
+      color: #fff;
+      border: none;
+      padding: 0.85rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: var(--transition);
+    }
+    .btn-primary:hover {
+      background: var(--c-coral);
+    }
 
-    .enlace-tienda { color: #555; text-decoration: none; font-size: 0.9rem; }
-    .enlace-tienda:hover { text-decoration: underline; }
-    .btn-logout { background: #e63946; color: #fff; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; }
+    .msg-error {
+      background: #ffebeb;
+      border: 1px solid #ffd1d1;
+      color: var(--c-red);
+      padding: 0.7rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 1rem;
+      display: none;
+    }
+
+    /* Vista Panel de Gestión */
+    #seccion-panel {
+      display: none;
+    }
+
+    .panel-grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .panel-box {
+      background: var(--bg-white);
+      border: 1.5px solid var(--c-border);
+      border-radius: 6px;
+      padding: 1.8rem;
+    }
+    .panel-box h3 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid var(--c-border);
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-dark);
+      margin-bottom: 0.4rem;
+    }
+    textarea.input-field {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* Tabla de Productos */
+    .table-responsive {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    th {
+      font-family: var(--font-display);
+      text-align: left;
+      padding: 0.8rem;
+      border-bottom: 2px solid var(--c-border);
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+    }
+    td {
+      padding: 0.9rem 0.8rem;
+      border-bottom: 1px solid var(--c-border);
+      vertical-align: middle;
+    }
+    .td-img {
+      width: 50px;
+      height: 50px;
+      border-radius: 4px;
+      object-fit: cover;
+      background: var(--c-light);
+      display: block;
+    }
+    .td-title {
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .td-family {
+      color: var(--c-coral);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .price-input {
+      width: 95px;
+      padding: 0.4rem 0.5rem;
+      background: var(--c-light);
+      border: 1px solid var(--c-border);
+      border-radius: 4px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--c-red);
+      outline: none;
+    }
+    .price-input:focus {
+      background: var(--bg-white);
+      border-color: var(--c-coral);
+    }
+
+    .table-actions {
+      display: flex;
+      gap: 0.4rem;
+    }
+    .btn-action {
+      background: transparent;
+      border: 1px solid var(--c-border);
+      padding: 0.4rem 0.6rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    .btn-save:hover {
+      background: var(--c-red);
+      color: #fff;
+      border-color: var(--c-red);
+    }
+    .btn-delete {
+      color: var(--c-coral);
+    }
+    .btn-delete:hover {
+      background: #ffebeb;
+      border-color: var(--c-red);
+      color: var(--c-red);
+    }
+
+    @media (max-width: 860px) {
+      .panel-grid { grid-template-columns: 1fr; }
+      header { padding: 1rem 1.2rem; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Vista 1: Login -->
-  <div id="pantalla-login">
-    <h2>Acceso Administrador</h2>
-    <p style="margin-bottom: 1.5rem; color: #666; font-size: 0.9rem;">Ingresá la contraseña maestra para gestionar el catálogo</p>
-    <form id="form-login">
-      <input type="password" id="input-password" placeholder="Contraseña de admin" required>
-      <button type="submit" class="btn-principal">Ingresar</button>
-    </form>
-    <div id="login-error" class="mensaje error" style="display: none; margin-top: 1rem;"></div>
-    <a class="enlace-tienda" href="index.html" style="display: block; margin-top: 1.5rem;">← Volver a la Tienda</a>
-  </div>
-
-  <!-- Vista 2: Panel Admin -->
-  <div id="panel-admin">
-    <div class="layout">
-      <div class="top-bar">
-        <a class="enlace-tienda" href="index.html">← Volver a la Tienda</a>
-        <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
-      </div>
-
-      <div class="card-panel">
-        <h2>Nuevo Perfume</h2>
-        <form id="formulario-producto">
-          <div class="campo">
-            <label for="nombre">Nombre</label>
-            <input type="text" id="nombre" required>
-          </div>
-
-          <div class="campo">
-            <label for="familia">Familia Olfativa</label>
-            <select id="familia" required>
-              <option value="">Seleccionar...</option>
-              <option value="Cítrico / Acuático">Cítrico / Acuático</option>
-              <option value="Oriental / Especiado">Oriental / Especiado</option>
-              <option value="Amaderado">Amaderado</option>
-              <option value="Floral">Floral</option>
-              <option value="Gourmand">Gourmand</option>
-            </select>
-          </div>
-
-          <div class="campo">
-            <label for="precio">Precio ($)</label>
-            <input type="number" id="precio" step="0.01" required>
-          </div>
-
-          <!-- Selector de archivo local -->
-          <div class="campo">
-            <label for="imagen">Seleccionar Imagen (JPG, PNG, WEBP)</label>
-            <input type="file" id="imagen" accept="image/*" required>
-          </div>
-
-          <div class="campo">
-            <label for="descripcion">Descripción / Notas</label>
-            <textarea id="descripcion"></textarea>
-          </div>
-
-          <button type="submit" class="btn-principal">Guardar Perfume</button>
-        </form>
-        <div id="mensaje-estado" class="mensaje" style="display: none;"></div>
-      </div>
-
-      <div class="card-panel">
-        <h2>Perfumes en Catálogo</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Foto</th>
-              <th>Nombre</th>
-              <th>Familia</th>
-              <th>Precio</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="tabla-cuerpo"></tbody>
-        </table>
-      </div>
+  <header>
+    <div style="display: flex; align-items: center; gap: 0.8rem;">
+      <div class="brand-logo">Parfum Studio</div>
+      <span class="badge-admin">Admin</span>
     </div>
-  </div>
+    <div class="nav-actions">
+      <a href="/" class="btn-outline">Ver Tienda</a>
+      <button id="btn-cerrar-sesion" class="btn-outline" style="display: none;" onclick="cerrarSesion()">Salir</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- LOGIN -->
+    <section id="seccion-login">
+      <div class="login-card">
+        <h2>Panel de Gestión</h2>
+        <p>Ingresá la contraseña maestra para administrar el catálogo.</p>
+        
+        <input 
+          type="password" 
+          id="clave-admin" 
+          class="input-field" 
+          placeholder="••••••••••••"
+          onkeydown="if(event.key === 'Enter') loginAdmin()"
+        >
+        
+        <button class="btn-primary" onclick="loginAdmin()">Ingresar</button>
+        <div id="login-error" class="msg-error"></div>
+      </div>
+    </section>
+
+    <!-- PANEL DE ADMINISTRACIÓN -->
+    <section id="seccion-panel">
+      <div class="panel-grid">
+        
+        <!-- Formulario Cargar Perfume -->
+        <div class="panel-box">
+          <h3>Nuevo Perfume</h3>
+          <form id="form-nuevo-perfume" onsubmit="crearPerfume(event)">
+            <div class="form-group">
+              <label>Nombre</label>
+              <input type="text" id="prod-nombre" class="input-field" required placeholder="Ej: Santal Sauvage">
+            </div>
+
+            <div class="form-group">
+              <label>Familia Olfativa</label>
+              <select id="prod-familia" class="input-field" required>
+                <option value="Cítrico / Acuático">Cítrico / Acuático</option>
+                <option value="Oriental / Especiado">Oriental / Especiado</option>
+                <option value="Amaderado">Amaderado</option>
+                <option value="Floral">Floral</option>
+                <option value="Gourmand">Gourmand</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Precio ($)</label>
+              <input type="number" id="prod-precio" step="0.01" class="input-field" required placeholder="45000">
+            </div>
+
+            <div class="form-group">
+              <label>Descripción</label>
+              <textarea id="prod-desc" class="input-field" placeholder="Notas, concentración, acordes..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Fotografía</label>
+              <input type="file" id="prod-imagen" class="input-field" accept="image/*" required>
+            </div>
+
+            <button type="submit" class="btn-primary" id="btn-submit-perfume">Cargar al Catálogo</button>
+          </form>
+        </div>
+
+        <!-- Listado de Productos -->
+        <div class="panel-box">
+          <h3>Perfumes Publicados</h3>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Foto</th>
+                  <th>Detalles</th>
+                  <th>Precio ($)</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-productos"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
 
   <script>
-    const pantallaLogin = document.getElementById('pantalla-login');
-    const panelAdmin = document.getElementById('panel-admin');
-    const formLogin = document.getElementById('form-login');
-    const inputPassword = document.getElementById('input-password');
-    const loginError = document.getElementById('login-error');
+    let adminClave = sessionStorage.getItem('admin_token') || '';
 
-    const formulario = document.getElementById('formulario-producto');
-    const mensajeEstado = document.getElementById('mensaje-estado');
-    const tablaCuerpo = document.getElementById('tabla-cuerpo');
+    if (adminClave) {
+      mostrarPanel();
+    }
 
-    verificarSesionActiva();
+    async function loginAdmin() {
+      const claveInput = document.getElementById('clave-admin').value.trim();
+      const errBox = document.getElementById('login-error');
+      errBox.style.display = 'none';
 
-    async function verificarSesionActiva() {
-      const claveGuardada = sessionStorage.getItem('admin_key');
-      if (!claveGuardada) {
-        mostrarLogin();
+      if (!claveInput) {
+        errBox.textContent = 'Por favor ingresá la contraseña';
+        errBox.style.display = 'block';
         return;
       }
 
       try {
-        const res = await fetch('http://localhost:3000/api/admin/login', {
+        const res = await fetch('/api/admin/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ clave: claveGuardada })
+          body: JSON.stringify({ clave: claveInput })
         });
 
-        if (res.ok) {
+        const data = await res.json();
+        if (res.ok && data.ok) {
+          adminClave = claveInput;
+          sessionStorage.setItem('admin_token', adminClave);
           mostrarPanel();
-          listarProductos();
         } else {
-          sessionStorage.removeItem('admin_key');
-          mostrarLogin();
-        }
-      } catch (e) {
-        mostrarLogin();
-      }
-    }
-
-    formLogin.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const clave = inputPassword.value.trim();
-
-      try {
-        const res = await fetch('http://localhost:3000/api/admin/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ clave })
-        });
-
-        if (res.ok) {
-          sessionStorage.setItem('admin_key', clave);
-          loginError.style.display = 'none';
-          mostrarPanel();
-          listarProductos();
-        } else {
-          loginError.textContent = 'Contraseña incorrecta.';
-          loginError.style.display = 'block';
+          errBox.textContent = data.error || 'Contraseña incorrecta';
+          errBox.style.display = 'block';
         }
       } catch (err) {
-        loginError.textContent = 'Error de conexión con el servidor.';
-        loginError.style.display = 'block';
+        errBox.textContent = 'Error de conexión con el servidor.';
+        errBox.style.display = 'block';
       }
-    });
-
-    function mostrarLogin() {
-      pantallaLogin.style.display = 'block';
-      panelAdmin.style.display = 'none';
     }
 
     function mostrarPanel() {
-      pantallaLogin.style.display = 'none';
-      panelAdmin.style.display = 'block';
+      document.getElementById('seccion-login').style.display = 'none';
+      document.getElementById('seccion-panel').style.display = 'block';
+      document.getElementById('btn-cerrar-sesion').style.display = 'inline-block';
+      cargarTablaProductos();
     }
 
     function cerrarSesion() {
-      sessionStorage.removeItem('admin_key');
-      inputPassword.value = '';
-      mostrarLogin();
+      sessionStorage.removeItem('admin_token');
+      adminClave = '';
+      window.location.reload();
     }
 
-    async function listarProductos() {
+    async function cargarTablaProductos() {
+      const tbody = document.getElementById('tabla-productos');
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Cargando catálogo...</td></tr>';
+
       try {
-        const res = await fetch('http://localhost:3000/api/productos');
+        const res = await fetch('/api/productos');
         const productos = await res.json();
 
-        tablaCuerpo.innerHTML = '';
-        productos.forEach(p => {
-          tablaCuerpo.innerHTML += `
-            <tr>
-              <td><img src="${p.imagen_url}" alt="${p.nombre}" class="img-miniatura"></td>
-              <td><strong>${p.nombre}</strong></td>
-              <td>${p.familia}</td>
-              <td>$${Number(p.precio).toLocaleString('es-AR')}</td>
-              <td>
-                <div class="acciones">
-                  <button class="btn-accion btn-editar" onclick="editarPrecio(${p.id}, ${p.precio})">Editar Precio</button>
-                  <button class="btn-accion btn-borrar" onclick="eliminarProducto(${p.id})">Borrar</button>
-                </div>
-              </td>
-            </tr>
+        if (productos.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No hay perfumes cargados todavía.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = '';
+        productos.forEach(prod => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>
+              <img src="${prod.imagen_url}" class="td-img" alt="${prod.nombre}">
+            </td>
+            <td>
+              <div class="td-title">${prod.nombre}</div>
+              <div class="td-family">${prod.familia}</div>
+            </td>
+            <td>
+              <input type="number" id="input-precio-${prod.id}" class="price-input" value="${prod.precio}" step="0.01">
+            </td>
+            <td>
+              <div class="table-actions">
+                <button class="btn-action btn-save" onclick="actualizarPrecio(${prod.id})">Guardar</button>
+                <button class="btn-action btn-delete" onclick="eliminarProducto(${prod.id})">Borrar</button>
+              </div>
+            </td>
           `;
+          tbody.appendChild(tr);
         });
       } catch (err) {
-        console.error(err);
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--c-red);">Error al cargar productos.</td></tr>';
       }
     }
 
-    // Guardar nuevo perfume con FormData
-    formulario.addEventListener('submit', async (e) => {
+    async function crearPerfume(e) {
       e.preventDefault();
-      const clave = sessionStorage.getItem('admin_key');
+      const btn = document.getElementById('btn-submit-perfume');
+      btn.disabled = true;
+      btn.textContent = 'Subiendo...';
 
-      // Creamos un FormData para empaquetar archivo + textos
       const formData = new FormData();
-      formData.append('nombre', document.getElementById('nombre').value.trim());
-      formData.append('familia', document.getElementById('familia').value);
-      formData.append('precio', parseFloat(document.getElementById('precio').value));
-      formData.append('descripcion', document.getElementById('descripcion').value.trim());
-      
-      const archivoImagen = document.getElementById('imagen').files[0];
-      if (archivoImagen) {
-        formData.append('imagen', archivoImagen);
-      }
+      formData.append('nombre', document.getElementById('prod-nombre').value.trim());
+      formData.append('familia', document.getElementById('prod-familia').value);
+      formData.append('precio', document.getElementById('prod-precio').value);
+      formData.append('descripcion', document.getElementById('prod-desc').value.trim());
+      formData.append('imagen', document.getElementById('prod-imagen').files[0]);
 
       try {
-        const res = await fetch('http://localhost:3000/api/productos', {
+        const res = await fetch('/api/productos', {
           method: 'POST',
           headers: {
-            // Nota: NO se pone 'Content-Type' cuando se usa FormData; el navegador lo configura automáticamente
-            'x-admin-key': clave
+            'x-admin-key': adminClave
           },
           body: formData
         });
 
+        const data = await res.json();
         if (res.ok) {
-          mensajeEstado.textContent = '¡Perfume e imagen subidos con éxito!';
-          mensajeEstado.className = 'mensaje exito';
-          mensajeEstado.style.display = 'block';
-          formulario.reset();
-          listarProductos();
+          alert('¡Perfume agregado con éxito!');
+          document.getElementById('form-nuevo-perfume').reset();
+          cargarTablaProductos();
         } else {
-          const data = await res.json();
-          mensajeEstado.textContent = data.error || 'Error al guardar.';
-          mensajeEstado.className = 'mensaje error';
-          mensajeEstado.style.display = 'block';
+          alert('Error: ' + (data.error || 'No se pudo agregar'));
         }
-      } catch (error) {
-        mensajeEstado.textContent = 'Error de conexión con el backend.';
-        mensajeEstado.className = 'mensaje error';
-        mensajeEstado.style.display = 'block';
+      } catch (err) {
+        alert('Error de conexión al cargar producto.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Cargar al Catálogo';
       }
-    });
+    }
 
-    async function editarPrecio(id, precioActual) {
-      const nuevoPrecio = prompt('Ingresá el nuevo precio:', precioActual);
-      if (!nuevoPrecio || isNaN(nuevoPrecio)) return;
+    async function actualizarPrecio(id) {
+      const nuevoPrecio = document.getElementById(`input-precio-${id}`).value;
+      if (!nuevoPrecio || isNaN(nuevoPrecio)) return alert('Ingresá un precio válido.');
 
-      const clave = sessionStorage.getItem('admin_key');
-      const res = await fetch(`http://localhost:3000/api/productos/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-admin-key': clave
-        },
-        body: JSON.stringify({ precio: parseFloat(nuevoPrecio) })
-      });
+      try {
+        const res = await fetch(`/api/productos/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-key': adminClave
+          },
+          body: JSON.stringify({ precio: nuevoPrecio })
+        });
 
-      if (res.ok) listarProductos();
-      else alert('No autorizado para modificar precios.');
+        const data = await res.json();
+        if (res.ok) {
+          alert('Precio actualizado correctamente');
+        } else {
+          alert('Error: ' + (data.error || 'No se pudo actualizar'));
+        }
+      } catch (err) {
+        alert('Error de red al actualizar precio.');
+      }
     }
 
     async function eliminarProducto(id) {
-      if (!confirm('¿Eliminar perfume del catálogo?')) return;
+      if (!confirm('¿Estás seguro de que querés eliminar este perfume?')) return;
 
-      const clave = sessionStorage.getItem('admin_key');
-      const res = await fetch(`http://localhost:3000/api/productos/${id}`, {
-        method: 'DELETE',
-        headers: { 'x-admin-key': clave }
-      });
+      try {
+        const res = await fetch(`/api/productos/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'x-admin-key': adminClave
+          }
+        });
 
-      if (res.ok) listarProductos();
-      else alert('No autorizado para eliminar.');
+        const data = await res.json();
+        if (res.ok) {
+          cargarTablaProductos();
+        } else {
+          alert('Error: ' + (data.error || 'No se pudo eliminar'));
+        }
+      } catch (err) {
+        alert('Error de red al eliminar.');
+      }
     }
   </script>
 </body>
