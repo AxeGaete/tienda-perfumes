@@ -85,25 +85,32 @@ app.get('/api/productos', (req, res) => {
   });
 });
 
-// POST productos (soporta múltiples imágenes: hasta 5 fotos)
-app.post('/api/productos', verificarAdmin, upload.array('imagenes', 5), (req, res) => {
-  const { nombre, familia, descripcion, precio } = req.body;
-  if (!nombre || !familia || !precio || !req.files || req.files.length === 0) {
-    return res.status(400).json({ error: 'Todos los campos y al menos una imagen son obligatorios' });
-  }
-
-  // Guardar rutas como array JSON para compatibilidad con la galería
-  const rutasImagenes = req.files.map(file => `/uploads/${file.filename}`);
-  const imagen_url = JSON.stringify(rutasImagenes);
-
-  const sql = `INSERT INTO productos (nombre, familia, descripcion, precio, imagen_url) VALUES (?, ?, ?, ?, ?)`;
-
-  db.query(sql, [nombre, familia, descripcion, precio, imagen_url], (err, result) => {
+// POST productos (con manejo de errores de Multer para evitar el 500 no controlado)
+app.post('/api/productos', verificarAdmin, (req, res) => {
+  upload.array('imagenes', 5)(req, res, (err) => {
     if (err) {
-      console.error('Error al insertar:', err);
-      return res.status(500).json({ error: 'Error en la base de datos' });
+      console.error('Error Multer al procesar archivos:', err);
+      return res.status(400).json({ error: `Error en la subida de fotos: ${err.message}` });
     }
-    res.status(201).json({ mensaje: 'Perfume agregado', id: result.insertId });
+
+    const { nombre, familia, descripcion, precio } = req.body;
+    if (!nombre || !familia || !precio || !req.files || req.files.length === 0) {
+      return res.status(400).json({ error: 'Todos los campos y al menos una imagen son obligatorios' });
+    }
+
+    // Guardar rutas relativas serializadas en formato JSON
+    const rutasImagenes = req.files.map(file => `/uploads/${file.filename}`);
+    const imagen_url = JSON.stringify(rutasImagenes);
+
+    const sql = `INSERT INTO productos (nombre, familia, descripcion, precio, imagen_url) VALUES (?, ?, ?, ?, ?)`;
+
+    db.query(sql, [nombre, familia, descripcion, precio, imagen_url], (dbErr, result) => {
+      if (dbErr) {
+        console.error('Error en base de datos al insertar:', dbErr);
+        return res.status(500).json({ error: 'Error en la base de datos: ' + dbErr.message });
+      }
+      res.status(201).json({ mensaje: 'Perfume agregado con éxito', id: result.insertId });
+    });
   });
 });
 
