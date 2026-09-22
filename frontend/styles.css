@@ -1639,3 +1639,15 @@ body {
   .nav-links { display: none; }
   .footer-container { grid-template-columns: 1fr; gap: 2rem; }
 }
+
+/* =========================================================
+   DIVISORES DE SECCIÓN CON LÍNEAS GRADUALES
+   ========================================================= */
+.section-divider {
+  width: 100%;
+  max-width: 1000px;
+  height: 1px;
+  margin: 2rem auto;
+  background: linear-gradient(90deg, transparent, var(--c-border), transparent);
+  border: none;
+}
