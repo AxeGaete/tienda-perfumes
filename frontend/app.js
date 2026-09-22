@@ -562,7 +562,7 @@ chipsEstacion.forEach(b => {
 
 document.addEventListener('DOMContentLoaded', cargarCatalogo);
 
-// ================= MÚSICA AMBIENTE (JS DIRECTO) =================
+// ================= MÚSICA AMBIENTE (ROBUSTA) =================
 let reproduciendoMusica = false;
 let audioAmbiente = null;
 
@@ -571,13 +571,17 @@ window.toggleMusicaAmbiente = function() {
   const btn = document.getElementById('ambient-toggle-btn');
   const slider = document.getElementById('volume-slider');
 
-  // Inicializar el objeto de audio si no existe
   if (!audioAmbiente) {
-    audioAmbiente = new Audio('https://cdn.pixabay.com/download/audio/2023/04/11/audio_4969bcbc7f.mp3?filename=deep-future-bass-143365.mp3');
+    // Usamos una URL directa alternativa con cabeceras abiertas de streaming
+    audioAmbiente = new Audio('https://actions.google.com/sounds/v1/ambiences/coffee_shop.ogg');
     audioAmbiente.loop = true;
+    
+    audioAmbiente.addEventListener('error', (e) => {
+      console.error("Error al cargar el audio:", e);
+      alert("No se pudo cargar la pista de audio. Verificá la conexión.");
+    });
   }
 
-  // Sincronizar volumen inicial o actual del slider
   if (slider) {
     audioAmbiente.volume = parseFloat(slider.value);
   }
@@ -585,7 +589,7 @@ window.toggleMusicaAmbiente = function() {
   if (reproduciendoMusica) {
     audioAmbiente.pause();
     reproduciendoMusica = false;
-    label.textContent = 'Música Pausada';
+    label.textContent = 'Música Ambiente';
     btn.style.backgroundColor = 'var(--c-red-subtle)';
     btn.style.color = 'var(--c-red)';
   } else {
@@ -595,8 +599,8 @@ window.toggleMusicaAmbiente = function() {
       btn.style.backgroundColor = 'var(--c-red)';
       btn.style.color = '#fff';
     }).catch(err => {
-      console.log("Bloqueo de reproducción automática:", err);
-      alert("Tocá de nuevo el botón para activar la música.");
+      console.log("Restricción del navegador:", err);
+      alert("Tocá de nuevo el botón para habilitar el sonido.");
     });
   }
 };
