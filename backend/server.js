@@ -13,7 +13,6 @@ app.use(express.json());
 
 const ADMIN_SECRET_KEY = process.env.ADMIN_SECRET_KEY || 'perfumeAdmin2026';
 
-// Configuración de conexión MySQL (soporta DATABASE_URL o variables individuales)
 let dbConfig;
 if (process.env.DATABASE_URL) {
   dbConfig = {
@@ -39,17 +38,14 @@ if (process.env.DATABASE_URL) {
 
 const db = mysql.createPool(dbConfig);
 
-// Carpeta uploads con ruta absoluta y creación garantizada
 const uploadsDir = path.resolve(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 app.use('/uploads', express.static(uploadsDir));
 
-// Servir archivos estáticos del frontend
 app.use(express.static(path.resolve(__dirname, '../frontend')));
 
-// Configuración de almacenamiento Multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadsDir),
   filename: (req, file, cb) => {
@@ -67,14 +63,12 @@ function verificarAdmin(req, res, next) {
   next();
 }
 
-// Endpoint de login
 app.post('/api/admin/login', (req, res) => {
   const { clave } = req.body;
   if (clave === ADMIN_SECRET_KEY) return res.json({ ok: true });
   res.status(401).json({ error: 'Contraseña incorrecta' });
 });
 
-// GET productos
 app.get('/api/productos', (req, res) => {
   db.query('SELECT * FROM productos ORDER BY id DESC', (err, results) => {
     if (err) {
@@ -85,7 +79,6 @@ app.get('/api/productos', (req, res) => {
   });
 });
 
-// POST productos (con orden exacto de fotografías definido por el admin)
 app.post('/api/productos', verificarAdmin, (req, res) => {
   const uploadHandler = upload.fields([
     { name: 'imagenes', maxCount: 5 },
@@ -94,66 +87,32 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
 
   uploadHandler(req, res, (err) => {
     if (err) {
-      console.error('Error Multer al procesar archivos:', err);
-      return res.status(400).json({ error: `Error en la subida de fotos: ${err.message}` });
+      return res.status(400).json({ error: `Error en subida: ${err.message}` });
     }
 
-    const { 
-      nombre, 
-      familia, 
-      descripcion, 
-      precio, 
-      tipo,
-      genero, 
-      estacion, 
-      notas_salida, 
-      notas_corazon, 
-      notas_fondo,
-      destacado_hero,
-      estado_stock
-    } = req.body;
-
+    const { nombre, familia, descripcion, precio, tipo, genero, estacion, notas_salida, notas_corazon, notas_fondo, destacado_hero, estado_stock } = req.body;
     const archivos = (req.files && (req.files['imagenes'] || req.files['imagen'])) || [];
 
     if (!nombre || !familia || !precio || archivos.length === 0) {
       return res.status(400).json({ error: 'Todos los campos básicos y al menos una imagen son obligatorios' });
     }
 
-    // Se guardan respetando exactamente el orden en que el administrador las organizó
     const rutasImagenes = archivos.map(file => `/uploads/${file.filename}`);
     const imagen_url = JSON.stringify(rutasImagenes);
     const esHero = (destacado_hero === '1' || destacado_hero === true || destacado_hero === 'true') ? 1 : 0;
     const stockVal = estado_stock || 'En Stock';
 
-    const sql = `INSERT INTO productos 
-      (nombre, familia, descripcion, precio, imagen_url, tipo, genero, estacion, notas_salida, notas_corazon, notas_fondo, destacado_hero, estado_stock) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const sql = `INSERT INTO productos (nombre, familia, descripcion, precio, imagen_url, tipo, genero, estacion, notas_salida, notas_corazon, notas_fondo, destacado_hero, estado_stock) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-    db.query(sql, [
-      nombre, 
-      familia, 
-      descripcion || '', 
-      precio, 
-      imagen_url, 
-      tipo || 'Diseñador',
-      genero || 'Unisex',
-      estacion || 'Todo el año',
-      notas_salida || '', 
-      notas_corazon || '', 
-      notas_fondo || '',
-      esHero,
-      stockVal
-    ], (dbErr, result) => {
+    db.query(sql, [nombre, familia, descripcion || '', precio, imagen_url, tipo || 'Diseñador', genero || 'Unisex', estacion || 'Todo el año', notas_salida || '', notas_corazon || '', notas_fondo || '', esHero, stockVal], (dbErr, result) => {
       if (dbErr) {
-        console.error('Error en base de datos al insertar:', dbErr);
-        return res.status(500).json({ error: 'Error en la base de datos: ' + dbErr.message });
+        return res.status(500).json({ error: 'Error en la base de datos' });
       }
       res.status(201).json({ mensaje: 'Perfume agregado con éxito', id: result.insertId });
     });
   });
 });
 
-// PUT producto completo (información, reordenamiento de fotos existentes y/o nuevas imágenes)
 app.put('/api/productos/:id', verificarAdmin, (req, res) => {
   const uploadHandler = upload.fields([
     { name: 'imagenes', maxCount: 5 },
@@ -162,26 +121,11 @@ app.put('/api/productos/:id', verificarAdmin, (req, res) => {
 
   uploadHandler(req, res, (err) => {
     if (err) {
-      console.error('Error Multer al procesar fotos en edición:', err);
-      return res.status(400).json({ error: `Error en la subida de fotos: ${err.message}` });
+      return res.status(400).json({ error: `Error en subida: ${err.message}` });
     }
 
     const { id } = req.params;
-    const { 
-      nombre, 
-      familia, 
-      descripcion, 
-      precio, 
-      tipo,
-      genero, 
-      estacion, 
-      notas_salida, 
-      notas_corazon, 
-      notas_fondo,
-      destacado_hero,
-      estado_stock,
-      fotos_existentes
-    } = req.body;
+    const { nombre, familia, descripcion, precio, tipo, genero, estacion, notas_salida, notas_corazon, notas_fondo, destacado_hero, estado_stock, fotos_existentes } = req.body;
 
     if (!nombre || !familia || !precio) {
       return res.status(400).json({ error: 'Nombre, familia y precio son obligatorios' });
@@ -194,39 +138,57 @@ app.put('/api/productos/:id', verificarAdmin, (req, res) => {
 
     const archivosNuevos = (req.files && (req.files['imagenes'] || req.files['imagen'])) || [];
     const nuevasUrls = archivosNuevos.map(file => `/uploads/${file.filename}`);
-
-    // Combinar las fotos existentes reordenadas con las nuevas fotos agregadas
     const imagen_url = JSON.stringify([...fotosAntiguasOrdenadas, ...nuevasUrls]);
     const esHero = (destacado_hero === '1' || destacado_hero === true || destacado_hero === 'true') ? 1 : 0;
     const stockVal = estado_stock || 'En Stock';
 
-    const sql = `UPDATE productos SET 
-      nombre = ?, familia = ?, descripcion = ?, precio = ?, tipo = ?, 
-      genero = ?, estacion = ?, notas_salida = ?, notas_corazon = ?, 
-      notas_fondo = ?, destacado_hero = ?, estado_stock = ?, imagen_url = ? 
-      WHERE id = ?`;
+    const sql = `UPDATE productos SET nombre = ?, familia = ?, descripcion = ?, precio = ?, tipo = ?, genero = ?, estacion = ?, notas_salida = ?, notas_corazon = ?, notas_fondo = ?, destacado_hero = ?, estado_stock = ?, imagen_url = ? WHERE id = ?`;
 
-    db.query(sql, [
-      nombre, familia, descripcion || '', precio, tipo || 'Diseñador',
-      genero || 'Unisex', estacion || 'Todo el año', notas_salida || '',
-      notas_corazon || '', notas_fondo || '', esHero, stockVal, imagen_url, id
-    ], (dbErr, result) => {
+    db.query(sql, [nombre, familia, descripcion || '', precio, tipo || 'Diseñador', genero || 'Unisex', estacion || 'Todo el año', notas_salida || '', notas_corazon || '', notas_fondo || '', esHero, stockVal, imagen_url, id], (dbErr) => {
       if (dbErr) {
-        console.error('Error al actualizar perfume:', dbErr);
         return res.status(500).json({ error: 'Error en la base de datos' });
       }
-      res.json({ mensaje: 'Perfume y orden de fotos actualizados con éxito' });
+      res.json({ mensaje: 'Perfume actualizado con éxito' });
     });
   });
 });
 
-// DELETE producto
 app.delete('/api/productos/:id', verificarAdmin, (req, res) => {
   const { id } = req.params;
   db.query('DELETE FROM productos WHERE id = ?', [id], (err, result) => {
     if (err) return res.status(500).json({ error: 'Error al eliminar' });
     if (result.affectedRows === 0) return res.status(404).json({ error: 'No encontrado' });
     res.json({ mensaje: 'Perfume eliminado con éxito' });
+  });
+});
+
+// ================= ENDPOINTS DE RESEÑAS =================
+app.get('/api/productos/:id/resenas', (req, res) => {
+  const { id } = req.params;
+  db.query('SELECT * FROM resenas WHERE producto_id = ? ORDER BY id DESC', [id], (err, results) => {
+    if (err) {
+      console.error('Error al obtener reseñas:', err);
+      return res.status(500).json({ error: 'Error al cargar reseñas' });
+    }
+    res.json(results);
+  });
+});
+
+app.post('/api/productos/:id/resenas', (req, res) => {
+  const { id } = req.params;
+  const { autor, estrellas, comentario } = req.body;
+
+  if (!autor || !estrellas || !comentario) {
+    return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+  }
+
+  const sql = 'INSERT INTO resenas (producto_id, autor, estrellas, comentario) VALUES (?, ?, ?, ?)';
+  db.query(sql, [id, autor, parseInt(estrellas), comentario], (err, result) => {
+    if (err) {
+      console.error('Error al guardar reseña:', err);
+      return res.status(500).json({ error: 'Error al guardar la reseña' });
+    }
+    res.status(201).json({ mensaje: 'Reseña agregada con éxito', id: result.insertId });
   });
 });
 
