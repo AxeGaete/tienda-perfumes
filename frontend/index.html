@@ -458,14 +458,13 @@
     <div class="cart-items-container" id="cart-items-container"></div>
 
     <div class="cart-footer">
-      <!-- Calculador de Envío por Zona -->
-      <div class="envio-box" style="background: var(--bg-soft, #F8F9FA); border: 1px solid var(--c-border, #EEEEEE); border-radius: 8px; padding: 0.8rem; margin-bottom: 0.8rem;">
-        <label for="select-envio" style="display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.4rem; color: var(--text-dark);">Método de Envío / Retiro:</label>
-        <select id="select-envio" class="input-field" style="margin-bottom: 0; font-size: 0.85rem; padding: 0.5rem;" onchange="actualizarUICarrito()">
+      <!-- Calculador de Envío por Zona con Estilo Propio -->
+      <div class="envio-box" style="background: var(--bg-main); border: 1px solid var(--c-border); border-radius: var(--radius-md, 12px); padding: 1rem; margin-bottom: 0.8rem;">
+        <label for="select-envio" style="display: block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5px; color: var(--text-dark);">Método de Envío / Retiro:</label>
+        <select id="select-envio" class="input-field" style="width: 100%; margin-bottom: 0; font-size: 0.85rem; padding: 0.65rem; border-radius: 8px; border: 1px solid var(--c-border); background: var(--bg-soft, #FAFAFA); color: var(--text-dark); cursor: pointer;" onchange="actualizarUICarrito()">
           <option value="retiro">📦 Retiro sin cargo en Ciudadela</option>
-          <option value="moto_oeste">🏍️ Envío Express Moto (Ciudadela/Ramos/Haedo) - $3.500</option>
-          <option value="moto_caba">🛵 Envío Moto CABA - $6.500</option>
-          <option value="correo">📮 Envío a todo el país (Correo) - $9.500</option>
+          <option value="moto_oeste">🏍️ Moto Express (Ciudadela/Ramos/Haedo) — $3.500</option>
+          <option value="moto_caba">🛵 Moto CABA — $6.500</option>
         </select>
       </div>
 

@@ -544,13 +544,12 @@ function actualizarUICarrito() {
     contenedor.appendChild(div);
   });
 
-  // Calcular costos de envío
+  // Calcular costos de envío locales
   let costoEnvio = 0;
   if (selectEnvio) {
     const valEnvio = selectEnvio.value;
     if (valEnvio === 'moto_oeste') costoEnvio = 3500;
     else if (valEnvio === 'moto_caba') costoEnvio = 6500;
-    else if (valEnvio === 'correo') costoEnvio = 9500;
   }
 
   let baseCalculo = subtotal;
@@ -591,13 +590,10 @@ function finalizarCompraWhatsApp() {
     const val = selectEnvio.value;
     if (val === 'moto_oeste') {
       costoEnvio = 3500;
-      textoEnvioSeleccionado = 'Envío Express Moto (Ciudadela/Ramos/Haedo) - $3.500';
+      textoEnvioSeleccionado = 'Moto Express (Ciudadela/Ramos/Haedo) - $3.500';
     } else if (val === 'moto_caba') {
       costoEnvio = 6500;
-      textoEnvioSeleccionado = 'Envío Moto CABA - $6.500';
-    } else if (val === 'correo') {
-      costoEnvio = 9500;
-      textoEnvioSeleccionado = 'Envío a todo el país (Correo) - $9.500';
+      textoEnvioSeleccionado = 'Moto CABA - $6.500';
     }
   }
 
