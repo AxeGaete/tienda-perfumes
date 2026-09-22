@@ -705,7 +705,7 @@ body {
 }
 
 /* =========================================================
-   GRILLA DE PERFUMES (FORZADO A FONDO BLANCO)
+   GRILLA DE PERFUMES (TARJETA OSCURA, CAJA DE FOTO BLANCA)
    ========================================================= */
 .products-grid {
   display: grid;
@@ -714,7 +714,7 @@ body {
 }
 
 .product-card {
-  background: #FFFFFF !important;
+  background: var(--bg-main);
   border: 1px solid var(--c-border);
   border-radius: var(--radius-md);
   overflow: hidden;
@@ -775,7 +775,7 @@ body {
 }
 
 .card-title-link {
-  color: #1A1A1E !important;
+  color: var(--text-dark);
   text-decoration: none;
   transition: var(--transition);
 }
@@ -786,7 +786,7 @@ body {
 
 .product-desc {
   font-size: 0.88rem;
-  color: #6C727F !important;
+  color: var(--text-muted);
   margin-bottom: 1.2rem;
   flex-grow: 1;
   display: -webkit-box;
@@ -812,8 +812,8 @@ body {
 .btn-ver-detalle {
   display: block;
   text-align: center;
-  background-color: #F8F9FA;
-  color: #1A1A1E;
+  background-color: var(--bg-soft);
+  color: var(--text-dark);
   border: 1px solid var(--c-border);
   text-decoration: none;
   padding: 0.75rem;
@@ -824,9 +824,9 @@ body {
 }
 
 .btn-ver-detalle:hover {
-  background-color: #1A1A1E;
-  color: #FFFFFF;
-  border-color: #1A1A1E;
+  background-color: var(--text-dark);
+  color: var(--bg-main);
+  border-color: var(--text-dark);
 }
 
 .btn-card-add-cart {
@@ -848,7 +848,7 @@ body {
 }
 
 /* =========================================================
-   SECCIÓN DETALLE ESTILO E-COMMERCE MODERNO (FORZADO A BLANCO)
+   SECCIÓN DETALLE ESTILO E-COMMERCE MODERNO
    ========================================================= */
 .detail-section {
   max-width: 1200px;
@@ -857,7 +857,7 @@ body {
 }
 
 .detail-card {
-  background: #FFFFFF !important;
+  background: var(--bg-main);
   border: 1px solid var(--c-border);
   border-radius: var(--radius-lg);
   display: grid;
@@ -865,6 +865,7 @@ body {
   gap: 3.5rem;
   padding: 3.5rem;
   box-shadow: var(--shadow-subtle);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .detail-gallery {
@@ -900,9 +901,9 @@ body {
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: #FFFFFF;
+  background: var(--bg-main);
   border: 1px solid var(--c-border);
-  color: #1A1A1E;
+  color: var(--text-dark);
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   font-size: 1rem;
   cursor: pointer;
@@ -970,8 +971,8 @@ body {
 .badge-tag {
   font-size: 0.68rem;
   font-weight: 700;
-  background-color: #F8F9FA;
-  color: #6C727F;
+  background-color: var(--bg-soft);
+  color: var(--text-muted);
   padding: 0.2rem 0.6rem;
   border-radius: 12px;
   border: 1px solid var(--c-border);
@@ -982,7 +983,6 @@ body {
   font-weight: 800;
   letter-spacing: -0.5px;
   margin-bottom: 0.5rem;
-  color: #1A1A1E !important;
 }
 
 .detail-price {
@@ -997,7 +997,7 @@ body {
   flex-direction: column;
   gap: 0.7rem;
   margin-bottom: 1.6rem;
-  background: #F8F9FA !important;
+  background: var(--bg-soft);
   padding: 1.2rem;
   border-radius: var(--radius-sm);
   border: 1px solid var(--c-border);
@@ -1021,13 +1021,13 @@ body {
 
 .note-value {
   font-size: 0.9rem;
-  color: #1A1A1E !important;
+  color: var(--text-dark);
   font-weight: 500;
 }
 
 .detail-description {
   font-size: 0.95rem;
-  color: #6C727F !important;
+  color: var(--text-muted);
   line-height: 1.7;
   margin-bottom: 2rem;
 }
@@ -1410,7 +1410,7 @@ body {
   width: 65px;
   height: 65px;
   object-fit: contain;
-  background-color: var(--bg-main);
+  background-color: #FFFFFF !important;
   border-radius: var(--radius-sm);
   border: 1px solid var(--c-border);
   padding: 4px;
@@ -1678,7 +1678,7 @@ body {
 
 .review-form textarea.input-field {
   border-radius: var(--radius-md);
-  resize: vertical;
+  resize: virtual;
   min-height: 90px;
 }
 
