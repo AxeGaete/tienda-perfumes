@@ -156,16 +156,93 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
       res.status(201).json({ mensaje: 'Perfume agregado con éxito', id: result.insertId });
     });
   });
-});// PUT precio
-app.put('/api/productos/:id', verificarAdmin, (req, res) => {
-  const { id } = req.params;
-  const { precio } = req.body;
-  if (precio === undefined || isNaN(precio)) return res.status(400).json({ error: 'Precio inválido' });
+});
 
-  db.query('UPDATE productos SET precio = ? WHERE id = ?', [precio, id], (err, result) => {
-    if (err) return res.status(500).json({ error: 'Error al actualizar' });
-    if (result.affectedRows === 0) return res.status(404).json({ error: 'No encontrado' });
-    res.json({ mensaje: 'Precio actualizado con éxito' });
+// PUT producto completo (información, fotos opcionales y destacado)
+app.put('/api/productos/:id', verificarAdmin, (req, res) => {
+  const uploadHandler = upload.fields([
+    { name: 'imagenes', maxCount: 5 },
+    { name: 'imagen', maxCount: 5 }
+  ]);
+
+  uploadHandler(req, res, (err) => {
+    if (err) {
+      console.error('Error Multer al procesar fotos en edición:', err);
+      return res.status(400).json({ error: `Error en la subida de fotos: ${err.message}` });
+    }
+
+    const { id } = req.params;
+    const { 
+      nombre, 
+      familia, 
+      descripcion, 
+      precio, 
+      tipo,
+      genero, 
+      estacion, 
+      notas_salida, 
+      notas_corazon, 
+      notas_fondo,
+      foto_principal_idx,
+      destacado_hero
+    } = req.body;
+
+    if (!nombre || !familia || !precio) {
+      return res.status(400).json({ error: 'Nombre, familia y precio son obligatorios' });
+    }
+
+    const archivos = (req.files && (req.files['imagenes'] || req.files['imagen'])) || [];
+    const esHero = (destacado_hero === '1' || destacado_hero === true || destacado_hero === 'true') ? 1 : 0;
+
+    // Si se subieron fotos nuevas, las procesamos y ordenamos
+    if (archivos.length > 0) {
+      let idxPrincipal = parseInt(foto_principal_idx) || 0;
+      if (idxPrincipal < 0 || idxPrincipal >= archivos.length) idxPrincipal = 0;
+
+      const archivosOrdenados = [...archivos];
+      const [fotoElegida] = archivosOrdenados.splice(idxPrincipal, 1);
+      archivosOrdenados.unshift(fotoElegida);
+
+      const rutasImagenes = archivosOrdenados.map(file => `/uploads/${file.filename}`);
+      const imagen_url = JSON.stringify(rutasImagenes);
+
+      const sql = `UPDATE productos SET 
+        nombre = ?, familia = ?, descripcion = ?, precio = ?, tipo = ?, 
+        genero = ?, estacion = ?, notas_salida = ?, notas_corazon = ?, 
+        notas_fondo = ?, destacado_hero = ?, imagen_url = ? 
+        WHERE id = ?`;
+
+      db.query(sql, [
+        nombre, familia, descripcion || '', precio, tipo || 'Diseñador',
+        genero || 'Unisex', estacion || 'Todo el año', notas_salida || '',
+        notas_corazon || '', notas_fondo || '', esHero, imagen_url, id
+      ], (dbErr, result) => {
+        if (dbErr) {
+          console.error('Error al actualizar perfume con fotos:', dbErr);
+          return res.status(500).json({ error: 'Error en la base de datos' });
+        }
+        res.json({ mensaje: 'Perfume y fotos actualizados con éxito' });
+      });
+    } else {
+      // Si no se enviaron fotos nuevas, se conservan las existentes
+      const sql = `UPDATE productos SET 
+        nombre = ?, familia = ?, descripcion = ?, precio = ?, tipo = ?, 
+        genero = ?, estacion = ?, notas_salida = ?, notas_corazon = ?, 
+        notas_fondo = ?, destacado_hero = ? 
+        WHERE id = ?`;
+
+      db.query(sql, [
+        nombre, familia, descripcion || '', precio, tipo || 'Diseñador',
+        genero || 'Unisex', estacion || 'Todo el año', notas_salida || '',
+        notas_corazon || '', notas_fondo || '', esHero, id
+      ], (dbErr, result) => {
+        if (dbErr) {
+          console.error('Error al actualizar perfume:', dbErr);
+          return res.status(500).json({ error: 'Error en la base de datos' });
+        }
+        res.json({ mensaje: 'Información del perfume actualizada con éxito' });
+      });
+    }
   });
 });
 

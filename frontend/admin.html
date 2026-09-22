@@ -94,7 +94,7 @@
     .btn-outline:hover { border-color: var(--c-red); color: var(--c-red); }
 
     main {
-      max-width: 1200px;
+      max-width: 1240px;
       margin: 2.5rem auto 4rem;
       padding: 0 1.5rem;
       width: 100%;
@@ -220,7 +220,6 @@
       min-height: 70px;
     }
 
-    /* Checkbox Destacado Hero */
     .checkbox-group {
       display: flex;
       align-items: center;
@@ -244,7 +243,7 @@
       color: var(--text-dark);
     }
 
-    /* Selector interactivo de Foto Principal */
+    /* Selector de Foto Principal */
     .preview-header {
       font-size: 0.75rem;
       font-weight: 700;
@@ -340,20 +339,92 @@
       text-transform: uppercase;
     }
     .td-badges { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
-    .price-input {
-      width: 95px; padding: 0.4rem 0.5rem; background: var(--c-light);
-      border: 1px solid var(--c-border); border-radius: 4px;
-      font-family: var(--font-display); font-weight: 700; color: var(--c-red); outline: none;
-    }
+    .td-price { font-weight: 800; color: var(--c-red); font-size: 0.95rem; }
     .table-actions { display: flex; gap: 0.4rem; }
     .btn-action {
       background: transparent; border: 1px solid var(--c-border);
       padding: 0.4rem 0.6rem; border-radius: 4px; cursor: pointer;
       font-size: 0.78rem; font-weight: 600; transition: var(--transition);
     }
-    .btn-save:hover { background: var(--c-red); color: #fff; border-color: var(--c-red); }
+    .btn-edit { color: var(--text-dark); }
+    .btn-edit:hover { background: var(--text-dark); color: #fff; border-color: var(--text-dark); }
     .btn-delete { color: var(--c-coral); }
     .btn-delete:hover { background: #ffebeb; border-color: var(--c-red); color: var(--c-red); }
+
+    /* ================= MODAL DE EDICIÓN ================= */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-content {
+      background: #fff;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 2rem;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+      position: relative;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.4rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid var(--c-border);
+    }
+    .modal-header h3 {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+    .modal-close {
+      background: transparent;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+    .modal-close:hover { color: var(--c-red); }
+    .current-photos-box {
+      background: #FAFAFA;
+      padding: 0.8rem;
+      border-radius: 6px;
+      border: 1px solid var(--c-border);
+      margin-bottom: 1rem;
+    }
+    .current-photos-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    .current-photos-list {
+      display: flex;
+      gap: 0.6rem;
+      overflow-x: auto;
+    }
+    .current-photo-item {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      background: #fff;
+      border: 1px solid var(--c-border);
+      border-radius: 4px;
+      padding: 3px;
+    }
 
     @media (max-width: 860px) {
       .panel-grid { grid-template-columns: 1fr; }
@@ -388,6 +459,7 @@
     <section id="seccion-panel">
       <div class="panel-grid">
         
+        <!-- Formulario Crear Nuevo Perfume -->
         <div class="panel-box">
           <h3>Nuevo Perfume</h3>
           <form id="form-nuevo-perfume" onsubmit="crearPerfume(event)">
@@ -440,7 +512,6 @@
               <input type="number" id="prod-precio" step="0.01" class="input-field" required placeholder="45000">
             </div>
 
-            <!-- Checkbox para destacar en el Hero -->
             <label class="checkbox-group">
               <input type="checkbox" id="prod-hero">
               <span>🚀 Mostrar foto de este perfume en el Carrusel del Hero</span>
@@ -468,11 +539,10 @@
 
             <div class="form-group">
               <label>Fotografías (1 a 5 imágenes)</label>
-              <input type="file" id="prod-imagen" class="input-field" accept="image/*" multiple required onchange="previsualizarImagenes(event)">
+              <input type="file" id="prod-imagen" class="input-field" accept="image/*" multiple required onchange="previsualizarImagenes(event, 'preview-container', 'preview-section')">
               <span class="field-hint">Mantené presionado Ctrl para seleccionar varias fotos a la vez.</span>
             </div>
 
-            <!-- Previsualización con elección de Foto Principal -->
             <div id="preview-section" style="display: none;">
               <p class="preview-header">👇 Hacé clic en la foto que querés que sea la PORTADA:</p>
               <div id="preview-container" class="preview-container"></div>
@@ -482,6 +552,7 @@
           </form>
         </div>
 
+        <!-- Tabla de Productos Publicados -->
         <div class="panel-box">
           <h3>Perfumes Publicados</h3>
           <div class="table-responsive">
@@ -490,7 +561,7 @@
                 <tr>
                   <th>Foto</th>
                   <th>Detalles</th>
-                  <th>Precio ($)</th>
+                  <th>Precio</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -503,9 +574,118 @@
     </section>
   </main>
 
+  <!-- ================= MODAL PARA EDITAR PERFUME ================= -->
+  <div class="modal-overlay" id="modal-editar">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Editar Perfume</h3>
+        <button class="modal-close" onclick="cerrarModalEditar()">✕</button>
+      </div>
+      <form id="form-editar-perfume" onsubmit="guardarEdicionPerfume(event)">
+        <input type="hidden" id="edit-id">
+
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" id="edit-nombre" class="input-field" required>
+        </div>
+
+        <div class="form-group">
+          <label>Tipo de Perfume</label>
+          <select id="edit-tipo" class="input-field" required>
+            <option value="Diseñador">Diseñador</option>
+            <option value="Árabe">Árabe</option>
+            <option value="Nicho">Nicho / Autor</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Familia Olfativa</label>
+          <select id="edit-familia" class="input-field" required>
+            <option value="Cítrico / Acuático">Cítrico / Acuático</option>
+            <option value="Oriental / Especiado">Oriental / Especiado</option>
+            <option value="Amaderado">Amaderado</option>
+            <option value="Floral">Floral</option>
+            <option value="Gourmand">Gourmand</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Género / Destino</label>
+          <select id="edit-genero" class="input-field" required>
+            <option value="Unisex">Unisex</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Femenino">Femenino</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Estación / Ocasión</label>
+          <select id="edit-estacion" class="input-field" required>
+            <option value="Todo el año">Todo el año / Versátil</option>
+            <option value="Verano / Día">Verano / Días cálidos (Fresco)</option>
+            <option value="Invierno / Noche">Invierno / Noche (Cálido & Intenso)</option>
+            <option value="Eventos / Cita">Ocasiones Especiales / Citas</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Precio ($)</label>
+          <input type="number" id="edit-precio" step="0.01" class="input-field" required>
+        </div>
+
+        <label class="checkbox-group">
+          <input type="checkbox" id="edit-hero">
+          <span>🚀 Mostrar en el Carrusel del Hero</span>
+        </label>
+
+        <div class="form-group">
+          <label>Notas de Salida</label>
+          <input type="text" id="edit-salida" class="input-field">
+        </div>
+
+        <div class="form-group">
+          <label>Notas de Corazón</label>
+          <input type="text" id="edit-corazon" class="input-field">
+        </div>
+
+        <div class="form-group">
+          <label>Notas de Fondo</label>
+          <input type="text" id="edit-fondo" class="input-field">
+        </div>
+
+        <div class="form-group">
+          <label>Descripción</label>
+          <textarea id="edit-desc" class="input-field"></textarea>
+        </div>
+
+        <!-- Muestra las fotos actuales -->
+        <div class="current-photos-box">
+          <span class="current-photos-label">Fotos actuales:</span>
+          <div class="current-photos-list" id="edit-current-photos"></div>
+        </div>
+
+        <!-- Opción para reemplazar fotos -->
+        <div class="form-group">
+          <label>Reemplazar Fotografías (Opcional)</label>
+          <input type="file" id="edit-imagen" class="input-field" accept="image/*" multiple onchange="previsualizarImagenes(event, 'edit-preview-container', 'edit-preview-section')">
+          <span class="field-hint">Si no seleccionás archivos, se mantendrán las fotos actuales.</span>
+        </div>
+
+        <div id="edit-preview-section" style="display: none;">
+          <p class="preview-header">👇 Hacé clic en la foto que será la PORTADA nueva:</p>
+          <div id="edit-preview-container" class="preview-container"></div>
+        </div>
+
+        <button type="submit" class="btn-primary" id="btn-save-edit">Guardar Cambios</button>
+      </form>
+    </div>
+  </div>
+
   <script>
     let adminClave = sessionStorage.getItem('admin_token') || '';
-    let fotoPrincipalSeleccionada = 0; // Índice de la imagen que será la portada
+    let productosCargados = [];
+    let fotoPrincipalCrear = 0;
+    let fotoPrincipalEditar = 0;
 
     if (adminClave) mostrarPanel();
 
@@ -555,11 +735,10 @@
       window.location.reload();
     }
 
-    function previsualizarImagenes(event) {
-      const container = document.getElementById('preview-container');
-      const section = document.getElementById('preview-section');
+    function previsualizarImagenes(event, containerId, sectionId) {
+      const container = document.getElementById(containerId);
+      const section = document.getElementById(sectionId);
       container.innerHTML = '';
-      fotoPrincipalSeleccionada = 0;
       const files = event.target.files;
 
       if (!files || files.length === 0) {
@@ -575,6 +754,8 @@
       }
 
       section.style.display = 'block';
+      if (containerId === 'preview-container') fotoPrincipalCrear = 0;
+      if (containerId === 'edit-preview-container') fotoPrincipalEditar = 0;
 
       Array.from(files).forEach((file, index) => {
         const reader = new FileReader();
@@ -587,11 +768,11 @@
             <span class="badge-cover">Portada</span>
           `;
 
-          // Clic para cambiar cuál es la foto principal
           card.onclick = () => {
-            document.querySelectorAll('.preview-card').forEach(c => c.classList.remove('selected'));
+            container.querySelectorAll('.preview-card').forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
-            fotoPrincipalSeleccionada = index;
+            if (containerId === 'preview-container') fotoPrincipalCrear = index;
+            if (containerId === 'edit-preview-container') fotoPrincipalEditar = index;
           };
 
           container.appendChild(card);
@@ -604,10 +785,10 @@
       try {
         const parsed = JSON.parse(imagen_url);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return { portada: parsed[0], total: parsed.length };
+          return { portada: parsed[0], total: parsed.length, todas: parsed };
         }
       } catch (e) {}
-      return { portada: imagen_url || '', total: 1 };
+      return { portada: imagen_url || '', total: 1, todas: [imagen_url || ''] };
     }
 
     async function cargarTablaProductos() {
@@ -616,15 +797,15 @@
 
       try {
         const res = await fetch('/api/productos');
-        const productos = await res.json();
+        productosCargados = await res.json();
 
-        if (productos.length === 0) {
+        if (productosCargados.length === 0) {
           tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No hay perfumes cargados todavía.</td></tr>';
           return;
         }
 
         tbody.innerHTML = '';
-        productos.forEach(prod => {
+        productosCargados.forEach(prod => {
           const { portada, total } = extraerFotos(prod.imagen_url);
           const tr = document.createElement('tr');
           tr.innerHTML = `
@@ -644,11 +825,11 @@
               <div class="td-badges">${prod.genero || 'Unisex'} • ${prod.estacion || 'Todo el año'}</div>
             </td>
             <td>
-              <input type="number" id="input-precio-${prod.id}" class="price-input" value="${prod.precio}" step="0.01">
+              <span class="td-price">$${Number(prod.precio).toLocaleString('es-AR')}</span>
             </td>
             <td>
               <div class="table-actions">
-                <button class="btn-action btn-save" onclick="actualizarPrecio(${prod.id})">Guardar</button>
+                <button class="btn-action btn-edit" onclick="abrirModalEditar(${prod.id})">Editar</button>
                 <button class="btn-action btn-delete" onclick="eliminarProducto(${prod.id})">Borrar</button>
               </div>
             </td>
@@ -686,7 +867,7 @@
       formData.append('notas_corazon', document.getElementById('prod-corazon').value.trim());
       formData.append('notas_fondo', document.getElementById('prod-fondo').value.trim());
       formData.append('destacado_hero', document.getElementById('prod-hero').checked ? '1' : '0');
-      formData.append('foto_principal_idx', fotoPrincipalSeleccionada);
+      formData.append('foto_principal_idx', fotoPrincipalCrear);
 
       for (let i = 0; i < files.length; i++) {
         formData.append('imagenes', files[i]);
@@ -705,7 +886,7 @@
           document.getElementById('form-nuevo-perfume').reset();
           document.getElementById('preview-section').style.display = 'none';
           document.getElementById('preview-container').innerHTML = '';
-          fotoPrincipalSeleccionada = 0;
+          fotoPrincipalCrear = 0;
           cargarTablaProductos();
         } else {
           alert('Error: ' + (data.error || 'No se pudo agregar'));
@@ -718,28 +899,96 @@
       }
     }
 
-    async function actualizarPrecio(id) {
-      const nuevoPrecio = document.getElementById(`input-precio-${id}`).value;
-      if (!nuevoPrecio || isNaN(nuevoPrecio)) return alert('Ingresá un precio válido.');
+    // ================= FUNCIONES DE EDICIÓN =================
+    window.abrirModalEditar = function(id) {
+      const prod = productosCargados.find(p => p.id === id);
+      if (!prod) return;
+
+      document.getElementById('edit-id').value = prod.id;
+      document.getElementById('edit-nombre').value = prod.nombre || '';
+      document.getElementById('edit-tipo').value = prod.tipo || 'Diseñador';
+      document.getElementById('edit-familia').value = prod.familia || 'Cítrico / Acuático';
+      document.getElementById('edit-genero').value = prod.genero || 'Unisex';
+      document.getElementById('edit-estacion').value = prod.estacion || 'Todo el año';
+      document.getElementById('edit-precio').value = prod.precio || '';
+      document.getElementById('edit-hero').checked = prod.destacado_hero === 1 || prod.destacado_hero === '1';
+      document.getElementById('edit-salida').value = prod.notas_salida || '';
+      document.getElementById('edit-corazon').value = prod.notas_corazon || '';
+      document.getElementById('edit-fondo').value = prod.notas_fondo || '';
+      document.getElementById('edit-desc').value = prod.descripcion || '';
+
+      // Mostrar fotos actuales
+      const { todas } = extraerFotos(prod.imagen_url);
+      const listContainer = document.getElementById('edit-current-photos');
+      listContainer.innerHTML = '';
+      todas.forEach(f => {
+        const img = document.createElement('img');
+        img.src = f;
+        img.className = 'current-photo-item';
+        listContainer.appendChild(img);
+      });
+
+      // Resetear campo file y previews de edición
+      document.getElementById('edit-imagen').value = '';
+      document.getElementById('edit-preview-section').style.display = 'none';
+      document.getElementById('edit-preview-container').innerHTML = '';
+      fotoPrincipalEditar = 0;
+
+      document.getElementById('modal-editar').classList.add('active');
+    };
+
+    window.cerrarModalEditar = function() {
+      document.getElementById('modal-editar').classList.remove('active');
+    };
+
+    async function guardarEdicionPerfume(e) {
+      e.preventDefault();
+      const id = document.getElementById('edit-id').value;
+      const btn = document.getElementById('btn-save-edit');
+      btn.disabled = true;
+      btn.textContent = 'Guardando cambios...';
+
+      const formData = new FormData();
+      formData.append('nombre', document.getElementById('edit-nombre').value.trim());
+      formData.append('tipo', document.getElementById('edit-tipo').value);
+      formData.append('familia', document.getElementById('edit-familia').value);
+      formData.append('genero', document.getElementById('edit-genero').value);
+      formData.append('estacion', document.getElementById('edit-estacion').value);
+      formData.append('precio', document.getElementById('edit-precio').value);
+      formData.append('descripcion', document.getElementById('edit-desc').value.trim());
+      formData.append('notas_salida', document.getElementById('edit-salida').value.trim());
+      formData.append('notas_corazon', document.getElementById('edit-corazon').value.trim());
+      formData.append('notas_fondo', document.getElementById('edit-fondo').value.trim());
+      formData.append('destacado_hero', document.getElementById('edit-hero').checked ? '1' : '0');
+      formData.append('foto_principal_idx', fotoPrincipalEditar);
+
+      const files = document.getElementById('edit-imagen').files;
+      if (files && files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+          formData.append('imagenes', files[i]);
+        }
+      }
 
       try {
         const res = await fetch(`/api/productos/${id}`, {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-admin-key': adminClave
-          },
-          body: JSON.stringify({ precio: nuevoPrecio })
+          headers: { 'x-admin-key': adminClave },
+          body: formData
         });
 
         const data = await res.json();
         if (res.ok) {
-          alert('Precio actualizado correctamente');
+          alert('¡Perfume actualizado con éxito!');
+          cerrarModalEditar();
+          cargarTablaProductos();
         } else {
           alert('Error: ' + (data.error || 'No se pudo actualizar'));
         }
       } catch (err) {
-        alert('Error de red al actualizar precio.');
+        alert('Error de red al actualizar perfume.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Guardar Cambios';
       }
     }
 
