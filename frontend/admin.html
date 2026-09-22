@@ -35,7 +35,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Header */
     header {
       background: var(--bg-white);
       border-bottom: 2px solid var(--c-border);
@@ -79,11 +78,7 @@
       letter-spacing: 1px;
     }
 
-    .nav-actions {
-      display: flex;
-      gap: 0.8rem;
-    }
-
+    .nav-actions { display: flex; gap: 0.8rem; }
     .btn-outline {
       background: var(--bg-white);
       border: 1.5px solid var(--c-border);
@@ -96,21 +91,16 @@
       text-decoration: none;
       transition: var(--transition);
     }
-    .btn-outline:hover {
-      border-color: var(--c-red);
-      color: var(--c-red);
-    }
+    .btn-outline:hover { border-color: var(--c-red); color: var(--c-red); }
 
-    /* Contenedor central */
     main {
-      max-width: 1100px;
+      max-width: 1150px;
       margin: 2.5rem auto 4rem;
       padding: 0 1.5rem;
       width: 100%;
       flex-grow: 1;
     }
 
-    /* Vista de Login */
     #seccion-login {
       display: flex;
       justify-content: center;
@@ -171,9 +161,7 @@
       letter-spacing: 0.5px;
       transition: var(--transition);
     }
-    .btn-primary:hover {
-      background: var(--c-coral);
-    }
+    .btn-primary:hover { background: var(--c-coral); }
 
     .msg-error {
       background: #ffebeb;
@@ -187,14 +175,10 @@
       display: none;
     }
 
-    /* Vista Panel de Gestión */
-    #seccion-panel {
-      display: none;
-    }
-
+    #seccion-panel { display: none; }
     .panel-grid {
       display: grid;
-      grid-template-columns: 360px 1fr;
+      grid-template-columns: 400px 1fr;
       gap: 2rem;
       align-items: start;
     }
@@ -214,9 +198,7 @@
       border-bottom: 1px solid var(--c-border);
     }
 
-    .form-group {
-      margin-bottom: 1rem;
-    }
+    .form-group { margin-bottom: 0.9rem; }
     .form-group label {
       display: block;
       font-size: 0.78rem;
@@ -224,29 +206,44 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: var(--text-dark);
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.35rem;
     }
     .field-hint {
       display: block;
       font-size: 0.74rem;
       color: var(--text-muted);
       margin-top: -0.8rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0.9rem;
     }
     textarea.input-field {
       resize: vertical;
-      min-height: 80px;
+      min-height: 70px;
     }
 
-    /* Tabla de Productos */
-    .table-responsive {
-      overflow-x: auto;
+    /* Preview de imágenes */
+    .preview-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
     }
-    table {
+    .preview-box {
+      width: 65px;
+      height: 65px;
+      border-radius: 6px;
+      border: 1px solid var(--c-border);
+      overflow: hidden;
+      background: var(--c-light);
+    }
+    .preview-box img {
       width: 100%;
-      border-collapse: collapse;
-      font-size: 0.88rem;
+      height: 100%;
+      object-fit: contain;
     }
+
+    /* Tabla */
+    .table-responsive { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
     th {
       font-family: var(--font-display);
       text-align: left;
@@ -256,91 +253,31 @@
       font-weight: 700;
       text-transform: uppercase;
       font-size: 0.75rem;
-      letter-spacing: 0.5px;
     }
-    td {
-      padding: 0.9rem 0.8rem;
-      border-bottom: 1px solid var(--c-border);
-      vertical-align: middle;
-    }
-    .td-img-wrapper {
-      position: relative;
-      width: 50px;
-      height: 50px;
-    }
-    .td-img {
-      width: 50px;
-      height: 50px;
-      border-radius: 4px;
-      object-fit: cover;
-      background: var(--c-light);
-      display: block;
-    }
+    td { padding: 0.9rem 0.8rem; border-bottom: 1px solid var(--c-border); vertical-align: middle; }
+    .td-img-wrapper { position: relative; width: 50px; height: 50px; }
+    .td-img { width: 50px; height: 50px; border-radius: 4px; object-fit: contain; background: var(--c-light); }
     .td-img-count {
-      position: absolute;
-      bottom: -4px;
-      right: -4px;
-      background: var(--c-red);
-      color: #fff;
-      font-size: 0.65rem;
-      font-weight: 700;
-      padding: 1px 4px;
-      border-radius: 10px;
-      line-height: 1;
+      position: absolute; bottom: -4px; right: -4px;
+      background: var(--c-red); color: #fff; font-size: 0.65rem;
+      font-weight: 700; padding: 1px 4px; border-radius: 10px;
     }
-    .td-title {
-      font-weight: 700;
-      color: var(--text-dark);
-    }
-    .td-family {
-      color: var(--c-coral);
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
+    .td-title { font-weight: 700; color: var(--text-dark); }
+    .td-family { color: var(--c-coral); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
     .price-input {
-      width: 95px;
-      padding: 0.4rem 0.5rem;
-      background: var(--c-light);
-      border: 1px solid var(--c-border);
-      border-radius: 4px;
-      font-family: var(--font-display);
-      font-weight: 700;
-      color: var(--c-red);
-      outline: none;
+      width: 95px; padding: 0.4rem 0.5rem; background: var(--c-light);
+      border: 1px solid var(--c-border); border-radius: 4px;
+      font-family: var(--font-display); font-weight: 700; color: var(--c-red); outline: none;
     }
-    .price-input:focus {
-      background: var(--bg-white);
-      border-color: var(--c-coral);
-    }
-
-    .table-actions {
-      display: flex;
-      gap: 0.4rem;
-    }
+    .table-actions { display: flex; gap: 0.4rem; }
     .btn-action {
-      background: transparent;
-      border: 1px solid var(--c-border);
-      padding: 0.4rem 0.6rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.78rem;
-      font-weight: 600;
-      transition: var(--transition);
+      background: transparent; border: 1px solid var(--c-border);
+      padding: 0.4rem 0.6rem; border-radius: 4px; cursor: pointer;
+      font-size: 0.78rem; font-weight: 600; transition: var(--transition);
     }
-    .btn-save:hover {
-      background: var(--c-red);
-      color: #fff;
-      border-color: var(--c-red);
-    }
-    .btn-delete {
-      color: var(--c-coral);
-    }
-    .btn-delete:hover {
-      background: #ffebeb;
-      border-color: var(--c-red);
-      color: var(--c-red);
-    }
+    .btn-save:hover { background: var(--c-red); color: #fff; border-color: var(--c-red); }
+    .btn-delete { color: var(--c-coral); }
+    .btn-delete:hover { background: #ffebeb; border-color: var(--c-red); color: var(--c-red); }
 
     @media (max-width: 860px) {
       .panel-grid { grid-template-columns: 1fr; }
@@ -362,36 +299,25 @@
   </header>
 
   <main>
-    <!-- LOGIN -->
     <section id="seccion-login">
       <div class="login-card">
         <h2>Panel de Gestión</h2>
         <p>Ingresá la contraseña maestra para administrar el catálogo.</p>
-        
-        <input 
-          type="password" 
-          id="clave-admin" 
-          class="input-field" 
-          placeholder="••••••••••••"
-          onkeydown="if(event.key === 'Enter') loginAdmin()"
-        >
-        
+        <input type="password" id="clave-admin" class="input-field" placeholder="••••••••••••" onkeydown="if(event.key === 'Enter') loginAdmin()">
         <button class="btn-primary" onclick="loginAdmin()">Ingresar</button>
         <div id="login-error" class="msg-error"></div>
       </div>
     </section>
 
-    <!-- PANEL DE ADMINISTRACIÓN -->
     <section id="seccion-panel">
       <div class="panel-grid">
         
-        <!-- Formulario Cargar Perfume -->
         <div class="panel-box">
           <h3>Nuevo Perfume</h3>
           <form id="form-nuevo-perfume" onsubmit="crearPerfume(event)">
             <div class="form-group">
               <label>Nombre</label>
-              <input type="text" id="prod-nombre" class="input-field" required placeholder="Ej: Santal Sauvage">
+              <input type="text" id="prod-nombre" class="input-field" required placeholder="Ej: Erba Pura">
             </div>
 
             <div class="form-group">
@@ -411,21 +337,37 @@
             </div>
 
             <div class="form-group">
-              <label>Descripción</label>
-              <textarea id="prod-desc" class="input-field" placeholder="Notas, concentración, acordes..."></textarea>
+              <label>Notas de Salida (Opcional)</label>
+              <input type="text" id="prod-salida" class="input-field" placeholder="Ej: Naranja siciliana, Bergamota">
+            </div>
+
+            <div class="form-group">
+              <label>Notas de Corazón (Opcional)</label>
+              <input type="text" id="prod-corazon" class="input-field" placeholder="Ej: Frutas mediterráneas">
+            </div>
+
+            <div class="form-group">
+              <label>Notas de Fondo (Opcional)</label>
+              <input type="text" id="prod-fondo" class="input-field" placeholder="Ej: Almizcle blanco, Vainilla de Madagascar, Ámbar">
+            </div>
+
+            <div class="form-group">
+              <label>Descripción General</label>
+              <textarea id="prod-desc" class="input-field" placeholder="Información adicional, concentración..."></textarea>
             </div>
 
             <div class="form-group">
               <label>Fotografías (1 a 5 imágenes)</label>
-              <input type="file" id="prod-imagen" class="input-field" accept="image/*" multiple required>
-              <span class="field-hint">Mantené presionado Ctrl para seleccionar más de una foto.</span>
+              <input type="file" id="prod-imagen" class="input-field" accept="image/*" multiple required onchange="previsualizarImagenes(event)">
+              <span class="field-hint">Mantené presionado Ctrl para seleccionar varias fotos simultáneamente.</span>
             </div>
+
+            <div id="preview-container" class="preview-container"></div>
 
             <button type="submit" class="btn-primary" id="btn-submit-perfume">Cargar al Catálogo</button>
           </form>
         </div>
 
-        <!-- Listado de Productos -->
         <div class="panel-box">
           <h3>Perfumes Publicados</h3>
           <div class="table-responsive">
@@ -449,10 +391,7 @@
 
   <script>
     let adminClave = sessionStorage.getItem('admin_token') || '';
-
-    if (adminClave) {
-      mostrarPanel();
-    }
+    if (adminClave) mostrarPanel();
 
     async function loginAdmin() {
       const claveInput = document.getElementById('clave-admin').value.trim();
@@ -500,7 +439,29 @@
       window.location.reload();
     }
 
-    // Helper para extraer la foto principal y contar cuántas fotos tiene
+    function previsualizarImagenes(event) {
+      const container = document.getElementById('preview-container');
+      container.innerHTML = '';
+      const files = event.target.files;
+
+      if (files.length > 5) {
+        alert('Podés subir un máximo de 5 fotos.');
+        event.target.value = '';
+        return;
+      }
+
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const box = document.createElement('div');
+          box.className = 'preview-box';
+          box.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+          container.appendChild(box);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
     function extraerFotos(imagen_url) {
       try {
         const parsed = JSON.parse(imagen_url);
@@ -531,7 +492,7 @@
           tr.innerHTML = `
             <td>
               <div class="td-img-wrapper">
-                <img src="${portada}" class="td-img" alt="${prod.nombre}" onerror="this.src='https://via.placeholder.com/50?text=Perfume'">
+                <img src="${portada}" class="td-img" alt="${prod.nombre}" onerror="this.src='https://via.placeholder.com/50?text=Foto'">
                 ${total > 1 ? `<span class="td-img-count">+${total}</span>` : ''}
               </div>
             </td>
@@ -562,12 +523,7 @@
       const files = fileInput.files;
 
       if (!files || files.length === 0) {
-        alert('Tenés que seleccionar al menos una fotografía.');
-        return;
-      }
-
-      if (files.length > 5) {
-        alert('Podés subir hasta un máximo de 5 fotos por perfume.');
+        alert('Tenés que seleccionar al menos una foto.');
         return;
       }
 
@@ -580,8 +536,10 @@
       formData.append('familia', document.getElementById('prod-familia').value);
       formData.append('precio', document.getElementById('prod-precio').value);
       formData.append('descripcion', document.getElementById('prod-desc').value.trim());
+      formData.append('notas_salida', document.getElementById('prod-salida').value.trim());
+      formData.append('notas_corazon', document.getElementById('prod-corazon').value.trim());
+      formData.append('notas_fondo', document.getElementById('prod-fondo').value.trim());
 
-      // Adjuntar todas las imágenes seleccionadas bajo el campo 'imagenes'
       for (let i = 0; i < files.length; i++) {
         formData.append('imagenes', files[i]);
       }
@@ -589,9 +547,7 @@
       try {
         const res = await fetch('/api/productos', {
           method: 'POST',
-          headers: {
-            'x-admin-key': adminClave
-          },
+          headers: { 'x-admin-key': adminClave },
           body: formData
         });
 
@@ -599,6 +555,7 @@
         if (res.ok) {
           alert('¡Perfume agregado con éxito!');
           document.getElementById('form-nuevo-perfume').reset();
+          document.getElementById('preview-container').innerHTML = '';
           cargarTablaProductos();
         } else {
           alert('Error: ' + (data.error || 'No se pudo agregar'));
@@ -642,9 +599,7 @@
       try {
         const res = await fetch(`/api/productos/${id}`, {
           method: 'DELETE',
-          headers: {
-            'x-admin-key': adminClave
-          }
+          headers: { 'x-admin-key': adminClave }
         });
 
         const data = await res.json();

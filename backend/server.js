@@ -86,7 +86,7 @@ app.get('/api/productos', (req, res) => {
 });
 
 // POST productos (con manejo de errores de Multer para evitar el 500 no controlado)
-// POST productos (acepta tanto 'imagenes' como 'imagen', múltiple o individual)
+// POST productos (acepta notas olfativas y múltiples imágenes)
 app.post('/api/productos', verificarAdmin, (req, res) => {
   const uploadHandler = upload.fields([
     { name: 'imagenes', maxCount: 5 },
@@ -99,22 +99,28 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
       return res.status(400).json({ error: `Error en la subida de fotos: ${err.message}` });
     }
 
-    const { nombre, familia, descripcion, precio } = req.body;
-    
-    // Obtener los archivos sin importar cuál de las dos claves envió el frontend
+    const { nombre, familia, descripcion, precio, notas_salida, notas_corazon, notas_fondo } = req.body;
     const archivos = (req.files && (req.files['imagenes'] || req.files['imagen'])) || [];
 
     if (!nombre || !familia || !precio || archivos.length === 0) {
-      return res.status(400).json({ error: 'Todos los campos y al menos una imagen son obligatorios' });
+      return res.status(400).json({ error: 'Todos los campos básicos y al menos una imagen son obligatorios' });
     }
 
-    // Guardar rutas relativas serializadas en formato JSON
     const rutasImagenes = archivos.map(file => `/uploads/${file.filename}`);
     const imagen_url = JSON.stringify(rutasImagenes);
 
-    const sql = `INSERT INTO productos (nombre, familia, descripcion, precio, imagen_url) VALUES (?, ?, ?, ?, ?)`;
+    const sql = `INSERT INTO productos (nombre, familia, descripcion, precio, imagen_url, notas_salida, notas_corazon, notas_fondo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
 
-    db.query(sql, [nombre, familia, descripcion, precio, imagen_url], (dbErr, result) => {
+    db.query(sql, [
+      nombre, 
+      familia, 
+      descripcion || '', 
+      precio, 
+      imagen_url, 
+      notas_salida || '', 
+      notas_corazon || '', 
+      notas_fondo || ''
+    ], (dbErr, result) => {
       if (dbErr) {
         console.error('Error en base de datos al insertar:', dbErr);
         return res.status(500).json({ error: 'Error en la base de datos: ' + dbErr.message });
@@ -123,7 +129,6 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
     });
   });
 });
-
 // PUT precio
 app.put('/api/productos/:id', verificarAdmin, (req, res) => {
   const { id } = req.params;

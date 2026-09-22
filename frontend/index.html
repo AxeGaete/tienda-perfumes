@@ -3,12 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PARFUM STUDIO — Fragancias Exclusivas</title>
+  <title>PARFUM STUDIO — Fragancias Exclusivas de Alta Concentración</title>
+
+  <!-- Metadatos SEO y OpenGraph para WhatsApp / Instagram / Facebook -->
+  <meta name="description" content="Inspiraciones de alta gama con máxima fijación y materias primas importadas. Descubrí nuestro catálogo exclusivo y hacé tu pedido por WhatsApp.">
+  <meta property="og:title" content="PARFUM STUDIO — Fragancias Exclusivas">
+  <meta property="og:description" content="Perfumería de autor y contratipos de lujo. Fijación garantizada y envíos directos a todo el país.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://tienda-perfumes-an2e.onrender.com">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1200&q=80">
+  <meta name="twitter:card" content="summary_large_image">
+
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- Barra de navegación fija -->
   <header class="navbar">
     <div class="nav-container">
       <a href="#hero" class="brand-logo">PARFUM STUDIO</a>
@@ -22,7 +31,7 @@
     </div>
   </header>
 
-  <!-- 1. Inicio / Hero -->
+  <!-- Hero -->
   <section id="hero" class="hero-section">
     <div class="hero-content">
       <h1>Fragancias que definen tu presencia</h1>
@@ -31,29 +40,42 @@
     </div>
   </section>
 
-  <!-- 2. Catálogo de Productos -->
+  <!-- Catálogo con Buscador, Chips, Slider de Precios y Ordenamiento -->
   <section id="catalogo" class="catalog-section">
     <div class="section-title">
       <h2>Catálogo de Fragancias</h2>
-      <p>Buscá tu perfume favorito o filtrá por familia olfativa</p>
+      <p>Explorá por familia olfativa, rango de precio o preferencias</p>
     </div>
 
     <div class="filters-container">
-      <input type="text" id="buscador" placeholder="Buscar perfume por nombre..." />
+      <div class="search-sort-bar">
+        <input type="text" id="buscador" placeholder="Buscar por nombre..." />
+        <select id="select-orden" class="sort-select">
+          <option value="recientes">Más recientes</option>
+          <option value="precio-menor">Menor precio</option>
+          <option value="precio-mayor">Mayor precio</option>
+        </select>
+      </div>
+
+      <div class="price-slider-wrapper">
+        <label for="slider-precio">Precio máximo: <span id="label-precio-max">$150.000</span></label>
+        <input type="range" id="slider-precio" min="0" max="150000" step="5000" value="150000">
+      </div>
+
       <div class="category-chips">
         <button class="chip active" data-categoria="todos">Todos</button>
         <button class="chip" data-categoria="Cítrico / Acuático">Cítricos & Acuáticos</button>
         <button class="chip" data-categoria="Oriental / Especiado">Orientales & Especiados</button>
         <button class="chip" data-categoria="Amaderado">Amaderados</button>
+        <button class="chip" data-categoria="Floral">Florales</button>
+        <button class="chip" data-categoria="Gourmand">Gourmand</button>
       </div>
     </div>
 
-    <div id="grid-productos" class="products-grid">
-      <!-- Se cargan dinámicamente con app.js -->
-    </div>
+    <div id="grid-productos" class="products-grid"></div>
   </section>
 
-  <!-- 3. Sección Detalle del Perfume con Galería Multi-foto -->
+  <!-- Sección Detalle con Pirámide Olfativa Estructurada -->
   <section id="detalle" class="detail-section" style="display: none;">
     <div class="section-title">
       <h2>Detalles de la Fragancia</h2>
@@ -65,7 +87,6 @@
         <div class="detail-main-image">
           <img id="detalle-img-principal" src="" alt="Perfume seleccionado">
         </div>
-        <!-- Contenedor dinámico de miniaturas -->
         <div id="detalle-thumbnails" class="detail-thumbnails"></div>
       </div>
 
@@ -74,6 +95,23 @@
         <h1 id="detalle-nombre" class="detail-title"></h1>
         <p id="detalle-precio" class="detail-price"></p>
         <div class="detail-divider"></div>
+        
+        <!-- Pirámide Olfativa Estructurada -->
+        <div class="notes-pyramid">
+          <div class="note-row" id="row-salida">
+            <span class="note-label">Salida</span>
+            <span class="note-value" id="detalle-salida">-</span>
+          </div>
+          <div class="note-row" id="row-corazon">
+            <span class="note-label">Corazón</span>
+            <span class="note-value" id="detalle-corazon">-</span>
+          </div>
+          <div class="note-row" id="row-fondo">
+            <span class="note-label">Fondo</span>
+            <span class="note-value" id="detalle-fondo">-</span>
+          </div>
+        </div>
+
         <p id="detalle-descripcion" class="detail-description"></p>
         
         <div class="detail-actions">
@@ -88,7 +126,7 @@
     </div>
   </section>
 
-  <!-- 4. Nosotros / Propuesta de Valor -->
+  <!-- Nosotros -->
   <section id="nosotros" class="about-section">
     <div class="section-title">
       <h2>Por qué elegirnos</h2>
@@ -110,7 +148,7 @@
     </div>
   </section>
 
-  <!-- 5. Contacto -->
+  <!-- Contacto -->
   <section id="contacto" class="contact-section">
     <div class="section-title">
       <h2>Canales de Contacto</h2>
@@ -120,9 +158,8 @@
       <div class="contact-card">
         <h3>Hablá con nosotros</h3>
         <p>Estamos disponibles por mensajería directa para responder tus preguntas y tomar tus compras.</p>
-        
         <div class="contact-methods">
-          <a href="https://wa.me/5491135890259?text=Hola!%20Quería%20hacer%20una%20consulta%20por%20los%20perfumes" target="_blank" class="contact-btn whatsapp-btn">
+          <a href="https://wa.me/5491112345678?text=Hola!%20Quería%20hacer%20una%20consulta%20por%20los%20perfumes" target="_blank" class="contact-btn whatsapp-btn">
             Consultar por WhatsApp
           </a>
           <a href="https://instagram.com" target="_blank" class="contact-btn instagram-btn">
