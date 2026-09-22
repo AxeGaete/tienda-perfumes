@@ -705,7 +705,7 @@ body {
 }
 
 /* =========================================================
-   GRILLA DE PERFUMES
+   GRILLA DE PERFUMES (FORZADO A FONDO BLANCO)
    ========================================================= */
 .products-grid {
   display: grid;
@@ -714,7 +714,7 @@ body {
 }
 
 .product-card {
-  background: var(--bg-main);
+  background: #FFFFFF !important;
   border: 1px solid var(--c-border);
   border-radius: var(--radius-md);
   overflow: hidden;
@@ -735,7 +735,7 @@ body {
   align-items: center;
   justify-content: center;
   height: 280px;
-  background-color: var(--bg-main);
+  background-color: #FFFFFF !important;
   padding: 1.5rem;
   text-decoration: none;
   overflow: hidden;
@@ -775,7 +775,7 @@ body {
 }
 
 .card-title-link {
-  color: var(--text-dark);
+  color: #1A1A1E !important;
   text-decoration: none;
   transition: var(--transition);
 }
@@ -786,7 +786,7 @@ body {
 
 .product-desc {
   font-size: 0.88rem;
-  color: var(--text-muted);
+  color: #6C727F !important;
   margin-bottom: 1.2rem;
   flex-grow: 1;
   display: -webkit-box;
@@ -812,8 +812,8 @@ body {
 .btn-ver-detalle {
   display: block;
   text-align: center;
-  background-color: var(--bg-soft);
-  color: var(--text-dark);
+  background-color: #F8F9FA;
+  color: #1A1A1E;
   border: 1px solid var(--c-border);
   text-decoration: none;
   padding: 0.75rem;
@@ -824,9 +824,9 @@ body {
 }
 
 .btn-ver-detalle:hover {
-  background-color: var(--text-dark);
-  color: var(--bg-main);
-  border-color: var(--text-dark);
+  background-color: #1A1A1E;
+  color: #FFFFFF;
+  border-color: #1A1A1E;
 }
 
 .btn-card-add-cart {
@@ -848,7 +848,7 @@ body {
 }
 
 /* =========================================================
-   SECCIÓN DETALLE ESTILO E-COMMERCE MODERNO
+   SECCIÓN DETALLE ESTILO E-COMMERCE MODERNO (FORZADO A BLANCO)
    ========================================================= */
 .detail-section {
   max-width: 1200px;
@@ -857,7 +857,7 @@ body {
 }
 
 .detail-card {
-  background: var(--bg-main);
+  background: #FFFFFF !important;
   border: 1px solid var(--c-border);
   border-radius: var(--radius-lg);
   display: grid;
@@ -865,7 +865,6 @@ body {
   gap: 3.5rem;
   padding: 3.5rem;
   box-shadow: var(--shadow-subtle);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .detail-gallery {
@@ -878,7 +877,7 @@ body {
   position: relative;
   width: 100%;
   height: 420px;
-  background-color: var(--bg-main);
+  background-color: #FFFFFF !important;
   border: 1px solid var(--c-border);
   border-radius: var(--radius-md);
   display: flex;
@@ -901,9 +900,9 @@ body {
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: var(--bg-main);
+  background: #FFFFFF;
   border: 1px solid var(--c-border);
-  color: var(--text-dark);
+  color: #1A1A1E;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   font-size: 1rem;
   cursor: pointer;
@@ -934,7 +933,7 @@ body {
   width: 65px;
   height: 65px;
   object-fit: contain;
-  background-color: var(--bg-main);
+  background-color: #FFFFFF !important;
   border-radius: 12px;
   border: 2px solid var(--c-border);
   cursor: pointer;
@@ -971,8 +970,8 @@ body {
 .badge-tag {
   font-size: 0.68rem;
   font-weight: 700;
-  background-color: var(--bg-soft);
-  color: var(--text-muted);
+  background-color: #F8F9FA;
+  color: #6C727F;
   padding: 0.2rem 0.6rem;
   border-radius: 12px;
   border: 1px solid var(--c-border);
@@ -983,6 +982,7 @@ body {
   font-weight: 800;
   letter-spacing: -0.5px;
   margin-bottom: 0.5rem;
+  color: #1A1A1E !important;
 }
 
 .detail-price {
@@ -997,7 +997,7 @@ body {
   flex-direction: column;
   gap: 0.7rem;
   margin-bottom: 1.6rem;
-  background: var(--bg-soft);
+  background: #F8F9FA !important;
   padding: 1.2rem;
   border-radius: var(--radius-sm);
   border: 1px solid var(--c-border);
@@ -1021,13 +1021,13 @@ body {
 
 .note-value {
   font-size: 0.9rem;
-  color: var(--text-dark);
+  color: #1A1A1E !important;
   font-weight: 500;
 }
 
 .detail-description {
   font-size: 0.95rem;
-  color: var(--text-muted);
+  color: #6C727F !important;
   line-height: 1.7;
   margin-bottom: 2rem;
 }
