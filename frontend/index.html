@@ -40,6 +40,13 @@
       </div>
 
       <div class="nav-actions-group">
+        <!-- Botón Modo Oscuro / Claro -->
+        <button class="nav-search-btn" id="theme-toggle-btn" title="Cambiar modo visual" onclick="alternarTemaVisual()">
+          <svg class="ui-icon" id="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
         <!-- Lupa SVG en el Header -->
         <button class="nav-search-btn" title="Buscar perfume" onclick="activarBuscadorHeader()">
           <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -262,15 +269,15 @@
     </div>
 
     <!-- Sección de Reseñas de Clientes en el Detalle -->
-    <div style="max-width: 1100px; margin: 3rem auto 0; background: var(--bg-main); border: 1px solid var(--c-border); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-subtle);">
-      <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1.5rem;">Opiniones y Calificaciones</h3>
+    <div class="reviews-section-box">
+      <h3 class="reviews-title">Opiniones y Calificaciones</h3>
       
       <div id="lista-resenas" style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2.5rem;">
         <p style="color: var(--text-muted);">Cargando reseñas...</p>
       </div>
 
       <h4 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Dejanos tu opinión</h4>
-      <form onsubmit="enviarResena(event)" style="display: grid; gap: 1rem; max-width: 600px;">
+      <form onsubmit="enviarResena(event)" class="review-form">
         <input type="text" id="resena-autor" placeholder="Tu Nombre" class="input-field" required style="margin-bottom:0;">
         <select id="resena-estrellas" class="input-field" required style="margin-bottom:0;">
           <option value="5">⭐⭐⭐⭐⭐ Excelente (5/5)</option>
@@ -461,7 +468,7 @@
       <!-- Calculador de Envío por Zona con Estilo Propio -->
       <div class="envio-box" style="background: var(--bg-main); border: 1px solid var(--c-border); border-radius: var(--radius-md, 12px); padding: 1rem; margin-bottom: 0.8rem;">
         <label for="select-envio" style="display: block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5px; color: var(--text-dark);">Método de Envío / Retiro:</label>
-        <select id="select-envio" class="input-field" style="width: 100%; margin-bottom: 0; font-size: 0.85rem; padding: 0.65rem; border-radius: 8px; border: 1px solid var(--c-border); background: var(--bg-soft, #FAFAFA); color: var(--text-dark); cursor: pointer;" onchange="actualizarUICarrito()">
+        <select id="select-envio" class="input-field" style="width: 100%; margin-bottom: 0; font-size: 0.85rem; padding: 0.65rem; border-radius: 8px; border: 1px solid var(--c-border); background: var(--bg-soft); color: var(--text-dark); cursor: pointer;" onchange="actualizarUICarrito()">
           <option value="retiro">📦 Retiro sin cargo en Ciudadela</option>
           <option value="moto_oeste">🏍️ Moto Express (Ciudadela/Ramos/Haedo) — $3.500</option>
           <option value="moto_caba">🛵 Moto CABA — $6.500</option>
@@ -472,7 +479,7 @@
       <div class="cupon-box" style="background: var(--bg-main); border: 1px solid var(--c-border); border-radius: var(--radius-md, 12px); padding: 1rem; margin-bottom: 0.8rem;">
         <label for="cupon-input" style="display: block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; color: var(--text-dark);">Código de Descuento:</label>
         <div style="display: flex; gap: 0.5rem;">
-          <input type="text" id="cupon-input" placeholder="Ingresar cupón" class="input-field" style="flex: 1; margin-bottom: 0; font-size: 0.85rem; padding: 0.65rem; border-radius: 8px; border: 1px solid var(--c-border); background: var(--bg-soft, #FAFAFA); color: var(--text-dark);">
+          <input type="text" id="cupon-input" placeholder="Ingresar cupón" class="input-field" style="flex: 1; margin-bottom: 0; font-size: 0.85rem; padding: 0.65rem; border-radius: 8px; border: 1px solid var(--c-border); background: var(--bg-soft); color: var(--text-dark);">
           <button type="button" class="btn-secondary" onclick="aplicarCupon()" style="padding: 0.65rem 1rem; font-size: 0.8rem; border-radius: 8px; cursor: pointer;">Aplicar</button>
         </div>
       </div>

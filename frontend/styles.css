@@ -18,6 +18,20 @@
   --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+[data-theme="dark"] {
+  --bg-main: #121212;
+  --bg-soft: #1A1A1A;
+  --bg-card: #181818;
+  --c-border: #2A2A2A;
+  --c-coral: #FF5252;
+  --c-red: #D32F2F;
+  --c-red-subtle: rgba(211, 47, 47, 0.15);
+  --text-dark: #F5F5F5;
+  --text-muted: #AAAAAA;
+  --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-hover: 0 14px 35px rgba(0, 0, 0, 0.6);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -36,6 +50,7 @@ body {
   font-size: 14.5px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* =========================================================
@@ -55,7 +70,7 @@ body {
 .navbar {
   width: 100%;
   max-width: 1120px;
-  background: rgba(255, 255, 255, 0.92);
+  background: var(--bg-main);
   backdrop-filter: blur(14px);
   border: 1px solid var(--c-border);
   border-radius: 40px;
@@ -64,6 +79,7 @@ body {
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .brand-logo {
@@ -104,14 +120,15 @@ body {
 
 .nav-admin-btn {
   padding: 0.45rem 1.1rem;
-  background-color: #F1F1F4;
+  background-color: var(--bg-soft);
   border-radius: 20px;
   color: var(--text-dark) !important;
+  border: 1px solid var(--c-border);
 }
 
 .nav-admin-btn:hover {
   background-color: var(--text-dark);
-  color: #fff !important;
+  color: var(--bg-main) !important;
 }
 
 .nav-actions-group {
@@ -262,7 +279,7 @@ body {
 
 .btn-secondary:hover {
   border-color: var(--text-dark);
-  background-color: #F8F9FA;
+  background-color: var(--bg-soft);
   transform: translateY(-2px);
 }
 
@@ -288,6 +305,7 @@ body {
   border-radius: var(--radius-lg);
   border: 1px solid var(--c-border);
   box-shadow: var(--shadow-subtle);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .hero-text-side h1 {
@@ -346,7 +364,7 @@ body {
   height: 440px;
   border-radius: var(--radius-md);
   overflow: hidden;
-  background-color: #FAFAFA;
+  background-color: var(--bg-main);
   border: 1px solid var(--c-border);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
 }
@@ -395,7 +413,7 @@ body {
   position: absolute;
   bottom: 1rem;
   left: 1rem;
-  background: rgba(255, 255, 255, 0.92);
+  background: var(--bg-main);
   backdrop-filter: blur(8px);
   padding: 0.45rem 1rem;
   border-radius: 20px;
@@ -417,8 +435,9 @@ body {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
-  border: none;
+  background: var(--bg-main);
+  border: 1px solid var(--c-border);
+  color: var(--text-dark);
   font-size: 1rem;
   cursor: pointer;
   display: flex;
@@ -431,6 +450,7 @@ body {
 .carousel-btn:hover {
   background: var(--c-red);
   color: #fff;
+  border-color: var(--c-red);
 }
 
 .carousel-btn.prev { left: 12px; }
@@ -449,13 +469,15 @@ body {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--text-muted);
+  opacity: 0.4;
   cursor: pointer;
   transition: var(--transition);
 }
 
 .dot.active {
   background: var(--c-red);
+  opacity: 1;
   width: 20px;
   border-radius: 10px;
 }
@@ -495,6 +517,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .search-sort-bar {
@@ -508,6 +531,7 @@ body {
   border-radius: 30px;
   border: 1px solid var(--c-border);
   background-color: var(--bg-soft);
+  color: var(--text-dark);
   font-family: var(--font-base);
   font-size: 0.9rem;
   outline: none;
@@ -516,7 +540,7 @@ body {
 
 #buscador:focus, #buscador.highlight {
   border-color: var(--c-coral);
-  background-color: #fff;
+  background-color: var(--bg-main);
   box-shadow: 0 0 0 3px rgba(255, 73, 73, 0.18);
 }
 
@@ -525,6 +549,7 @@ body {
   border-radius: 30px;
   border: 1px solid var(--c-border);
   background-color: var(--bg-soft);
+  color: var(--text-dark);
   font-family: var(--font-base);
   font-size: 0.85rem;
   font-weight: 600;
@@ -620,6 +645,7 @@ body {
   background-color: var(--bg-soft);
   padding: 0.9rem 1.4rem;
   border-radius: 20px;
+  border: 1px solid var(--c-border);
 }
 
 .price-slider-box label {
@@ -701,7 +727,7 @@ body {
 .product-card:hover {
   transform: translateY(-6px);
   box-shadow: var(--shadow-hover);
-  border-color: #E2E4E8;
+  border-color: var(--c-coral);
 }
 
 .card-image-link {
@@ -709,7 +735,7 @@ body {
   align-items: center;
   justify-content: center;
   height: 280px;
-  background-color: #FFFFFF;
+  background-color: var(--bg-main);
   padding: 1.5rem;
   text-decoration: none;
   overflow: hidden;
@@ -799,7 +825,7 @@ body {
 
 .btn-ver-detalle:hover {
   background-color: var(--text-dark);
-  color: #fff;
+  color: var(--bg-main);
   border-color: var(--text-dark);
 }
 
@@ -839,6 +865,7 @@ body {
   gap: 3.5rem;
   padding: 3.5rem;
   box-shadow: var(--shadow-subtle);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .detail-gallery {
@@ -851,7 +878,7 @@ body {
   position: relative;
   width: 100%;
   height: 420px;
-  background-color: #FFFFFF;
+  background-color: var(--bg-main);
   border: 1px solid var(--c-border);
   border-radius: var(--radius-md);
   display: flex;
@@ -874,8 +901,9 @@ body {
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-main);
   border: 1px solid var(--c-border);
+  color: var(--text-dark);
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   font-size: 1rem;
   cursor: pointer;
@@ -906,7 +934,7 @@ body {
   width: 65px;
   height: 65px;
   object-fit: contain;
-  background-color: #FFFFFF;
+  background-color: var(--bg-main);
   border-radius: 12px;
   border: 2px solid var(--c-border);
   cursor: pointer;
@@ -1098,7 +1126,7 @@ body {
   color: var(--c-red);
   padding: 0.25rem 0.8rem;
   border-radius: 20px;
-  border: 1px solid #FFE4E4;
+  border: 1px solid var(--c-border);
 }
 
 /* =========================================================
@@ -1146,9 +1174,10 @@ body {
    FOOTER COMPLETO DE CONTACTO
    ========================================================= */
 .footer-master {
-  background-color: #FFFFFF;
+  background-color: var(--bg-main);
   border-top: 1px solid var(--c-border);
   padding: 4.5rem 1.5rem 2rem;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .footer-container {
@@ -1267,8 +1296,8 @@ body {
   position: absolute;
   top: -4px;
   right: -4px;
-  background-color: #1A1A1E;
-  color: #fff;
+  background-color: var(--text-dark);
+  color: var(--bg-main);
   font-size: 0.68rem;
   font-weight: 800;
   min-width: 19px;
@@ -1277,7 +1306,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #fff;
+  border: 2px solid var(--bg-main);
 }
 
 .cart-overlay {
@@ -1306,13 +1335,13 @@ body {
   width: 100%;
   max-width: 420px;
   height: 100vh;
-  background-color: #FFFFFF;
+  background-color: var(--bg-main);
   z-index: 1200;
   display: flex;
   flex-direction: column;
   box-shadow: -10px 0 35px rgba(0, 0, 0, 0.15);
   transform: translateX(100%);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease;
 }
 
 .cart-sidebar.active {
@@ -1381,7 +1410,7 @@ body {
   width: 65px;
   height: 65px;
   object-fit: contain;
-  background-color: var(--bg-soft);
+  background-color: var(--bg-main);
   border-radius: var(--radius-sm);
   border: 1px solid var(--c-border);
   padding: 4px;
@@ -1424,6 +1453,7 @@ body {
   border-radius: 50%;
   border: 1px solid var(--c-border);
   background-color: var(--bg-soft);
+  color: var(--text-dark);
   font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
@@ -1435,7 +1465,7 @@ body {
 
 .qty-btn:hover {
   background-color: var(--text-dark);
-  color: #fff;
+  color: var(--bg-main);
   border-color: var(--text-dark);
 }
 
@@ -1580,25 +1610,25 @@ body {
 .reviews-section-box {
   max-width: 1100px;
   margin: 3rem auto 0;
-  background: var(--bg-main, #FFFFFF);
-  border: 1px solid var(--c-border, #EEEEEE);
-  border-radius: var(--radius-lg, 24px);
+  background: var(--bg-main);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
   padding: 2.5rem;
-  box-shadow: var(--shadow-subtle, 0 4px 20px rgba(0, 0, 0, 0.04));
+  box-shadow: var(--shadow-subtle);
 }
 
 .reviews-title {
   font-size: 1.4rem;
   font-weight: 800;
   margin-bottom: 1.5rem;
-  color: var(--text-dark, #1A1A1E);
+  color: var(--text-dark);
 }
 
 .review-item {
-  background: var(--bg-soft, #F8F9FA);
+  background: var(--bg-soft);
   padding: 1.2rem;
-  border-radius: var(--radius-sm, 10px);
-  border: 1px solid var(--c-border, #EEEEEE);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--c-border);
   margin-bottom: 1rem;
 }
 
@@ -1611,7 +1641,7 @@ body {
 
 .review-author {
   font-weight: 700;
-  color: var(--text-dark, #1A1A1E);
+  color: var(--text-dark);
   font-size: 0.95rem;
 }
 
@@ -1621,7 +1651,7 @@ body {
 }
 
 .review-comment {
-  color: var(--text-muted, #6C727F);
+  color: var(--text-muted);
   font-size: 0.9rem;
   line-height: 1.5;
 }
@@ -1637,8 +1667,9 @@ body {
   width: 100%;
   padding: 0.9rem 1.4rem;
   border-radius: 30px;
-  border: 1px solid var(--c-border, #EEEEEE);
-  background-color: var(--bg-soft, #F8F9FA);
+  border: 1px solid var(--c-border);
+  background-color: var(--bg-soft);
+  color: var(--text-dark);
   font-family: var(--font-base);
   font-size: 0.9rem;
   outline: none;
@@ -1646,13 +1677,13 @@ body {
 }
 
 .review-form textarea.input-field {
-  border-radius: var(--radius-md, 16px);
+  border-radius: var(--radius-md);
   resize: vertical;
   min-height: 90px;
 }
 
 .review-form .input-field:focus {
-  border-color: var(--c-coral, #FF4949);
-  background-color: #fff;
+  border-color: var(--c-coral);
+  background-color: var(--bg-main);
   box-shadow: 0 0 0 3px rgba(255, 73, 73, 0.18);
 }
