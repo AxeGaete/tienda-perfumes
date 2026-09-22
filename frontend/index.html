@@ -3,869 +3,106 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PARFUM STUDIO — Colección Exclusiva</title>
-
-  <!-- Tipografía moderna y minimalista -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg-white: #ffffff;
-      --c-light: #EEEEEE;
-      --c-border: #DEDEDE;
-      --c-coral: #FF4949;
-      --c-red: #C10000;
-      --text-dark: #121214;
-      --text-muted: #6b6b76;
-      --font-display: 'Space Grotesk', sans-serif;
-      --font-body: 'Plus Jakarta Sans', sans-serif;
-      --transition: all 0.22s cubic-bezier(0.2, 0, 0, 1);
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: var(--font-body);
-      background-color: var(--c-light);
-      color: var(--text-dark);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* Barra Superior / Header */
-    header {
-      background: var(--bg-white);
-      border-bottom: 2px solid var(--c-border);
-      padding: 1.2rem 3rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .brand-logo {
-      font-family: var(--font-display);
-      font-size: 1.25rem;
-      letter-spacing: 1.5px;
-      font-weight: 700;
-      color: var(--text-dark);
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .brand-logo::before {
-      content: '';
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      background: var(--c-red);
-      border-radius: 50%;
-    }
-
-    .btn-cart-nav {
-      background: var(--bg-white);
-      border: 1.5px solid var(--c-border);
-      color: var(--text-dark);
-      padding: 0.6rem 1.3rem;
-      border-radius: 4px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      letter-spacing: 0.5px;
-      transition: var(--transition);
-    }
-    .btn-cart-nav:hover {
-      border-color: var(--c-red);
-      color: var(--c-red);
-    }
-    .cart-badge {
-      background: var(--c-red);
-      color: #fff;
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 0.15rem 0.45rem;
-      border-radius: 3px;
-    }
-
-    /* Sub-header Hero Minimalista */
-    .hero-strip {
-      background: var(--bg-white);
-      border-bottom: 1px solid var(--c-border);
-      padding: 3rem 1.5rem 2.5rem;
-      text-align: center;
-    }
-    .hero-eyebrow {
-      font-family: var(--font-display);
-      color: var(--c-coral);
-      font-size: 0.8rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      font-weight: 700;
-      margin-bottom: 0.6rem;
-    }
-    .hero-title {
-      font-family: var(--font-display);
-      font-size: 2.6rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      color: var(--text-dark);
-      margin-bottom: 0.8rem;
-    }
-    .hero-subtitle {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      max-width: 520px;
-      margin: 0 auto;
-      line-height: 1.5;
-    }
-
-    /* Contenedor central */
-    main {
-      max-width: 1200px;
-      margin: 2.5rem auto 4rem;
-      padding: 0 1.5rem;
-      flex-grow: 1;
-      width: 100%;
-    }
-
-    /* Filtros y Buscador */
-    .catalog-controls {
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .search-input-box {
-      width: 100%;
-      background: var(--bg-white);
-      border: 1.5px solid var(--c-border);
-      border-radius: 4px;
-      padding: 0.85rem 1.2rem;
-      font-size: 0.95rem;
-      font-family: var(--font-body);
-      color: var(--text-dark);
-      outline: none;
-      transition: var(--transition);
-    }
-    .search-input-box:focus {
-      border-color: var(--c-coral);
-      box-shadow: 0 0 0 3px rgba(255, 73, 73, 0.12);
-    }
-
-    .category-pills {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-    .pill {
-      background: var(--bg-white);
-      border: 1px solid var(--c-border);
-      color: var(--text-muted);
-      padding: 0.45rem 1rem;
-      border-radius: 4px;
-      font-size: 0.82rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-    .pill:hover {
-      border-color: var(--text-dark);
-      color: var(--text-dark);
-    }
-    .pill.activo {
-      background: var(--c-red);
-      color: #fff;
-      border-color: var(--c-red);
-      font-weight: 600;
-    }
-
-    /* Grilla de productos */
-    .perfumes-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-      gap: 1.8rem;
-    }
-
-    .perfume-card {
-      background: var(--bg-white);
-      border: 1px solid var(--c-border);
-      border-radius: 6px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      cursor: pointer;
-      transition: var(--transition);
-      position: relative;
-    }
-    .perfume-card:hover {
-      transform: translateY(-3px);
-      border-color: var(--c-coral);
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
-    }
-
-    .card-photo {
-      width: 100%;
-      height: 280px;
-      background: var(--c-light);
-      overflow: hidden;
-    }
-    .card-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.4s ease;
-    }
-    .perfume-card:hover .card-photo img {
-      transform: scale(1.04);
-    }
-
-    .card-details {
-      padding: 1.3rem;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-    }
-    .card-family {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      font-weight: 700;
-      color: var(--c-coral);
-      margin-bottom: 0.4rem;
-    }
-    .card-title {
-      font-family: var(--font-display);
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--text-dark);
-      margin-bottom: 0.5rem;
-    }
-    .card-description {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      line-height: 1.45;
-      margin-bottom: 1.2rem;
-      flex-grow: 1;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 1rem;
-      border-top: 1px solid var(--c-border);
-    }
-    .card-price {
-      font-family: var(--font-display);
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--c-red);
-    }
-    .btn-quick-add {
-      background: transparent;
-      border: 1.5px solid var(--c-border);
-      color: var(--text-dark);
-      padding: 0.45rem 0.9rem;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-    .btn-quick-add:hover {
-      background: var(--c-red);
-      color: #fff;
-      border-color: var(--c-red);
-    }
-
-    .empty-state {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 4rem 1rem;
-      color: var(--text-muted);
-      font-size: 1rem;
-    }
-
-    /* Modal / Pop-up Minimalista */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(18, 18, 20, 0.6);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 1.5rem;
-      z-index: 200;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease;
-    }
-    .modal-overlay.activo {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .modal-sheet {
-      background: var(--bg-white);
-      border: 2px solid var(--c-border);
-      border-radius: 6px;
-      width: 100%;
-      max-width: 780px;
-      overflow: hidden;
-      display: flex;
-      position: relative;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-    }
-
-    .modal-img-col {
-      width: 45%;
-      background: var(--c-light);
-    }
-    .modal-img-col img {
-      width: 100%;
-      height: 100%;
-      min-height: 420px;
-      object-fit: cover;
-      display: block;
-    }
-
-    .modal-info-col {
-      width: 55%;
-      padding: 2.2rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .btn-modal-close {
-      position: absolute;
-      top: 1rem;
-      right: 1.2rem;
-      background: transparent;
-      border: none;
-      font-size: 1.7rem;
-      color: var(--text-muted);
-      cursor: pointer;
-      line-height: 1;
-    }
-    .btn-modal-close:hover { color: var(--c-red); }
-
-    .modal-family {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      font-weight: 700;
-      color: var(--c-coral);
-    }
-    .modal-title {
-      font-family: var(--font-display);
-      font-size: 1.7rem;
-      font-weight: 700;
-      color: var(--text-dark);
-      margin: 0.4rem 0 0.8rem;
-    }
-    .modal-price-tag {
-      font-family: var(--font-display);
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--c-red);
-      margin-bottom: 1.2rem;
-    }
-    .modal-desc-text {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-      margin-bottom: 1.4rem;
-    }
-
-    /* Ficha Olfativa Minimalista */
-    .olfactive-sheet {
-      border: 1px solid var(--c-border);
-      border-radius: 4px;
-      padding: 0.8rem 1rem;
-      margin-bottom: 1.5rem;
-      background: var(--c-light);
-      font-size: 0.82rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.45rem;
-    }
-    .olfactive-sheet div span {
-      font-weight: 700;
-      color: var(--c-red);
-      margin-right: 0.3rem;
-    }
-
-    .btn-modal-add {
-      width: 100%;
-      background: var(--c-red);
-      color: #fff;
-      border: none;
-      padding: 0.85rem;
-      border-radius: 4px;
-      font-size: 0.9rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-    .btn-modal-add:hover {
-      background: var(--c-coral);
-    }
-
-    @media (max-width: 700px) {
-      .modal-sheet { flex-direction: column; max-height: 90vh; overflow-y: auto; }
-      .modal-img-col { width: 100%; height: 240px; }
-      .modal-img-col img { min-height: 240px; }
-      .modal-info-col { width: 100%; padding: 1.5rem; }
-      header { padding: 1rem 1.2rem; }
-    }
-
-    /* Drawer de Carrito */
-    .cart-drawer {
-      position: fixed;
-      top: 0;
-      right: -100%;
-      width: 100%;
-      max-width: 380px;
-      height: 100vh;
-      background: var(--bg-white);
-      border-left: 2px solid var(--c-border);
-      box-shadow: -8px 0 30px rgba(0, 0, 0, 0.08);
-      transition: right 0.3s cubic-bezier(0.2, 0, 0, 1);
-      display: flex;
-      flex-direction: column;
-      z-index: 150;
-    }
-    .cart-drawer.abierto { right: 0; }
-
-    .drawer-header {
-      padding: 1.3rem 1.5rem;
-      border-bottom: 1px solid var(--c-border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .drawer-header h3 {
-      font-family: var(--font-display);
-      font-size: 1.05rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      color: var(--text-dark);
-      text-transform: uppercase;
-    }
-    .btn-drawer-close {
-      background: transparent;
-      border: none;
-      font-size: 1.5rem;
-      color: var(--text-muted);
-      cursor: pointer;
-      line-height: 1;
-    }
-    .btn-drawer-close:hover { color: var(--c-red); }
-
-    .drawer-items {
-      flex-grow: 1;
-      overflow-y: auto;
-      padding: 1.2rem 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .drawer-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 0.8rem;
-      border-bottom: 1px solid var(--c-border);
-    }
-    .drawer-item-info h4 {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--text-dark);
-      margin-bottom: 0.2rem;
-    }
-    .drawer-item-info small {
-      color: var(--c-coral);
-      font-weight: 600;
-      font-size: 0.8rem;
-    }
-
-    .btn-item-delete {
-      background: transparent;
-      border: 1px solid var(--c-border);
-      color: var(--text-muted);
-      padding: 0.25rem 0.6rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-    .btn-item-delete:hover {
-      border-color: var(--c-red);
-      color: var(--c-red);
-      background: rgba(193, 0, 0, 0.05);
-    }
-
-    .drawer-footer {
-      padding: 1.3rem 1.5rem;
-      background: var(--c-light);
-      border-top: 1px solid var(--c-border);
-    }
-    .drawer-total {
-      display: flex;
-      justify-content: space-between;
-      font-size: 1.1rem;
-      font-weight: 700;
-      font-family: var(--font-display);
-      margin-bottom: 1rem;
-      color: var(--text-dark);
-    }
-    .drawer-total span:last-child {
-      color: var(--c-red);
-    }
-
-    .btn-whatsapp-buy {
-      width: 100%;
-      padding: 0.85rem;
-      background: var(--c-red);
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      font-size: 0.9rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: var(--transition);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .btn-whatsapp-buy:hover {
-      background: var(--c-coral);
-    }
-
-    /* Footer */
-    footer {
-      background: var(--bg-white);
-      border-top: 1px solid var(--c-border);
-      text-align: center;
-      padding: 1.8rem;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      letter-spacing: 0.5px;
-    }
-  </style>
+  <title>PARFUM STUDIO — Fragancias Exclusivas</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- Header -->
-  <header>
-    <div class="brand-logo">Parfum Studio</div>
-    <button class="btn-cart-nav" onclick="alternarCarrito()">
-      Pedido <span class="cart-badge" id="cuenta-carrito">0</span>
-    </button>
+  <!-- Barra de navegación fija con enlaces ancla (href="#...") -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="#hero" class="brand-logo">PARFUM STUDIO</a>
+      <nav class="nav-links">
+        <a href="#hero">Inicio</a>
+        <a href="#catalogo">Catálogo</a>
+        <a href="#nosotros">Nosotros</a>
+        <a href="#contacto">Contacto</a>
+        <a href="admin.html" class="nav-admin-btn">Panel Admin</a>
+      </nav>
+    </div>
   </header>
 
-  <!-- Hero Strip -->
-  <section class="hero-strip">
-    <div class="hero-eyebrow">Selección Botánica & Esencias</div>
-    <h1 class="hero-title">Fragancias de Autor</h1>
-    <p class="hero-subtitle">Diseñadas bajo un estándar contemporáneo, minimalista y con fijación prolongada.</p>
+  <!-- 1. Sección Hero / Inicio -->
+  <section id="hero" class="hero-section">
+    <div class="hero-content">
+      <h1>Fragancias que definen tu presencia</h1>
+      <p>Inspiraciones de alta gama con máxima fijación y materias primas importadas.</p>
+      <a href="#catalogo" class="btn-primary">Ver Catálogo</a>
+    </div>
   </section>
 
-  <main>
-    <!-- Controles -->
-    <section class="catalog-controls">
-      <input 
-        type="text" 
-        id="buscador-input" 
-        class="search-input-box" 
-        placeholder="Buscar fragancia por nombre..."
-      >
-      <div class="category-pills" id="contenedor-filtros">
-        <button class="pill activo" data-familia="todas">Todas</button>
-        <button class="pill" data-familia="Cítrico / Acuático">Cítrico / Acuático</button>
-        <button class="pill" data-familia="Oriental / Especiado">Oriental / Especiado</button>
-        <button class="pill" data-familia="Amaderado">Amaderado</button>
-        <button class="pill" data-familia="Floral">Floral</button>
-        <button class="pill" data-familia="Gourmand">Gourmand</button>
+  <!-- 2. Sección Catálogo de Productos -->
+  <section id="catalogo" class="catalog-section">
+    <div class="section-title">
+      <h2>Catálogo de Fragancias</h2>
+      <p>Buscá tu perfume favorito o filtrá por familia olfativa</p>
+    </div>
+
+    <div class="filters-container">
+      <input type="text" id="buscador" placeholder="Buscar perfume por nombre..." />
+      <div class="category-chips">
+        <button class="chip active" data-categoria="todos">Todos</button>
+        <button class="chip" data-categoria="Cítrico / Acuático">Cítricos & Acuáticos</button>
+        <button class="chip" data-categoria="Oriental / Especiado">Orientales & Especiados</button>
+        <button class="chip" data-categoria="Amaderado">Amaderados</button>
       </div>
-    </section>
+    </div>
 
-    <!-- Grilla -->
-    <section class="perfumes-grid" id="contenedor-perfumes"></section>
-  </main>
+    <div id="grid-productos" class="products-grid">
+      <!-- Se cargan automáticamente vía JavaScript -->
+    </div>
+  </section>
 
-  <!-- Modal Detallado -->
-  <div class="modal-overlay" id="modal-detalle" onclick="cerrarModalAfuera(event)">
-    <div class="modal-sheet">
-      <button class="btn-modal-close" onclick="cerrarModal()">&times;</button>
-      <div class="modal-img-col">
-        <img id="modal-img" src="" alt="Perfume">
+  <!-- 3. Sección Nosotros / Garantía de Calidad -->
+  <section id="nosotros" class="about-section">
+    <div class="section-title">
+      <h2>Por qué elegirnos</h2>
+      <p>Compromiso de excelencia en cada detalle de nuestras fragancias</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <h3>Alta Concentración</h3>
+        <p>Formulaciones Eau de Parfum con hasta un 25% de esencia para asegurar duración prolongada en piel.</p>
       </div>
-      <div class="modal-info-col">
-        <div>
-          <span class="modal-family" id="modal-familia"></span>
-          <h2 class="modal-title" id="modal-nombre"></h2>
-          <div class="modal-price-tag" id="modal-precio"></div>
-          
-          <p class="modal-desc-text" id="modal-descripcion"></p>
+      <div class="feature-card">
+        <h3>Envíos Seguros</h3>
+        <p>Empaque reforzado para que tus perfumes lleguen en óptimas condiciones a cualquier punto del país.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Atención Directa</h3>
+        <p>Te asesoramos de forma personalizada para que elijas la fragancia que mejor se adapte a tu estilo.</p>
+      </div>
+    </div>
+  </section>
 
-          <div class="olfactive-sheet">
-            <div><span>Salida:</span> Cítricos, Cardamomo, Notas Frescas</div>
-            <div><span>Corazón:</span> Pimienta Negra, Iris, Acordes Florales</div>
-            <div><span>Fondo:</span> Vetiver, Cedro, Resinas Cálidas</div>
-          </div>
+  <!-- 4. Sección Contacto -->
+  <section id="contacto" class="contact-section">
+    <div class="section-title">
+      <h2>Canales de Contacto</h2>
+      <p>Escribinos para pedidos personalizados, stock o consultas</p>
+    </div>
+    <div class="contact-container">
+      <div class="contact-card">
+        <h3>Hablá con nosotros</h3>
+        <p>Estamos disponibles por mensajería directa para responder tus preguntas y tomar tus compras.</p>
+        
+        <div class="contact-methods">
+          <a href="https://wa.me/5491112345678?text=Hola!%20Quería%20hacer%20una%20consulta%20por%20los%20perfumes" target="_blank" class="contact-btn whatsapp-btn">
+            Consultar por WhatsApp
+          </a>
+          <a href="https://instagram.com" target="_blank" class="contact-btn instagram-btn">
+            Seguinos en Instagram
+          </a>
         </div>
-
-        <button class="btn-modal-add" id="modal-btn-comprar">Agregar al Pedido</button>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Carrito Lateral -->
-  <aside class="cart-drawer" id="panel-carrito">
-    <div class="drawer-header">
-      <h3>Tu Pedido</h3>
-      <button class="btn-drawer-close" onclick="alternarCarrito()">&times;</button>
-    </div>
-    <div class="drawer-items" id="lista-carrito"></div>
-    <div class="drawer-footer">
-      <div class="drawer-total">
-        <span>Total estimado</span>
-        <span id="monto-total">$0</span>
-      </div>
-      <button class="btn-whatsapp-buy" onclick="enviarPedidoWhatsApp()">Comprar por WhatsApp</button>
-    </div>
-  </aside>
-
-  <footer>
-    &copy; 2026 PARFUM STUDIO — Todos los derechos reservados.
+  <!-- Pie de página -->
+  <footer class="footer">
+    <p>&copy; 2026 PARFUM STUDIO. Todos los derechos reservados.</p>
   </footer>
 
-  <script>
-    let perfumesDisponibles = [];
-    let familiaSeleccionada = 'todas';
-    let terminoBusqueda = '';
-    let carrito = JSON.parse(localStorage.getItem('carrito_perfumes')) || [];
-
-    const contenedorPerfumes = document.getElementById('contenedor-perfumes');
-    const inputBuscador = document.getElementById('buscador-input');
-    const botonesFiltro = document.querySelectorAll('.pill');
-
-    const modalDetalle = document.getElementById('modal-detalle');
-    const modalImg = document.getElementById('modal-img');
-    const modalFamilia = document.getElementById('modal-familia');
-    const modalNombre = document.getElementById('modal-nombre');
-    const modalPrecio = document.getElementById('modal-precio');
-    const modalDescripcion = document.getElementById('modal-descripcion');
-    const modalBtnComprar = document.getElementById('modal-btn-comprar');
-
-    // Obtener catálogo
-    async function obtenerCatalogo() {
-      try {
-        const respuesta = await fetch('/api/productos');
-        perfumesDisponibles = await respuesta.json();
-        renderizarCatalogo();
-        actualizarVistaCarrito();
-      } catch (error) {
-        console.error('Error al cargar catálogo:', error);
-      }
-    }
-
-    // Renderizar tarjetas
-    function renderizarCatalogo() {
-      contenedorPerfumes.innerHTML = '';
-
-      const filtrados = perfumesDisponibles.filter(prod => {
-        const matchNombre = prod.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase());
-        const matchFamilia = (familiaSeleccionada === 'todas') || (prod.familia === familiaSeleccionada);
-        return matchNombre && matchFamilia;
-      });
-
-      if (filtrados.length === 0) {
-        contenedorPerfumes.innerHTML = '<p class="empty-state">No se encontraron productos disponibles para este filtro.</p>';
-        return;
-      }
-
-      filtrados.forEach(prod => {
-        const card = document.createElement('article');
-        card.className = 'perfume-card';
-        card.onclick = () => abrirModal(prod);
-
-        card.innerHTML = `
-          <div class="card-photo">
-            <img src="${prod.imagen_url}" alt="${prod.nombre}" loading="lazy">
-          </div>
-          <div class="card-details">
-            <span class="card-family">${prod.familia}</span>
-            <h2 class="card-title">${prod.nombre}</h2>
-            <p class="card-description">${prod.descripcion || 'Sin descripción disponible.'}</p>
-            <div class="card-footer">
-              <span class="card-price">$${Number(prod.precio).toLocaleString('es-AR')}</span>
-              <button class="btn-quick-add" onclick="eventoAgregar(event, ${prod.id})">+ Agregar</button>
-            </div>
-          </div>
-        `;
-        contenedorPerfumes.appendChild(card);
-      });
-    }
-
-    function eventoAgregar(e, id) {
-      e.stopPropagation();
-      agregarAlCarrito(id);
-    }
-
-    // Modal
-    function abrirModal(prod) {
-      modalImg.src = prod.imagen_url;
-      modalFamilia.textContent = prod.familia;
-      modalNombre.textContent = prod.nombre;
-      modalPrecio.textContent = `$${Number(prod.precio).toLocaleString('es-AR')}`;
-      modalDescripcion.textContent = prod.descripcion || 'Perfume de formulación exclusiva con alta concentración de aceites esenciales.';
-
-      modalBtnComprar.onclick = () => {
-        agregarAlCarrito(prod.id);
-        cerrarModal();
-        alternarCarrito();
-      };
-
-      modalDetalle.classList.add('activo');
-    }
-
-    function cerrarModal() {
-      modalDetalle.classList.remove('activo');
-    }
-
-    function cerrarModalAfuera(e) {
-      if (e.target === modalDetalle) cerrarModal();
-    }
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        cerrarModal();
-        document.getElementById('panel-carrito').classList.remove('abierto');
-      }
-    });
-
-    // Filtros y Buscador
-    inputBuscador.addEventListener('input', (e) => {
-      terminoBusqueda = e.target.value.trim();
-      renderizarCatalogo();
-    });
-
-    botonesFiltro.forEach(btn => {
-      btn.addEventListener('click', () => {
-        botonesFiltro.forEach(b => b.classList.remove('activo'));
-        btn.classList.add('activo');
-        familiaSeleccionada = btn.getAttribute('data-familia');
-        renderizarCatalogo();
-      });
-    });
-
-    // Carrito
-    function agregarAlCarrito(id) {
-      const prod = perfumesDisponibles.find(p => p.id === id);
-      if (!prod) return;
-
-      const itemExistente = carrito.find(item => item.id === id);
-      if (itemExistente) {
-        itemExistente.cantidad += 1;
-      } else {
-        carrito.push({
-          id: prod.id,
-          nombre: prod.nombre,
-          precio: Number(prod.precio),
-          cantidad: 1
-        });
-      }
-      guardarYActualizar();
-    }
-
-    function eliminarDelCarrito(id) {
-      carrito = carrito.filter(item => item.id !== id);
-      guardarYActualizar();
-    }
-
-    function guardarYActualizar() {
-      localStorage.setItem('carrito_perfumes', JSON.stringify(carrito));
-      actualizarVistaCarrito();
-    }
-
-    function actualizarVistaCarrito() {
-      const lista = document.getElementById('lista-carrito');
-      const cuenta = document.getElementById('cuenta-carrito');
-      const totalSpan = document.getElementById('monto-total');
-
-      lista.innerHTML = '';
-      let sumaTotal = 0;
-      let totalUnidades = 0;
-
-      carrito.forEach(item => {
-        const subtotal = item.precio * item.cantidad;
-        sumaTotal += subtotal;
-        totalUnidades += item.cantidad;
-
-        lista.innerHTML += `
-          <div class="drawer-item">
-            <div class="drawer-item-info">
-              <h4>${item.nombre}</h4>
-              <small>${item.cantidad} &times; $${item.precio.toLocaleString('es-AR')}</small>
-            </div>
-            <button class="btn-item-delete" onclick="eliminarDelCarrito(${item.id})">Quitar</button>
-          </div>
-        `;
-      });
-
-      cuenta.textContent = totalUnidades;
-      totalSpan.textContent = `$${sumaTotal.toLocaleString('es-AR')}`;
-    }
-
-    function alternarCarrito() {
-      document.getElementById('panel-carrito').classList.toggle('abierto');
-    }
-
-    function enviarPedidoWhatsApp() {
-      if (carrito.length === 0) {
-        alert('Tu pedido está vacío.');
-        return;
-      }
-
-      const telefono = '5491100000000'; // Tu número real
-      let mensaje = '¡Hola! Quisiera realizar el siguiente pedido:\n\n';
-      let total = 0;
-
-      carrito.forEach(item => {
-        const subtotal = item.precio * item.cantidad;
-        total += subtotal;
-        mensaje += `• ${item.nombre} (x${item.cantidad}) — $${subtotal.toLocaleString('es-AR')}\n`;
-      });
-
-      mensaje += `\n*Total a abonar: $${total.toLocaleString('es-AR')}*`;
-      mensaje += '\n\n¿Cuáles son los plazos y formas de envío?';
-
-      const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
-      window.open(url, '_blank');
-    }
-
-    obtenerCatalogo();
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
