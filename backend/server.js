@@ -85,14 +85,17 @@ app.get('/api/productos', (req, res) => {
   });
 });
 
-// POST productos
-app.post('/api/productos', verificarAdmin, upload.single('imagen'), (req, res) => {
+// POST productos (soporta múltiples imágenes: hasta 5 fotos)
+app.post('/api/productos', verificarAdmin, upload.array('imagenes', 5), (req, res) => {
   const { nombre, familia, descripcion, precio } = req.body;
-  if (!nombre || !familia || !precio || !req.file) {
-    return res.status(400).json({ error: 'Todos los campos y la imagen son obligatorios' });
+  if (!nombre || !familia || !precio || !req.files || req.files.length === 0) {
+    return res.status(400).json({ error: 'Todos los campos y al menos una imagen son obligatorios' });
   }
 
-  const imagen_url = `/uploads/${req.file.filename}`;
+  // Guardar rutas como array JSON para compatibilidad con la galería
+  const rutasImagenes = req.files.map(file => `/uploads/${file.filename}`);
+  const imagen_url = JSON.stringify(rutasImagenes);
+
   const sql = `INSERT INTO productos (nombre, familia, descripcion, precio, imagen_url) VALUES (?, ?, ?, ?, ?)`;
 
   db.query(sql, [nombre, familia, descripcion, precio, imagen_url], (err, result) => {

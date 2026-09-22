@@ -5,16 +5,26 @@ const gridProductos = document.getElementById('grid-productos');
 const inputBuscador = document.getElementById('buscador');
 const botonesCategorias = document.querySelectorAll('.chip');
 
-// Elementos de la sección detalle
 const seccionDetalle = document.getElementById('detalle');
-const detalleImg = document.getElementById('detalle-img');
+const detalleImgPrincipal = document.getElementById('detalle-img-principal');
+const detalleThumbnails = document.getElementById('detalle-thumbnails');
 const detalleFamilia = document.getElementById('detalle-familia');
 const detalleNombre = document.getElementById('detalle-nombre');
 const detallePrecio = document.getElementById('detalle-precio');
 const detalleDescripcion = document.getElementById('detalle-descripcion');
 const detalleBtnWsp = document.getElementById('detalle-btn-wsp');
 
-// Cargar productos desde el backend
+const imagenFallback = 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=600&q=80';
+
+// Función auxiliar para parsear URLs (soporta string simple o array JSON)
+function obtenerFotos(imagen_url) {
+  try {
+    const parsed = JSON.parse(imagen_url);
+    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+  } catch (e) {}
+  return [imagen_url || imagenFallback];
+}
+
 async function cargarCatalogo() {
   try {
     const respuesta = await fetch('/api/productos');
@@ -29,7 +39,6 @@ async function cargarCatalogo() {
   }
 }
 
-// Renderizar tarjetas con redirección href="#detalle"
 function renderizarProductos(productos) {
   if (!gridProductos) return;
   gridProductos.innerHTML = '';
@@ -43,12 +52,13 @@ function renderizarProductos(productos) {
     const tarjeta = document.createElement('div');
     tarjeta.className = 'product-card';
 
+    const fotos = obtenerFotos(perfume.imagen_url);
+    const fotoPortada = fotos[0];
     const precioNumero = Number(perfume.precio) || 0;
-    const imagenFallback = 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=600&q=80';
 
     tarjeta.innerHTML = `
       <a href="#detalle" class="card-image-link" onclick="mostrarDetalle(${perfume.id})">
-        <img src="${perfume.imagen_url}" alt="${perfume.nombre}" onerror="this.onerror=null; this.src='${imagenFallback}';">
+        <img src="${fotoPortada}" alt="${perfume.nombre}" onerror="this.onerror=null; this.src='${imagenFallback}';">
       </a>
       <div class="product-info">
         <span class="product-family">${perfume.familia}</span>
@@ -61,7 +71,7 @@ function renderizarProductos(productos) {
         <div class="product-price">$${precioNumero.toLocaleString('es-AR')}</div>
         <div class="card-buttons">
           <a href="#detalle" class="btn-ver-detalle" onclick="mostrarDetalle(${perfume.id})">
-            Ver Detalles
+            Ver Detalles (${fotos.length} ${fotos.length > 1 ? 'fotos' : 'foto'})
           </a>
         </div>
       </div>
@@ -70,33 +80,48 @@ function renderizarProductos(productos) {
   });
 }
 
-// Función global que llena la sección #detalle al hacer clic
 window.mostrarDetalle = function(id) {
   const perfume = todosLosProductos.find(p => p.id === id);
   if (!perfume) return;
 
+  const fotos = obtenerFotos(perfume.imagen_url);
   const precioNumero = Number(perfume.precio) || 0;
-  const imagenFallback = 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=600&q=80';
 
-  detalleImg.src = perfume.imagen_url;
-  detalleImg.onerror = function() {
+  // Foto principal por defecto
+  detalleImgPrincipal.src = fotos[0];
+  detalleImgPrincipal.onerror = function() {
     this.onerror = null;
     this.src = imagenFallback;
   };
+
+  // Crear miniaturas interactivas
+  detalleThumbnails.innerHTML = '';
+  fotos.forEach((fotoUrl, index) => {
+    const thumb = document.createElement('img');
+    thumb.src = fotoUrl;
+    thumb.className = `detail-thumb ${index === 0 ? 'active' : ''}`;
+    thumb.onerror = function() { this.src = imagenFallback; };
+    
+    thumb.addEventListener('click', () => {
+      detalleImgPrincipal.src = fotoUrl;
+      document.querySelectorAll('.detail-thumb').forEach(t => t.classList.remove('active'));
+      thumb.classList.add('active');
+    });
+
+    detalleThumbnails.appendChild(thumb);
+  });
 
   detalleFamilia.textContent = perfume.familia;
   detalleNombre.textContent = perfume.nombre;
   detallePrecio.textContent = `$${precioNumero.toLocaleString('es-AR')}`;
   detalleDescripcion.textContent = perfume.descripcion || 'Sin descripción adicional.';
 
-  const mensajeWsp = encodeURIComponent(`¡Hola! Quisiera comprar el perfume ${perfume.nombre} ($${precioNumero.toLocaleString('es-AR')}). ¿Cómo podemos coordinar?`);
+  const mensajeWsp = encodeURIComponent(`¡Hola! Quisiera consultar por el perfume ${perfume.nombre} ($${precioNumero.toLocaleString('es-AR')}).`);
   detalleBtnWsp.href = `https://wa.me/5491112345678?text=${mensajeWsp}`;
 
-  // Mostrar la sección en el DOM
   seccionDetalle.style.display = 'block';
 };
 
-// Filtrar por texto y categoría
 function aplicarFiltros() {
   const texto = inputBuscador ? inputBuscador.value.toLowerCase().trim() : '';
 
@@ -109,9 +134,7 @@ function aplicarFiltros() {
   renderizarProductos(filtrados);
 }
 
-if (inputBuscador) {
-  inputBuscador.addEventListener('input', aplicarFiltros);
-}
+if (inputBuscador) inputBuscador.addEventListener('input', aplicarFiltros);
 
 botonesCategorias.forEach(boton => {
   boton.addEventListener('click', () => {
