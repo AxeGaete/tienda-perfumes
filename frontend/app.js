@@ -470,9 +470,18 @@ function aplicarCupon() {
   const codigo = document.getElementById('cupon-input').value.trim().toUpperCase();
   const msgBox = document.getElementById('cupon-msg');
 
-  if (codigo === 'PARFUM10' || codigo === 'VERANO10') {
-    descuentoActivo = 0.10;
-    msgBox.textContent = '¡Cupón aplicado con éxito (-10%)!';
+  // Diccionario secreto de cupones (Código : Porcentaje de descuento)
+  const cuponesSecretos = {
+    'PARFUM10': 0.10, // 10% de descuento
+    'VERANO10': 0.10, // 10% de descuento
+    'VIP20': 0.20,    // 20% de descuento exclusivo
+    'REGALO15': 0.15  // 15% de descuento
+  };
+
+  if (cuponesSecretos.hasOwnProperty(codigo)) {
+    descuentoActivo = cuponesSecretos[codigo];
+    const porcentajeTexto = (descuentoActivo * 100) + '%';
+    msgBox.textContent = `¡Cupón secreto aplicado con éxito (-${porcentajeTexto})!`;
     msgBox.style.color = '#2E7D32';
     msgBox.style.display = 'block';
   } else {
