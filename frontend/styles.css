@@ -364,7 +364,7 @@ body {
   height: 440px;
   border-radius: var(--radius-md);
   overflow: hidden;
-  background-color: #FFFFFF !important;
+  background-color: #121212 !important;
   border: 1px solid var(--c-border);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
 }
@@ -705,7 +705,7 @@ body {
 }
 
 /* =========================================================
-   GRILLA DE PERFUMES (TARJETA OSCURA, CAJA DE FOTO BLANCA)
+   GRILLA DE PERFUMES (CAJA DE FOTO NEGRA)
    ========================================================= */
 .products-grid {
   display: grid;
@@ -735,7 +735,7 @@ body {
   align-items: center;
   justify-content: center;
   height: 280px;
-  background-color: #FFFFFF !important;
+  background-color: #121212 !important;
   padding: 1.5rem;
   text-decoration: none;
   overflow: hidden;
@@ -878,7 +878,7 @@ body {
   position: relative;
   width: 100%;
   height: 420px;
-  background-color: #FFFFFF !important;
+  background-color: #121212 !important;
   border: 1px solid var(--c-border);
   border-radius: var(--radius-md);
   display: flex;
@@ -934,7 +934,7 @@ body {
   width: 65px;
   height: 65px;
   object-fit: contain;
-  background-color: #FFFFFF !important;
+  background-color: #121212 !important;
   border-radius: 12px;
   border: 2px solid var(--c-border);
   cursor: pointer;
@@ -1410,7 +1410,7 @@ body {
   width: 65px;
   height: 65px;
   object-fit: contain;
-  background-color: #FFFFFF !important;
+  background-color: #121212 !important;
   border-radius: var(--radius-sm);
   border: 1px solid var(--c-border);
   padding: 4px;
@@ -1678,7 +1678,7 @@ body {
 
 .review-form textarea.input-field {
   border-radius: var(--radius-md);
-  resize: virtual;
+  resize: vertical;
   min-height: 90px;
 }
 
