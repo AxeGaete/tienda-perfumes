@@ -93,20 +93,27 @@ body {
 
 .brand-logo {
   text-decoration: none;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 800;
-  letter-spacing: 1.5px;
+  letter-spacing: 3px;
   color: var(--text-dark);
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.5rem;
+  transition: opacity 0.2s ease;
+}
+
+.brand-logo:hover {
+  opacity: 0.8;
 }
 
 .logo-dot {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   background-color: var(--c-red);
   border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 8px rgba(193, 0, 0, 0.4);
 }
 
 .nav-links {
