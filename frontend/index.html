@@ -36,10 +36,15 @@
         <a href="#contacto" onclick="cerrarDetalle()">Contacto</a>
         <a href="admin.html" class="nav-admin-btn">Panel Admin</a>
       </div>
+      <!-- Botón de Carrito con Contador -->
+      <button class="cart-trigger-btn" onclick="abrirCarrito()">
+        <span class="cart-icon">🛒</span>
+        <span class="cart-badge" id="cart-badge">0</span>
+      </button>
     </nav>
   </header>
 
-  <!-- 1. Hero moderno con identidad y carrusel dinámico de perfumes subidos -->
+  <!-- 1. Hero moderno con identidad y carrusel dinámico -->
   <section id="hero" class="hero-section">
     <div class="hero-grid">
       <div class="hero-text-side">
@@ -63,12 +68,10 @@
         </div>
       </div>
 
-      <!-- Carrusel dinámico: se alimenta de los perfumes cargados -->
+      <!-- Carrusel dinámico de perfumes subidos -->
       <div class="hero-carousel-side">
         <div class="carousel-container" id="hero-carousel">
-          <div class="carousel-track" id="hero-carousel-track">
-            <!-- Inyectado automáticamente por armarCarruselHero en app.js -->
-          </div>
+          <div class="carousel-track" id="hero-carousel-track"></div>
           <button class="carousel-btn prev" onclick="moverCarruselHero(-1)">&#10094;</button>
           <button class="carousel-btn next" onclick="moverCarruselHero(1)">&#10095;</button>
           <div class="carousel-dots" id="hero-carousel-dots"></div>
@@ -86,9 +89,8 @@
     </div>
 
     <div class="filters-card">
-      <!-- Barra superior compacta -->
       <div class="search-sort-bar">
-        <input type="text" id="buscador" placeholder="Buscar por perfume, marca o notas (ej: almizcle, ámbar)..." />
+        <input type="text" id="buscador" placeholder="Buscar por perfume, marca o notas..." />
         <button type="button" class="btn-toggle-filters" id="btn-toggle-filtros" onclick="alternarFiltros()">
           <span class="toggle-icon">⚙</span>
           <span>Filtros</span>
@@ -101,20 +103,17 @@
         </select>
       </div>
 
-      <!-- Panel desplegable con filtros multi-criterio -->
       <div id="filtros-desplegables" class="filters-collapsible" style="display: none;">
         <div class="filters-header">
           <span class="filters-title">Criterios de Búsqueda</span>
           <button class="btn-reset-filters" id="btn-reset-filtros" onclick="resetearFiltros()">Limpiar Filtros</button>
         </div>
 
-        <!-- Presupuesto -->
         <div class="price-slider-box">
           <label for="slider-precio">Presupuesto máx: <span id="label-precio-max">$150.000</span></label>
           <input type="range" id="slider-precio" min="0" max="150000" step="5000" value="150000">
         </div>
 
-        <!-- FILTRO 1: TIPO (Diseñador / Árabe / Nicho) -->
         <div class="filter-group">
           <span class="filter-group-label">Tipo de Fragancia:</span>
           <div class="filter-chips-row" id="chips-tipo">
@@ -125,7 +124,6 @@
           </div>
         </div>
 
-        <!-- FILTRO 2: GÉNERO -->
         <div class="filter-group">
           <span class="filter-group-label">Destino / Género:</span>
           <div class="filter-chips-row" id="chips-genero">
@@ -136,7 +134,6 @@
           </div>
         </div>
 
-        <!-- FILTRO 3: FAMILIA OLFATIVA -->
         <div class="filter-group">
           <span class="filter-group-label">Familia Olfativa:</span>
           <div class="filter-chips-row" id="chips-familia">
@@ -149,7 +146,6 @@
           </div>
         </div>
 
-        <!-- FILTRO 4: OCASIÓN / ESTACIÓN -->
         <div class="filter-group">
           <span class="filter-group-label">Momento / Ocasión:</span>
           <div class="filter-chips-row" id="chips-estacion">
@@ -166,7 +162,7 @@
     <div id="grid-productos" class="products-grid"></div>
   </section>
 
-  <!-- 3. Sección Detalle del Perfume (Se cierra al presionar Volver) -->
+  <!-- 3. Sección Detalle del Perfume -->
   <section id="detalle" class="detail-section" style="display: none;">
     <div class="detail-card">
       <div class="detail-gallery">
@@ -204,9 +200,9 @@
         <p id="detalle-descripcion" class="detail-description"></p>
         
         <div class="detail-actions">
-          <a id="detalle-btn-wsp" href="#" target="_blank" class="btn-primary">
-            Pedir por WhatsApp
-          </a>
+          <button type="button" class="btn-primary" id="btn-detalle-agregar" onclick="agregarAlCarritoDesdeDetalle()">
+            Agregar al Carrito 🛒
+          </button>
           <button type="button" class="btn-secondary" onclick="cerrarDetalle()">
             ← Volver al Catálogo
           </button>
@@ -257,6 +253,36 @@
       </div>
     </div>
   </section>
+
+  <!-- ================= CARRITO LATERAL (DRAWER) ================= -->
+  <div class="cart-overlay" id="cart-overlay" onclick="cerrarCarrito()"></div>
+  <aside class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-header">
+      <div class="cart-title-wrapper">
+        <h3>Tu Carrito</h3>
+        <span class="cart-count-label" id="cart-total-items">(0 productos)</span>
+      </div>
+      <button class="cart-close-btn" onclick="cerrarCarrito()">✕</button>
+    </div>
+
+    <!-- Lista de perfumes en el carrito -->
+    <div class="cart-items-container" id="cart-items-container">
+      <!-- Se inyecta con JavaScript -->
+    </div>
+
+    <!-- Footer del Carrito con Subtotal y Botón WhatsApp -->
+    <div class="cart-footer">
+      <div class="cart-subtotal-row">
+        <span>Total:</span>
+        <span class="cart-total-price" id="cart-total-price">$0</span>
+      </div>
+      <button class="btn-primary btn-checkout-wsp" onclick="finalizarCompraWhatsApp()">
+        <span>Finalizar Pedido por WhatsApp</span>
+        <span class="checkout-arrow">→</span>
+      </button>
+      <button class="cart-clear-btn" onclick="vaciarCarrito()">Vaciar carrito</button>
+    </div>
+  </aside>
 
   <footer class="footer">
     <p>&copy; 2026 <strong>PARFUM STUDIO</strong> — Todos los derechos reservados.</p>

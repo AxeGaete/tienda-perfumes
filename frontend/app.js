@@ -4,6 +4,9 @@ let filtroFamilia = 'todos';
 let filtroGenero = 'todos';
 let filtroEstacion = 'todos';
 
+// Carrito cargado de localStorage
+let carrito = JSON.parse(localStorage.getItem('parfum_carrito')) || [];
+
 // Elementos de UI
 const gridProductos = document.getElementById('grid-productos');
 const inputBuscador = document.getElementById('buscador');
@@ -31,11 +34,148 @@ const detalleDescripcion = document.getElementById('detalle-descripcion');
 const detalleSalida = document.getElementById('detalle-salida');
 const detalleCorazon = document.getElementById('detalle-corazon');
 const detalleFondo = document.getElementById('detalle-fondo');
-const detalleBtnWsp = document.getElementById('detalle-btn-wsp');
 
+let idPerfumeDetalleActual = null;
 let fotosDetalleActuales = [];
 let indiceFotoDetalle = 0;
 const imagenFallback = 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=600&q=80';
+
+// ================= CARRITO DE COMPRAS =================
+function guardarCarrito() {
+  localStorage.setItem('parfum_carrito', JSON.stringify(carrito));
+  actualizarVistaCarrito();
+}
+
+window.abrirCarrito = function() {
+  document.getElementById('cart-sidebar').classList.add('active');
+  document.getElementById('cart-overlay').classList.add('active');
+};
+
+window.cerrarCarrito = function() {
+  document.getElementById('cart-sidebar').classList.remove('active');
+  document.getElementById('cart-overlay').classList.remove('active');
+};
+
+window.agregarAlCarrito = function(id) {
+  const prod = todosLosProductos.find(p => p.id === id);
+  if (!prod) return;
+
+  const itemExistente = carrito.find(item => item.id === id);
+  if (itemExistente) {
+    itemExistente.cantidad += 1;
+  } else {
+    const fotos = obtenerFotos(prod.imagen_url);
+    carrito.push({
+      id: prod.id,
+      nombre: prod.nombre,
+      familia: prod.familia,
+      tipo: prod.tipo || 'Diseñador',
+      precio: Number(prod.precio) || 0,
+      imagen: fotos[0],
+      cantidad: 1
+    });
+  }
+  guardarCarrito();
+  abrirCarrito();
+};
+
+window.agregarAlCarritoDesdeDetalle = function() {
+  if (idPerfumeDetalleActual) {
+    agregarAlCarrito(idPerfumeDetalleActual);
+  }
+};
+
+window.cambiarCantidadCarrito = function(id, delta) {
+  const item = carrito.find(p => p.id === id);
+  if (!item) return;
+
+  item.cantidad += delta;
+  if (item.cantidad <= 0) {
+    carrito = carrito.filter(p => p.id !== id);
+  }
+  guardarCarrito();
+};
+
+window.vaciarCarrito = function() {
+  if (carrito.length === 0) return;
+  if (confirm('¿Querés vaciar todos los productos del carrito?')) {
+    carrito = [];
+    guardarCarrito();
+  }
+};
+
+function actualizarVistaCarrito() {
+  const badge = document.getElementById('cart-badge');
+  const itemsContainer = document.getElementById('cart-items-container');
+  const totalItemsLabel = document.getElementById('cart-total-items');
+  const totalPriceLabel = document.getElementById('cart-total-price');
+
+  const totalProductos = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+  const totalInversion = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+
+  if (badge) badge.textContent = totalProductos;
+  if (totalItemsLabel) totalItemsLabel.textContent = `(${totalProductos} ${totalProductos === 1 ? 'producto' : 'productos'})`;
+  if (totalPriceLabel) totalPriceLabel.textContent = `$${totalInversion.toLocaleString('es-AR')}`;
+
+  if (!itemsContainer) return;
+
+  if (carrito.length === 0) {
+    itemsContainer.innerHTML = `
+      <div class="cart-empty-msg">
+        <span class="cart-empty-icon">🛍️</span>
+        <p>Tu carrito está vacío.</p>
+        <button class="btn-primary" style="padding: 0.6rem 1.4rem; font-size: 0.8rem;" onclick="cerrarCarrito()">Explorar Catálogo</button>
+      </div>`;
+    return;
+  }
+
+  itemsContainer.innerHTML = '';
+  carrito.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'cart-item';
+    row.innerHTML = `
+      <img src="${item.imagen}" class="cart-item-img" alt="${item.nombre}" onerror="this.src='${imagenFallback}'">
+      <div class="cart-item-details">
+        <span class="cart-item-meta">${item.tipo} • ${item.familia}</span>
+        <span class="cart-item-title">${item.nombre}</span>
+        <span class="cart-item-price">$${(item.precio * item.cantidad).toLocaleString('es-AR')}</span>
+      </div>
+      <div class="cart-item-controls">
+        <button class="qty-btn" onclick="cambiarCantidadCarrito(${item.id}, -1)">-</button>
+        <span class="cart-item-qty">${item.cantidad}</span>
+        <button class="qty-btn" onclick="cambiarCantidadCarrito(${item.id}, 1)">+</button>
+      </div>
+    `;
+    itemsContainer.appendChild(row);
+  });
+}
+
+// ================= CHECKOUT POR WHATSAPP =================
+window.finalizarCompraWhatsApp = function() {
+  if (carrito.length === 0) {
+    alert('Tu carrito está vacío. Agregá algún perfume antes de finalizar el pedido.');
+    return;
+  }
+
+  const totalInversion = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+
+  let mensaje = `👋 ¡Hola! Quisiera realizar el siguiente pedido en *PARFUM STUDIO*:\n\n`;
+  
+  carrito.forEach((item, index) => {
+    mensaje += `*${index + 1}. ${item.nombre}* (${item.tipo})\n`;
+    mensaje += `   • Cantidad: ${item.cantidad}\n`;
+    mensaje += `   • Subtotal: $${(item.precio * item.cantidad).toLocaleString('es-AR')}\n\n`;
+  });
+
+  mensaje += `━━━━━━━━━━━━━━━━━━━━━\n`;
+  mensaje += `💰 *TOTAL A ABONAR: $${totalInversion.toLocaleString('es-AR')}*\n`;
+  mensaje += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
+  mensaje += `¿Cómo coordinamos el pago y el envío? ¡Muchas gracias!`;
+
+  const numeroWhatsApp = '5491112345678'; // Reemplazá por tu número si lo deseás
+  const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+  window.open(url, '_blank');
+};
 
 // ================= TOGGLE FILTROS =================
 window.alternarFiltros = function() {
@@ -64,7 +204,7 @@ window.cerrarDetalle = function() {
   }
 };
 
-// ================= CARRUSEL HERO CON PERFUMES SUBIDOS =================
+// ================= CARRUSEL HERO =================
 let slideHeroActual = 0;
 let totalSlidesHero = 0;
 let intervaloHero = null;
@@ -77,7 +217,6 @@ function armarCarruselHero(productos) {
   track.innerHTML = '';
   dotsContainer.innerHTML = '';
 
-  // Tomamos hasta 5 perfumes subidos para el carrusel
   const perfumesDestacados = productos.slice(0, 5);
 
   if (perfumesDestacados.length === 0) {
@@ -150,7 +289,6 @@ async function cargarCatalogo() {
     if (!res.ok) throw new Error('Error al cargar productos');
     todosLosProductos = await res.json();
 
-    // Armar el carrusel de bienvenida con los perfumes subidos
     armarCarruselHero(todosLosProductos);
 
     if (todosLosProductos.length > 0 && sliderPrecio) {
@@ -162,6 +300,7 @@ async function cargarCatalogo() {
       }
     }
     aplicarFiltrosYOrden();
+    actualizarVistaCarrito();
   } catch (err) {
     console.error(err);
     if (gridProductos) gridProductos.innerHTML = '<p style="color: #FF4949; text-align: center; grid-column: 1/-1;">Error al cargar las fragancias.</p>';
@@ -206,9 +345,14 @@ function renderizarProductos(productos) {
         </h3>
         <p class="product-desc">${perfume.descripcion || ''}</p>
         <div class="product-price">$${precioNumero.toLocaleString('es-AR')}</div>
-        <a href="#detalle" class="btn-ver-detalle" onclick="mostrarDetalle(${perfume.id})">
-          Ver Detalles (${fotos.length} ${fotos.length > 1 ? 'fotos' : 'foto'})
-        </a>
+        <div class="card-actions-row">
+          <a href="#detalle" class="btn-ver-detalle" onclick="mostrarDetalle(${perfume.id})">
+            Ver Detalles
+          </a>
+          <button class="btn-card-add-cart" title="Agregar al carrito" onclick="agregarAlCarrito(${perfume.id})">
+            🛒 +
+          </button>
+        </div>
       </div>
     `;
     gridProductos.appendChild(tarjeta);
@@ -220,6 +364,7 @@ window.mostrarDetalle = function(id) {
   const perfume = todosLosProductos.find(p => p.id === id);
   if (!perfume) return;
 
+  idPerfumeDetalleActual = perfume.id;
   fotosDetalleActuales = obtenerFotos(perfume.imagen_url);
   indiceFotoDetalle = 0;
   const precioNumero = Number(perfume.precio) || 0;
@@ -252,9 +397,6 @@ window.mostrarDetalle = function(id) {
 
   document.getElementById('row-fondo').style.display = perfume.notas_fondo ? 'flex' : 'none';
   detalleFondo.textContent = perfume.notas_fondo || '';
-
-  const mensajeWsp = encodeURIComponent(`¡Hola! Quisiera comprar el perfume ${perfume.nombre} (${tipoFragancia}) por $${precioNumero.toLocaleString('es-AR')}.`);
-  detalleBtnWsp.href = `https://wa.me/5491112345678?text=${mensajeWsp}`;
 
   seccionDetalle.style.display = 'block';
   seccionDetalle.scrollIntoView({ behavior: 'smooth' });
