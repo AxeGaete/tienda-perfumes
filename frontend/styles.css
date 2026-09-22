@@ -461,7 +461,7 @@ body {
 }
 
 /* =========================================================
-   CATÁLOGO & FILTROS REDONDEADOS
+   CATÁLOGOS & FILTROS REDONDEADOS
    ========================================================= */
 .catalog-section {
   max-width: 1200px;
@@ -822,7 +822,7 @@ body {
 }
 
 /* =========================================================
-   SECCIÓN DETALLE
+   SECCIÓN DETALLE ESTILO E-COMMERCE MODERNO
    ========================================================= */
 .detail-section {
   max-width: 1200px;
@@ -1574,124 +1574,4 @@ body {
   .hero-buttons { flex-direction: column; }
   .nav-links { display: none; }
   .footer-container { grid-template-columns: 1fr; gap: 2rem; }
-}
-
-/* =========================================================
-   REPRODUCTOR DE MÚSICA AMBIENTE FLOTANTE
-   ========================================================= */
-.ambient-player-box {
-  position: fixed;
-  bottom: 25px;
-  left: 25px;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--c-border);
-  padding: 0.5rem 1rem 0.5rem 0.5rem;
-  border-radius: 30px;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  z-index: 998;
-  transition: var(--transition);
-}
-
-.ambient-toggle-btn {
-  background-color: var(--c-red-subtle);
-  border: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--c-red);
-  transition: var(--transition);
-}
-
-.ambient-toggle-btn:hover {
-  background-color: var(--c-red);
-  color: #fff;
-  transform: scale(1.05);
-}
-
-.ambient-label {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  letter-spacing: 0.3px;
-  user-select: none;
-}
-
-/* =========================================================
-   ESTILOS PARA EL REPRODUCTOR FLOTANTE CON CONTROL DE VOLUMEN
-   ========================================================= */
-.ambient-player-box {
-  position: fixed;
-  bottom: 25px;
-  left: 25px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--c-border);
-  padding: 0.5rem 0.9rem 0.5rem 0.5rem;
-  border-radius: 35px;
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  z-index: 998;
-  transition: var(--transition);
-}
-
-.ambient-toggle-btn {
-  background-color: var(--c-red-subtle);
-  border: none;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--c-red);
-  transition: var(--transition);
-  flex-shrink: 0;
-}
-
-.ambient-toggle-btn:hover {
-  background-color: var(--c-red);
-  color: #fff;
-  transform: scale(1.05);
-}
-
-.ambient-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.ambient-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--text-dark);
-  letter-spacing: 0.3px;
-  user-select: none;
-}
-
-.volume-slider-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.volume-slider-wrapper input[type="range"] {
-  width: 80px;
-  height: 4px;
-  accent-color: var(--c-red);
-  cursor: pointer;
-}
-
-.vol-icon {
-  font-size: 0.65rem;
 }
