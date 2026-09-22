@@ -97,7 +97,8 @@ body {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding-left: 0.5rem; /* Ajusta este valor si quieres que el círculo rojo quede milimétricamente al ras de la curva */
+  margin-left: -0.5rem; /* Fuerza al logo a desplazarse completamente hacia el borde izquierdo */
+  padding-left: 0 !important;
   transition: opacity 0.25s ease;
 }
 
