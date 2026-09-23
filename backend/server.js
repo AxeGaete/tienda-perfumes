@@ -5,6 +5,8 @@ const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 const app = express();
 
@@ -12,6 +14,22 @@ app.use(cors());
 app.use(express.json());
 
 const ADMIN_SECRET_KEY = process.env.ADMIN_SECRET_KEY || 'perfumeAdmin2026';
+
+// Configuración de Cloudinary para almacenamiento permanente
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'parfum-studio',
+    allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+  },
+});
+const upload = multer({ storage });
 
 let dbConfig;
 if (process.env.DATABASE_URL) {
@@ -38,22 +56,7 @@ if (process.env.DATABASE_URL) {
 
 const db = mysql.createPool(dbConfig);
 
-const uploadsDir = path.resolve(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-app.use('/uploads', express.static(uploadsDir));
-
 app.use(express.static(path.resolve(__dirname, '../frontend')));
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadsDir),
-  filename: (req, file, cb) => {
-    const sufijoUnico = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'perfume-' + sufijoUnico + path.extname(file.originalname));
-  }
-});
-const upload = multer({ storage });
 
 function verificarAdmin(req, res, next) {
   const claveEnviada = req.headers['x-admin-key'];
@@ -97,7 +100,8 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
       return res.status(400).json({ error: 'Todos los campos básicos y al menos una imagen son obligatorios' });
     }
 
-    const rutasImagenes = archivos.map(file => `/uploads/${file.filename}`);
+    // Cloudinary almacena la URL pública permanente en file.path
+    const rutasImagenes = archivos.map(file => file.path);
     const imagen_url = JSON.stringify(rutasImagenes);
     const esHero = (destacado_hero === '1' || destacado_hero === true || destacado_hero === 'true') ? 1 : 0;
     const stockVal = estado_stock || 'En Stock';
@@ -137,7 +141,7 @@ app.put('/api/productos/:id', verificarAdmin, (req, res) => {
     } catch(e) {}
 
     const archivosNuevos = (req.files && (req.files['imagenes'] || req.files['imagen'])) || [];
-    const nuevasUrls = archivosNuevos.map(file => `/uploads/${file.filename}`);
+    const nuevasUrls = archivosNuevos.map(file => file.path);
     const imagen_url = JSON.stringify([...fotosAntiguasOrdenadas, ...nuevasUrls]);
     const esHero = (destacado_hero === '1' || destacado_hero === true || destacado_hero === 'true') ? 1 : 0;
     const stockVal = estado_stock || 'En Stock';
@@ -192,7 +196,6 @@ app.post('/api/productos/:id/resenas', (req, res) => {
   });
 });
 
-// DELETE reseña por ID (Protegido por admin)
 app.delete('/api/admin/resenas/:id', verificarAdmin, (req, res) => {
   const { id } = req.params;
   db.query('DELETE FROM resenas WHERE id = ?', [id], (err, result) => {
