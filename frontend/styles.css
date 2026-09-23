@@ -1930,3 +1930,15 @@ body {
     top: 2.1rem !important;
   }
 }
+
+/* =========================================================
+   SEPARACIÓN DE RESEÑAS EN EL DETALLE
+   ========================================================= */
+.reviews-section-box {
+  background: var(--bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg, 20px);
+  padding: 2.5rem;
+  margin-top: 3.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
