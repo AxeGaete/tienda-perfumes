@@ -107,7 +107,7 @@ app.post('/api/admin/login', limiterLogin, (req, res) => {
 app.get('/api/productos', (req, res) => {
   db.query('SELECT * FROM productos ORDER BY id DESC', (err, results) => {
     if (err) {
-      console.error('Error al consultar:', err);
+      console.error('Error al consultar productos:', err);
       return res.status(500).json({ error: err.message });
     }
     res.json(results);
@@ -122,6 +122,7 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
 
   uploadHandler(req, res, (err) => {
     if (err) {
+      console.error('Error en multer al subir imágenes:', err);
       return res.status(400).json({ error: `Error en subida: ${err.message}` });
     }
 
@@ -142,7 +143,8 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
 
     db.query(sql, [nombre, familia, descripcion || '', precio, imagen_url, tipo || 'Diseñador', genero || 'Unisex', estacion || 'Todo el año', notas_salida || '', notas_corazon || '', notas_fondo || '', esHero, stockVal], (dbErr, result) => {
       if (dbErr) {
-        return res.status(500).json({ error: 'Error en la base de datos' });
+        console.error('ERROR CRÍTICO EN BASE DE DATOS (INSERT):', dbErr);
+        return res.status(500).json({ error: 'Error en la base de datos', detalle: dbErr.message });
       }
       res.status(201).json({ mensaje: 'Perfume agregado con éxito', id: result.insertId });
     });
@@ -157,6 +159,7 @@ app.put('/api/productos/:id', verificarAdmin, (req, res) => {
 
   uploadHandler(req, res, (err) => {
     if (err) {
+      console.error('Error en multer al actualizar imágenes:', err);
       return res.status(400).json({ error: `Error en subida: ${err.message}` });
     }
 
@@ -182,7 +185,8 @@ app.put('/api/productos/:id', verificarAdmin, (req, res) => {
 
     db.query(sql, [nombre, familia, descripcion || '', precio, tipo || 'Diseñador', genero || 'Unisex', estacion || 'Todo el año', notas_salida || '', notas_corazon || '', notas_fondo || '', esHero, stockVal, imagen_url, id], (dbErr) => {
       if (dbErr) {
-        return res.status(500).json({ error: 'Error en la base de datos' });
+        console.error('ERROR CRÍTICO EN BASE DE DATOS (UPDATE):', dbErr);
+        return res.status(500).json({ error: 'Error en la base de datos', detalle: dbErr.message });
       }
       res.json({ mensaje: 'Perfume actualizado con éxito' });
     });
@@ -192,7 +196,10 @@ app.put('/api/productos/:id', verificarAdmin, (req, res) => {
 app.delete('/api/productos/:id', verificarAdmin, (req, res) => {
   const { id } = req.params;
   db.query('DELETE FROM productos WHERE id = ?', [id], (err, result) => {
-    if (err) return res.status(500).json({ error: 'Error al eliminar' });
+    if (err) {
+      console.error('Error al eliminar producto:', err);
+      return res.status(500).json({ error: 'Error al eliminar' });
+    }
     if (result.affectedRows === 0) return res.status(404).json({ error: 'No encontrado' });
     res.json({ mensaje: 'Perfume eliminado con éxito' });
   });
