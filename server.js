@@ -8,14 +8,7 @@ const fs = require('fs');
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-
-const ADMIN_SECRET_KEY = process.env.ADMIN_SECRET_KEY || 'perfumeAdmin2026';
-
-// Configuración de Cloudinary
+// Forzar configuración directa de Cloudinary usando variables de entorno de Render
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
