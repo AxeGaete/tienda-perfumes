@@ -324,7 +324,7 @@ function activarBuscadorHeader() {
   setTimeout(() => input.classList.remove('highlight'), 1200);
 }
 
-// ================= VISTA DETALLE & RESEÑAS =================
+// ================= VISTA DETALLE =================
 let productoActualId = null;
 let listaFotosDetalleActuales = [];
 let fotoDetalleIndex = 0;
@@ -375,7 +375,7 @@ async function verDetalle(id) {
     `;
   }
 
-  cargarResenasProducto(id);
+  cargarRelacionados(prod);
 }
 
 function cerrarDetalle() {
@@ -403,70 +403,51 @@ function cambiarFotoDetalle(dir) {
   seleccionarMiniaturaDetalle(fotoDetalleIndex);
 }
 
-async function cargarResenasProducto(id) {
-  const listaResenasBox = document.getElementById('lista-resenas');
-  const badgeEstrellas = document.getElementById('detalle-estrellas-badge');
-  try {
-    const res = await fetch(`/api/productos/${id}/resenas`);
-    if (!res.ok) throw new Error('Error al obtener reseñas');
-    const resenas = await res.json();
+// ================= PERFUMES RELACIONADOS =================
+function cargarRelacionados(productoActual) {
+  const container = document.getElementById('grid-relacionados');
+  if (!container) return;
+  container.innerHTML = '';
 
-    let promedio = 5;
-    if (resenas.length > 0) {
-      const suma = resenas.reduce((acc, r) => acc + Number(r.estrellas), 0);
-      promedio = (suma / resenas.length).toFixed(1);
-    }
+  let relacionados = todosLosProductos.filter(p => p.familia === productoActual.familia && p.id !== productoActual.id);
 
-    if (badgeEstrellas) badgeEstrellas.textContent = `⭐ ${promedio} (${resenas.length})`;
+  if (relacionados.length < 3) {
+    const otros = todosLosProductos.filter(p => p.id !== productoActual.id && !relacionados.includes(p));
+    relacionados = [...relacionados, ...otros];
+  }
 
-    if (resenas.length === 0) {
-      listaResenasBox.innerHTML = '<p style="color: var(--text-muted);">Sé el primero en dejar una reseña para este perfume.</p>';
-      return;
-    }
+  relacionados = relacionados.slice(0, 4);
 
-    listaResenasBox.innerHTML = resenas.map(r => `
-      <div class="review-item">
-        <div class="review-header-row">
-          <span class="review-author">${r.autor}</span>
-          <span class="review-stars">${'★'.repeat(r.estrellas)}${'☆'.repeat(5 - r.estrellas)}</span>
+  if (relacionados.length === 0) {
+    container.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1;">No hay perfumes relacionados por el momento.</p>';
+    return;
+  }
+
+  relacionados.forEach(prod => {
+    const fotos = extraerListaFotos(prod.imagen_url);
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.innerHTML = `
+      <a href="#" onclick="verDetalle(${prod.id}); return false;" class="card-image-link">
+        <img src="${fotos[0]}" alt="${prod.nombre}" loading="lazy" onerror="this.src='https://via.placeholder.com/280?text=Perfume'">
+      </a>
+      <div class="product-info">
+        <span class="product-family">${prod.familia}</span>
+        <h3 class="product-title">
+          <a href="#" onclick="verDetalle(${prod.id}); return false;" class="card-title-link">${prod.nombre}</a>
+        </h3>
+        <p class="product-desc">${prod.descripcion || 'Fragancia exclusiva de alta duración.'}</p>
+        <div class="product-price">$${Number(prod.precio).toLocaleString('es-AR')}</div>
+        <div class="card-actions-row">
+          <a href="#" onclick="verDetalle(${prod.id}); return false;" class="btn-ver-detalle">Ver Detalle</a>
+          <button class="btn-card-add-cart" onclick="agregarAlCarrito(${prod.id})" title="Añadir al carrito">
+            <svg class="ui-icon-btn" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          </button>
         </div>
-        <p class="review-comment">${r.comentario}</p>
       </div>
-    `).join('');
-  } catch (err) {
-    console.error(err);
-    listaResenasBox.innerHTML = '<p style="color: var(--text-muted);">No se pudieron cargar las reseñas.</p>';
-  }
-}
-
-async function enviarResena(e) {
-  e.preventDefault();
-  if (!productoActualId) return;
-
-  const autor = document.getElementById('resena-autor').value.trim();
-  const estrellas = document.getElementById('resena-estrellas').value;
-  const comentario = document.getElementById('resena-comentario').value.trim();
-
-  try {
-    const res = await fetch(`/api/productos/${productoActualId}/resenas`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ autor, estrellas, comentario })
-    });
-    
-    const data = await res.json();
-    if (res.ok) {
-      alert('¡Gracias por tu reseña!');
-      document.getElementById('resena-autor').value = '';
-      document.getElementById('resena-comentario').value = '';
-      cargarResenasProducto(productoActualId);
-    } else {
-      alert('Error: ' + (data.error || 'No se pudo enviar la reseña'));
-    }
-  } catch(err) {
-    console.error(err);
-    alert('Error de conexión al enviar la reseña');
-  }
+    `;
+    container.appendChild(card);
+  });
 }
 
 // ================= CARRITO Y CUPÓN =================
@@ -607,14 +588,13 @@ function actualizarUICarrito() {
     contenedor.appendChild(div);
   });
 
-  // Calcular costos de envío locales (Gratis si supera $80.000)
   let costoEnvio = 0;
   const UMBRAL_ENVIO_GRATIS = 80000;
 
   if (selectEnvio) {
     const valEnvio = selectEnvio.value;
     if (subtotal >= UMBRAL_ENVIO_GRATIS) {
-      costoEnvio = 0; // Envío bonificado automáticamente
+      costoEnvio = 0;
     } else {
       if (valEnvio === 'moto_oeste') costoEnvio = 3500;
       else if (valEnvio === 'moto_caba') costoEnvio = 6500;
@@ -698,7 +678,7 @@ function finalizarCompraWhatsApp() {
   mensaje += `\nEnvío: ${textoEnvioSeleccionado}`;
   const totalFinal = baseCalculo + costoEnvio;
   mensaje += `\n\n*Total Final con Envío: $${totalFinal.toLocaleString('es-AR')}*`;
-  mensaje += '\n\n¿Me confirman datos para coordinar el pago?';
+  mensaje += '\n\n¿Me confirmar datos para coordinar el pago?';
 
   const urlWsp = `https://wa.me/5491135890259?text=${encodeURIComponent(mensaje)}`;
   window.open(urlWsp, '_blank');
