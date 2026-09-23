@@ -56,8 +56,8 @@ body {
 }
 
 /* =========================================================
-   1. BARRA DE NAVEGACIÓN CON EFECTO VIDRIO ESMERILADO (GLASSMORPHISM)
-   ========================================================= */
+    1. BARRA DE NAVEGACIÓN CON EFECTO VIDRIO ESMERILADO (GLASSMORPHISM)
+    ========================================================= */
 .navbar-wrapper {
   position: fixed;
   top: 1rem;
@@ -77,7 +77,7 @@ body {
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 40px;
-  padding: 0.6rem 1rem 0.6rem 0rem; /* Ponemos el padding izquierdo en 0 para que toque el borde */
+  padding: 0.6rem 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -89,15 +89,28 @@ body {
   border-color: rgba(255, 255, 255, 0.08);
 }
 
+@media (max-width: 768px) {
+  .navbar, .nav-container {
+    padding: 0.5rem 1rem !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  .logo, .navbar-brand {
+    max-width: 130px;
+    font-size: 0.9rem;
+  }
+}
+
 /* =========================================================
-   LOGO CON CÍRCULO ROJO Y LETRA P
-   ========================================================= */
+    LOGO CON CÍRCULO ROJO Y LETRA P (Corregido)
+    ========================================================= */
 .brand-logo {
   text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-left: -4.4rem; /* Llevamos el logo un poco más hacia el borde izquierdo */
+  gap: 0.6rem;
+  margin-left: 0; /* Eliminado el margen negativo que desbordaba la pantalla en celular */
   padding-left: 0 !important;
   transition: opacity 0.25s ease;
 }
@@ -259,8 +272,8 @@ body {
 }
 
 /* =========================================================
-   BADGES Y BOTONES REDONDEADOS
-   ========================================================= */
+    BADGES Y BOTONES REDONDEADOS
+    ========================================================= */
 .badge-pill {
   display: inline-block;
   background-color: var(--c-red-subtle);
@@ -330,8 +343,8 @@ body {
 }
 
 /* =========================================================
-   HERO & CARRUSEL
-   ========================================================= */
+    HERO & CARRUSEL
+    ========================================================= */
 .hero-section {
   padding-top: 8.5rem;
   padding-bottom: 4rem;
@@ -530,8 +543,8 @@ body {
 }
 
 /* =========================================================
-   CATÁLOGOS & FILTROS
-   ========================================================= */
+    CATÁLOGOS & FILTROS
+    ========================================================= */
 .catalog-section {
   max-width: 1200px;
   margin: 0 auto;
@@ -757,8 +770,8 @@ body {
 }
 
 /* =========================================================
-   2. MICRO-INTERACCIONES 3D Y BADGES MINIMALISTAS EN TARJETAS
-   ========================================================= */
+    2. MICRO-INTERACCIONES 3D Y BADGES MINIMALISTAS EN TARJETAS
+    ========================================================= */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
@@ -913,8 +926,8 @@ body {
 }
 
 /* =========================================================
-   SECCIÓN DETALLE
-   ========================================================= */
+    SECCIÓN DETALLE
+    ========================================================= */
 .detail-section {
   max-width: 1200px;
   margin: 0 auto;
@@ -1104,8 +1117,8 @@ body {
 }
 
 /* =========================================================
-   SECCIÓN MÉTODOS DE PAGO
-   ========================================================= */
+    SECCIÓN MÉTODOS DE PAGO
+    ========================================================= */
 .payments-section {
   max-width: 1200px;
   margin: 0 auto;
@@ -1196,8 +1209,8 @@ body {
 }
 
 /* =========================================================
-   SECCIÓN NOSOTROS
-   ========================================================= */
+    SECCIÓN NOSOTROS
+    ========================================================= */
 .about-section {
   max-width: 1200px;
   margin: 0 auto;
@@ -1237,8 +1250,8 @@ body {
 }
 
 /* =========================================================
-   FOOTER
-   ========================================================= */
+    FOOTER
+    ========================================================= */
 .footer-master {
   background-color: var(--bg-main);
   border-top: 1px solid var(--c-border);
@@ -1329,8 +1342,8 @@ body {
 }
 
 /* =========================================================
-   CARRITO LATERAL
-   ========================================================= */
+    CARRITO LATERAL
+    ========================================================= */
 .cart-trigger-btn {
   position: relative;
   background-color: var(--c-red);
@@ -1607,8 +1620,8 @@ body {
 }
 
 /* =========================================================
-   BADGES DE STOCK
-   ========================================================= */
+    BADGES DE STOCK
+    ========================================================= */
 .stock-badge-en {
   font-size: 0.65rem;
   font-weight: 800;
@@ -1634,8 +1647,8 @@ body {
 }
 
 /* =========================================================
-   BOTÓN WHATSAPP
-   ========================================================= */
+    BOTÓN WHATSAPP
+    ========================================================= */
 .whatsapp-float-btn {
   position: fixed;
   bottom: 25px;
@@ -1664,8 +1677,8 @@ body {
 }
 
 /* =========================================================
-   RESPONSIVE
-   ========================================================= */
+    RESPONSIVE
+    ========================================================= */
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; padding: 2rem; }
   .hero-text-side h1 { font-size: 2.3rem; }
@@ -1678,8 +1691,8 @@ body {
 }
 
 /* =========================================================
-   DIVISORES DE SECCIÓN CON LÍNEAS GRADUALES
-   ========================================================= */
+    DIVISORES DE SECCIÓN CON LÍNEAS GRADUALES
+    ========================================================= */
 .section-divider {
   width: 100%;
   max-width: 1000px;
@@ -1690,8 +1703,8 @@ body {
 }
 
 /* =========================================================
-   FORMULARIO DE RESEÑAS Y VALORACIONES CORREGIDO
-   ========================================================= */
+    FORMULARIO DE RESEÑAS Y VALORACIONES CORREGIDO
+    ========================================================= */
 .review-form {
   display: flex;
   flex-direction: column;
@@ -1731,8 +1744,8 @@ body {
 }
 
 /* =========================================================
-   EFECTO DE REVELACIÓN GRADUAL AL HACER SCROLL (FADE-IN-UP)
-   ========================================================= */
+    EFECTO DE REVELACIÓN GRADUAL AL HACER SCROLL (FADE-IN-UP)
+    ========================================================= */
 @keyframes fadeInUp {
   from {
     opacity: 0;
