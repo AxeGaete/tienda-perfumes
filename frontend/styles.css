@@ -110,7 +110,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  margin-left: 0;
+  margin-left: -4.4rem;
   padding-left: 0 !important;
   transition: opacity 0.25s ease;
 }
