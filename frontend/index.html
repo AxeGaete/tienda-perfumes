@@ -261,7 +261,7 @@
     <div id="grid-productos" class="products-grid"></div>
   </section>
 
-  <!-- 3. Sección Detalle del Perfume con Reseñas -->
+  <!-- 3. Sección Detalle del Perfume -->
   <section id="detalle" class="detail-section" style="display: none;">
     <div class="detail-card">
       <div class="detail-gallery">
@@ -277,7 +277,6 @@
         <div class="detail-tags">
           <span id="detalle-familia" class="detail-family"></span>
           <span class="badge-tag">Eau de Parfum</span>
-          <span id="detalle-estrellas-badge" class="badge-tag" style="background:#FFF8E1; color:#F57F17;">⭐ 5.0 (0)</span>
         </div>
         <h1 id="detalle-nombre" class="detail-title"></h1>
         <p id="detalle-precio" class="detail-price"></p>
@@ -313,29 +312,6 @@
           </button>
         </div>
       </div>
-    </div>
-
-    <!-- Sección de Reseñas de Clientes en el Detalle -->
-    <div class="reviews-section-box">
-      <h3 class="reviews-title">Opiniones y Calificaciones</h3>
-      
-      <div id="lista-resenas" style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2.5rem;">
-        <p style="color: var(--text-muted);">Cargando reseñas...</p>
-      </div>
-
-      <h4 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Dejanos tu opinión</h4>
-      <form onsubmit="enviarResena(event)" class="review-form">
-        <input type="text" id="resena-autor" placeholder="Tu Nombre" class="input-field" required style="margin-bottom:0;">
-        <select id="resena-estrellas" class="input-field" required style="margin-bottom:0;">
-          <option value="5">⭐⭐⭐⭐⭐ Excelente (5/5)</option>
-          <option value="4">⭐⭐⭐⭐ Muy Bueno (4/5)</option>
-          <option value="3">⭐⭐⭐ Bueno (3/5)</option>
-          <option value="2">⭐⭐ Regular (2/5)</option>
-          <option value="1">⭐ Malo (1/5)</option>
-        </select>
-        <textarea id="resena-comentario" placeholder="¿Qué te pareció la fijación y el aroma?" class="input-field" required style="margin-bottom:0; min-height:80px;"></textarea>
-        <button type="submit" class="btn-primary" style="width: fit-content;">Publicar Reseña</button>
-      </form>
     </div>
   </section>
 
