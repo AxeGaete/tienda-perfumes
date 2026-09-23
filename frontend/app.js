@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   cargarCarritoDesdeStorage();
   inicializarFiltrosEventos();
   cargarTemaVisual();
+  inicializarNavegacionLimpia();
 });
 
 async function cargarProductos() {
@@ -23,6 +24,24 @@ async function cargarProductos() {
   } catch (err) {
     console.error('Error al cargar productos:', err);
   }
+}
+
+// ================= NAVEGACIÓN LIMPIA (SIN HASH EN URL) =================
+function inicializarNavegacionLimpia() {
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault(); // Evita que se agregue el # a la URL
+      const targetId = this.getAttribute('href');
+      if (targetId === '#') return;
+      
+      const targetElement = document.querySelector(targetId);
+      if (targetElement) {
+        targetElement.scrollIntoView({
+          behavior: 'smooth' // Desplazamiento suave
+        });
+      }
+    });
+  });
 }
 
 // ================= MODO OSCURO / CLARO =================
@@ -671,7 +690,6 @@ function extraerListaFotos(imagen_url) {
   try {
     const parsed = JSON.parse(imagen_url);
     if (Array.isArray(parsed) && parsed.length > 0) {
-      // Validar si la ruta es local huérfana de Render y dar un respaldo elegante
       return parsed.map(url => url.startsWith('/uploads/') ? 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=600&q=80' : url);
     }
   } catch (e) {}
@@ -689,23 +707,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const observerOptions = {
     root: null,
     rootMargin: "0px",
-    threshold: 0.15 // Se activa cuando el 15% de la sección es visible
+    threshold: 0.15
   };
 
   const observer = new IntersectionObserver((entries, observerInstance) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add("scroll-reveal");
-        // Opcional: dejar de observar una vez que ya apareció
         observerInstance.unobserve(entry.target);
       }
     });
   }, observerOptions);
 
-  // Seleccionamos todas las secciones con la clase scroll-reveal
   const seccionesAnimadas = document.querySelectorAll(".scroll-reveal");
   seccionesAnimadas.forEach(seccion => {
-    // Inicialmente ocultamos la sección para que la animación la revele
     seccion.style.opacity = "0";
     seccion.style.transform = "translateY(25px)";
     observer.observe(seccion);
