@@ -670,9 +670,16 @@ function cargarCarritoDesdeStorage() {
 function extraerListaFotos(imagen_url) {
   try {
     const parsed = JSON.parse(imagen_url);
-    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      // Validar si la ruta es local huérfana de Render y dar un respaldo elegante
+      return parsed.map(url => url.startsWith('/uploads/') ? 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=600&q=80' : url);
+    }
   } catch (e) {}
-  return [imagen_url || 'https://via.placeholder.com/300?text=Perfume'];
+  
+  if (!imagen_url || imagen_url.startsWith('/uploads/')) {
+    return ['https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=600&q=80'];
+  }
+  return [imagen_url];
 }
 
 // =========================================================
