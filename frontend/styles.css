@@ -56,8 +56,8 @@ body {
 }
 
 /* =========================================================
-    1. BARRA DE NAVEGACIÓN CON EFECTO VIDRIO ESMERILADO (GLASSMORPHISM)
-    ========================================================= */
+   1. BARRA DE NAVEGACIÓN CON EFECTO VIDRIO ESMERILADO (GLASSMORPHISM)
+   ========================================================= */
 .navbar-wrapper {
   position: fixed;
   top: 1rem;
@@ -103,8 +103,8 @@ body {
 }
 
 /* =========================================================
-    LOGO CON CÍRCULO ROJO Y LETRA P (Corregido)
-    ========================================================= */
+   LOGO CON CÍRCULO ROJO Y LETRA P (Corregido)
+   ========================================================= */
 .brand-logo {
   text-decoration: none;
   display: flex;
@@ -274,8 +274,8 @@ body {
 }
 
 /* =========================================================
-    BADGES Y BOTONES REDONDEADOS
-    ========================================================= */
+   BADGES Y BOTONES REDONDEADOS
+   ========================================================= */
 .badge-pill {
   display: inline-block;
   background-color: var(--c-red-subtle);
@@ -345,8 +345,8 @@ body {
 }
 
 /* =========================================================
-    HERO & CARRUSEL
-    ========================================================= */
+   HERO & CARRUSEL
+   ========================================================= */
 .hero-section {
   padding-top: 8.5rem;
   padding-bottom: 4rem;
@@ -545,8 +545,8 @@ body {
 }
 
 /* =========================================================
-    CATÁLOGOS & FILTROS
-    ========================================================= */
+   CATÁLOGOS & FILTROS
+   ========================================================= */
 .catalog-section {
   max-width: 1200px;
   margin: 0 auto;
@@ -772,8 +772,8 @@ body {
 }
 
 /* =========================================================
-    2. MICRO-INTERACCIONES 3D Y BADGES MINIMALISTAS EN TARJETAS
-    ========================================================= */
+   2. MICRO-INTERACCIONES 3D Y BADGES MINIMALISTAS EN TARJETAS
+   ========================================================= */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
@@ -928,8 +928,8 @@ body {
 }
 
 /* =========================================================
-    SECCIÓN DETALLE
-    ========================================================= */
+   SECCIÓN DETALLE
+   ========================================================= */
 .detail-section {
   max-width: 1200px;
   margin: 0 auto;
@@ -1119,8 +1119,8 @@ body {
 }
 
 /* =========================================================
-    SECCIÓN MÉTODOS DE PAGO
-    ========================================================= */
+   SECCIÓN MÉTODOS DE PAGO
+   ========================================================= */
 .payments-section {
   max-width: 1200px;
   margin: 0 auto;
@@ -1211,8 +1211,8 @@ body {
 }
 
 /* =========================================================
-    SECCIÓN NOSOTROS
-    ========================================================= */
+   SECCIÓN NOSOTROS
+   ========================================================= */
 .about-section {
   max-width: 1200px;
   margin: 0 auto;
@@ -1252,8 +1252,8 @@ body {
 }
 
 /* =========================================================
-    FOOTER
-    ========================================================= */
+   FOOTER
+   ========================================================= */
 .footer-master {
   background-color: var(--bg-main);
   border-top: 1px solid var(--c-border);
@@ -1344,8 +1344,8 @@ body {
 }
 
 /* =========================================================
-    CARRITO LATERAL
-    ========================================================= */
+   CARRITO LATERAL
+   ========================================================= */
 .cart-trigger-btn {
   position: relative;
   background-color: var(--c-red);
@@ -1622,8 +1622,8 @@ body {
 }
 
 /* =========================================================
-    BADGES DE STOCK
-    ========================================================= */
+   BADGES DE STOCK
+   ========================================================= */
 .stock-badge-en {
   font-size: 0.65rem;
   font-weight: 800;
@@ -1649,8 +1649,8 @@ body {
 }
 
 /* =========================================================
-    BOTÓN WHATSAPP
-    ========================================================= */
+   BOTÓN WHATSAPP
+   ========================================================= */
 .whatsapp-float-btn {
   position: fixed;
   bottom: 25px;
@@ -1679,8 +1679,8 @@ body {
 }
 
 /* =========================================================
-    RESPONSIVE
-    ========================================================= */
+   RESPONSIVE (MÓVILES Y 2 COLUMNAS)
+   ========================================================= */
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; padding: 2rem; }
   .hero-text-side h1 { font-size: 2.3rem; }
@@ -1692,9 +1692,73 @@ body {
   .footer-container { grid-template-columns: 1fr; gap: 2rem; }
 }
 
+@media (max-width: 768px) {
+  body {
+    font-size: 13.5px;
+  }
+
+  .hero-section {
+    padding-top: 6.5rem;
+    padding-bottom: 2rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .hero-grid {
+    padding: 1.5rem;
+    gap: 2rem;
+  }
+
+  .hero-text-side h1 {
+    font-size: 2rem;
+  }
+
+  /* Catálogo en 2 columnas para celulares */
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.8rem;
+  }
+
+  .product-card {
+    border-radius: 12px;
+  }
+
+  .card-image-link {
+    height: 160px;
+    padding: 0.8rem;
+  }
+
+  .product-info {
+    padding: 0.9rem;
+  }
+
+  .product-title {
+    font-size: 0.95rem;
+  }
+
+  .product-price {
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .card-actions-row {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+
+  .btn-ver-detalle {
+    padding: 0.55rem;
+    font-size: 0.72rem;
+  }
+
+  .catalog-section, .payments-section, .about-section {
+    padding: 2.5rem 1rem;
+  }
+}
+
 /* =========================================================
-    DIVISORES DE SECCIÓN CON LÍNEAS GRADUALES
-    ========================================================= */
+   DIVISORES DE SECCIÓN CON LÍNEAS GRADUALES
+   ========================================================= */
 .section-divider {
   width: 100%;
   max-width: 1000px;
@@ -1705,8 +1769,8 @@ body {
 }
 
 /* =========================================================
-    FORMULARIO DE RESEÑAS Y VALORACIONES CORREGIDO
-    ========================================================= */
+   FORMULARIO DE RESEÑAS Y VALORACIONES CORREGIDO
+   ========================================================= */
 .review-form {
   display: flex;
   flex-direction: column;
@@ -1746,8 +1810,8 @@ body {
 }
 
 /* =========================================================
-    EFECTO DE REVELACIÓN GRADUAL AL HACER SCROLL (FADE-IN-UP)
-    ========================================================= */
+   EFECTO DE REVELACIÓN GRADUAL AL HACER SCROLL (FADE-IN-UP)
+   ========================================================= */
 @keyframes fadeInUp {
   from {
     opacity: 0;
