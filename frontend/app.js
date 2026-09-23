@@ -599,12 +599,18 @@ function actualizarUICarrito() {
     contenedor.appendChild(div);
   });
 
-  // Calcular costos de envío locales
+  // Calcular costos de envío locales (Gratis si supera $80.000)
   let costoEnvio = 0;
+  const UMBRAL_ENVIO_GRATIS = 80000;
+
   if (selectEnvio) {
     const valEnvio = selectEnvio.value;
-    if (valEnvio === 'moto_oeste') costoEnvio = 3500;
-    else if (valEnvio === 'moto_caba') costoEnvio = 6500;
+    if (subtotal >= UMBRAL_ENVIO_GRATIS) {
+      costoEnvio = 0; // Envío bonificado automáticamente
+    } else {
+      if (valEnvio === 'moto_oeste') costoEnvio = 3500;
+      else if (valEnvio === 'moto_caba') costoEnvio = 6500;
+    }
   }
 
   let baseCalculo = subtotal;
@@ -625,7 +631,11 @@ function actualizarUICarrito() {
 
   if (envioRow && envioPriceBox) {
     envioRow.style.display = 'flex';
-    envioPriceBox.textContent = costoEnvio === 0 ? 'Gratis' : `$${costoEnvio.toLocaleString('es-AR')}`;
+    if (subtotal >= UMBRAL_ENVIO_GRATIS && subtotal > 0) {
+      envioPriceBox.innerHTML = '<span style="color: #2E7D32; font-weight:800;">¡Gratis! (Supera $80.000)</span>';
+    } else {
+      envioPriceBox.textContent = costoEnvio === 0 ? 'Gratis' : `$${costoEnvio.toLocaleString('es-AR')}`;
+    }
   }
 
   if (totalPriceBox) totalPriceBox.textContent = `$${totalFinal.toLocaleString('es-AR')}`;
@@ -640,23 +650,31 @@ function finalizarCompraWhatsApp() {
   const selectEnvio = document.getElementById('select-envio');
   let textoEnvioSeleccionado = 'Retiro sin cargo en Ciudadela';
   let costoEnvio = 0;
+  const UMBRAL_ENVIO_GRATIS = 80000;
+
+  let subtotal = 0;
+  carrito.forEach(item => {
+    subtotal += item.precio * item.cantidad;
+  });
 
   if (selectEnvio) {
     const val = selectEnvio.value;
-    if (val === 'moto_oeste') {
-      costoEnvio = 3500;
-      textoEnvioSeleccionado = 'Moto Express (Ciudadela/Ramos/Haedo) - $3.500';
-    } else if (val === 'moto_caba') {
-      costoEnvio = 6500;
-      textoEnvioSeleccionado = 'Moto CABA - $6.500';
+    if (subtotal >= UMBRAL_ENVIO_GRATIS) {
+      costoEnvio = 0;
+      textoEnvioSeleccionado = 'Envío Bonificado / Gratis (Compra mayor a $80.000)';
+    } else {
+      if (val === 'moto_oeste') {
+        costoEnvio = 3500;
+        textoEnvioSeleccionado = 'Moto Express (Ciudadela/Ramos/Haedo) - $3.500';
+      } else if (val === 'moto_caba') {
+        costoEnvio = 6500;
+        textoEnvioSeleccionado = 'Moto CABA - $6.500';
+      }
     }
   }
 
   let mensaje = 'Hola! Quiero realizar el siguiente pedido en Parfum Studio:\n\n';
-  let subtotal = 0;
-
   carrito.forEach(item => {
-    subtotal += item.precio * item.cantidad;
     mensaje += `▪️ ${item.cantidad}x ${item.nombre} ($${(item.precio * item.cantidad).toLocaleString('es-AR')})\n`;
   });
 

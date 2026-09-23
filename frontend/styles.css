@@ -1865,3 +1865,42 @@ body {
 .scroll-reveal {
   animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* =========================================================
+   BARRA SUPERIOR DE ENVÍO GRATIS
+   ========================================================= */
+.free-shipping-banner {
+  background-color: var(--text-dark);
+  color: var(--bg-main);
+  text-align: center;
+  padding: 0.55rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1050;
+  border-bottom: 1px solid var(--c-border);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.free-shipping-banner strong {
+  color: var(--c-coral);
+}
+
+/* Ajustar la barra de navegación flotante para que no tape el banner superior */
+.navbar-wrapper {
+  top: 3rem !important; /* Baja la navbar un poco para dejar espacio al banner */
+}
+
+@media (max-width: 768px) {
+  .free-shipping-banner {
+    font-size: 0.72rem;
+    padding: 0.45rem 0.5rem;
+  }
+  .navbar-wrapper {
+    top: 2.6rem !important;
+  }
+}
