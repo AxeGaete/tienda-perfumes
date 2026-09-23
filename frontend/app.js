@@ -44,6 +44,14 @@ function inicializarNavegacionLimpia() {
   });
 }
 
+// ================= MENÚ MÓVIL DESPLEGABLE =================
+function toggleMobileMenu() {
+  const dropdown = document.getElementById('mobile-dropdown-menu');
+  if (dropdown) {
+    dropdown.classList.toggle('active');
+  }
+}
+
 // ================= MODO OSCURO / CLARO =================
 function alternarTemaVisual() {
   const currentTheme = document.documentElement.getAttribute('data-theme');

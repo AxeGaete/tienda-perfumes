@@ -32,12 +32,12 @@
     <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
     <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
     <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
-<span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
     <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
     <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
     <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
     <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
-<span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
+    <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
+    <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
     <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
     <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
     <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
@@ -48,6 +48,23 @@
   <!-- Barra de navegación flotante redondeada -->
   <header class="navbar-wrapper">
     <nav class="navbar">
+      <!-- Menú Desplegable / Botón Hamburguesa a la izquierda (Solo visible en celular) -->
+      <div class="nav-left">
+        <button class="nav-menu-toggle" onclick="toggleMobileMenu()" aria-label="Abrir menú">
+          <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12h18M3 6h18M3 18h18"></path>
+          </svg>
+        </button>
+        <div id="mobile-dropdown-menu" class="mobile-dropdown">
+          <a href="#hero" onclick="cerrarDetalle(); toggleMobileMenu();">Inicio</a>
+          <a href="#catalogo" onclick="cerrarDetalle(); toggleMobileMenu();">Colección</a>
+          <a href="#pagos" onclick="cerrarDetalle(); toggleMobileMenu();">Pagos</a>
+          <a href="#nosotros" onclick="cerrarDetalle(); toggleMobileMenu();">Nosotros</a>
+          <a href="admin.html" class="nav-admin-btn">Panel Admin</a>
+        </div>
+      </div>
+
+      <!-- Logo centrado en celular / a la izquierda en PC -->
       <a href="index.html" class="brand-logo">
         <div class="brand-badge-ps">PS</div>
         <div class="logo-text-group">
@@ -56,6 +73,7 @@
         </div>
       </a>
 
+      <!-- Enlaces normales para PC -->
       <div class="nav-links">
         <a href="#hero" onclick="cerrarDetalle()">Inicio</a>
         <a href="#catalogo" onclick="cerrarDetalle()">Colección</a>
@@ -64,6 +82,7 @@
         <a href="admin.html" class="nav-admin-btn">Panel Admin</a>
       </div>
 
+      <!-- Acciones a la derecha -->
       <div class="nav-actions-group">
         <!-- Botón Modo Oscuro / Claro -->
         <button class="nav-search-btn" id="theme-toggle-btn" title="Cambiar modo visual" onclick="alternarTemaVisual()">
