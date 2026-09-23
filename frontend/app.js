@@ -283,8 +283,7 @@ function renderizarCatalogo() {
         <img src="${fotos[0]}" alt="${prod.nombre}" onerror="this.src='https://via.placeholder.com/280?text=Perfume'">
       </a>
       <div class="product-info">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
-          <span class="product-family">${prod.familia}</span>
+        <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 0.2rem;">
           ${stockBadgeHTML}
         </div>
         <h3 class="product-title"><a href="#" onclick="verDetalle(${prod.id}); return false;" class="card-title-link">${prod.nombre}</a></h3>
