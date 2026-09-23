@@ -7,6 +7,7 @@ const path = require('path');
 const fs = require('fs');
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 
@@ -14,6 +15,24 @@ app.use(cors());
 app.use(express.json());
 
 const ADMIN_SECRET_KEY = process.env.ADMIN_SECRET_KEY || 'perfumeAdmin2026';
+
+// Configuración de Rate Limiting para seguridad contra fuerza bruta y abuso
+const limiterGeneral = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // Límite de 100 peticiones por IP cada 15 minutos
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Demasiadas solicitudes desde esta IP, intente nuevamente más tarde.' }
+});
+
+const limiterLogin = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 5, // Máximo 5 intentos fallidos de login por IP
+  message: { error: 'Demasiados intentos de acceso fallidos. Su IP fue temporalmente bloqueada.' }
+});
+
+// Aplicar limitadores a las rutas de la API
+app.use('/api/', limiterGeneral);
 
 // Configuración de Cloudinary para almacenamiento permanente
 cloudinary.config({
@@ -66,7 +85,8 @@ function verificarAdmin(req, res, next) {
   next();
 }
 
-app.post('/api/admin/login', (req, res) => {
+// Aplicar el limitador estricto específicamente al login del admin
+app.post('/api/admin/login', limiterLogin, (req, res) => {
   const { clave } = req.body;
   if (clave === ADMIN_SECRET_KEY) return res.json({ ok: true });
   res.status(401).json({ error: 'Contraseña incorrecta' });
