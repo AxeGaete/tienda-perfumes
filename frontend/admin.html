@@ -610,9 +610,8 @@
           </form>
         </div>
 
-        <!-- Columna Derecha: Productos Publicados y Reseñas -->
-        <div style="display: flex; flex-direction: column; gap: 2rem;">
-          <!-- Tabla de Productos Publicados -->
+        <!-- Columna Derecha: Productos Publicados -->
+        <div>
           <div class="panel-box">
             <h3>Perfumes Publicados</h3>
             <div class="table-responsive">
@@ -626,26 +625,6 @@
                   </tr>
                 </thead>
                 <tbody id="tabla-productos"></tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Tabla de Gestión de Reseñas -->
-          <div class="panel-box">
-            <h3>Moderación de Reseñas</h3>
-            <div class="table-responsive">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Autor / Perfume</th>
-                    <th>Estrellas</th>
-                    <th>Comentario</th>
-                    <th>Acción</th>
-                  </tr>
-                </thead>
-                <tbody id="tabla-resenas-admin">
-                  <tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Cargando reseñas...</td></tr>
-                </tbody>
               </table>
             </div>
           </div>
@@ -837,7 +816,6 @@
       document.getElementById('seccion-panel').style.display = 'block';
       document.getElementById('btn-cerrar-sesion').style.display = 'inline-block';
       cargarTablaProductos();
-      cargarResenasAdmin();
     }
 
     function cerrarSesion() {
@@ -1022,62 +1000,6 @@
         });
       } catch (err) {
         tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--c-red);">Error al cargar productos.</td></tr>';
-      }
-    }
-
-    async function cargarResenasAdmin() {
-      const tbody = document.getElementById('tabla-resenas-admin');
-      if (!tbody) return;
-
-      try {
-        const res = await fetch('/api/productos');
-        const prods = await res.json();
-        
-        let todasLasResenas = [];
-        for (let p of prods) {
-          const rRes = await fetch(`/api/productos/${p.id}/resenas`);
-          const rData = await rRes.json();
-          rData.forEach(r => r.nombrePerfume = p.nombre);
-          todasLasResenas.push(...rData);
-        }
-
-        if (todasLasResenas.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No hay reseñas publicadas.</td></tr>';
-          return;
-        }
-
-        tbody.innerHTML = '';
-        todasLasResenas.forEach(r => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td><strong>${r.autor}</strong><br><small style="color:var(--text-muted);">${r.nombrePerfume}</small></td>
-            <td><span style="color:#f59e0b;">${'★'.repeat(r.estrellas)}</span></td>
-            <td><p style="font-size: 0.85rem; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${r.comentario}</p></td>
-            <td><button class="btn-action btn-delete" onclick="eliminarResena(${r.id})">Borrar</button></td>
-          `;
-          tbody.appendChild(tr);
-        });
-      } catch (err) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--c-red);">Error al cargar reseñas.</td></tr>';
-      }
-    }
-
-    async function eliminarResena(id) {
-      if (!confirm('¿Estás seguro de que querés eliminar esta reseña?')) return;
-
-      try {
-        const res = await fetch(`/api/admin/resenas/${id}`, {
-          method: 'DELETE',
-          headers: { 'x-admin-key': adminClave }
-        });
-
-        if (res.ok) {
-          cargarResenasAdmin();
-        } else {
-          alert('No se pudo eliminar la reseña');
-        }
-      } catch (err) {
-        alert('Error de red al eliminar');
       }
     }
 
