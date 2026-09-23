@@ -450,6 +450,22 @@ function cargarRelacionados(productoActual) {
   });
 }
 
+// ================= NOTIFICACIÓN TOAST FLOTANTE =================
+function mostrarToast(mensaje) {
+  let toast = document.getElementById('toast-notification');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'toast-notification';
+    document.body.appendChild(toast);
+  }
+  toast.innerHTML = `🛍️ <span>${mensaje}</span>`;
+  toast.classList.add('active');
+
+  setTimeout(() => {
+    toast.classList.remove('active');
+  }, 2500);
+}
+
 // ================= CARRITO Y CUPÓN =================
 function abrirCarrito() {
   document.getElementById('cart-sidebar').classList.add('active');
@@ -482,6 +498,7 @@ function agregarAlCarrito(id) {
 
   guardarCarritoStorage();
   actualizarUICarrito();
+  mostrarToast(`¡Agregaste "${prod.nombre}" al carrito!`);
   abrirCarrito();
 }
 
@@ -562,6 +579,10 @@ function actualizarUICarrito() {
     if (subtotalRow) subtotalRow.style.display = 'none';
     if (descuentoRow) descuentoRow.style.display = 'none';
     if (envioRow) envioRow.style.display = 'none';
+    
+    // Ocultar banner de envío gratis si está vacío
+    const bannerEnvioGratis = document.getElementById('envio-gratis-banner');
+    if (bannerEnvioGratis) bannerEnvioGratis.style.display = 'none';
     return;
   }
 
@@ -588,8 +609,28 @@ function actualizarUICarrito() {
     contenedor.appendChild(div);
   });
 
-  let costoEnvio = 0;
+  // Indicador de Envío Gratis Restante ($80.000)
+  const bannerEnvioGratis = document.getElementById('envio-gratis-banner');
   const UMBRAL_ENVIO_GRATIS = 80000;
+
+  if (bannerEnvioGratis) {
+    if (subtotal === 0) {
+      bannerEnvioGratis.style.display = 'none';
+    } else if (subtotal >= UMBRAL_ENVIO_GRATIS) {
+      bannerEnvioGratis.style.display = 'block';
+      bannerEnvioGratis.style.background = '#E8F5E9';
+      bannerEnvioGratis.style.color = '#2E7D32';
+      bannerEnvioGratis.textContent = '🎉 ¡Felicitaciones! Tenés ENVÍO GRATIS.';
+    } else {
+      const falta = UMBRAL_ENVIO_GRATIS - subtotal;
+      bannerEnvioGratis.style.display = 'block';
+      bannerEnvioGratis.style.background = 'var(--bg-soft)';
+      bannerEnvioGratis.style.color = 'var(--c-red)';
+      bannerEnvioGratis.textContent = `🚚 ¡Te faltan $${falta.toLocaleString('es-AR')} para obtener ENVÍO GRATIS!`;
+    }
+  }
+
+  let costoEnvio = 0;
 
   if (selectEnvio) {
     const valEnvio = selectEnvio.value;
