@@ -1697,6 +1697,11 @@ body {
     font-size: 13.5px;
   }
 
+  /* Ocultar el texto del logo en celular para dejar solo el icono PS */
+  .brand-logo .logo-text-group {
+    display: none !important;
+  }
+
   /* NAVBAR MÓVIL: Menú/Izquierda, Logo/Centro, Acciones/Derecha */
   .navbar {
     display: grid !important;
