@@ -133,7 +133,7 @@ app.post('/api/productos', verificarAdmin, (req, res) => {
     const rutasImagenes = archivos.map(file => file.path);
     const imagen_url = JSON.stringify(rutasImagenes);
     const esHero = (destacado_hero === '1' || destacado_hero === true || destacado_hero === 'true') ? 1 : 0;
-    const stockVal = estado_stock || 'En Stock';
+    const stockVal = estado_stock !== undefined && estado_stock !== '' ? parseInt(estado_stock) : 10;
 
     const sql = `INSERT INTO productos (nombre, familia, descripcion, precio, imagen_url, tipo, genero, estacion, notas_salida, notas_corazon, notas_fondo, destacado_hero, estado_stock) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
@@ -173,7 +173,7 @@ app.put('/api/productos/:id', verificarAdmin, (req, res) => {
     const nuevasUrls = archivosNuevos.map(file => file.path);
     const imagen_url = JSON.stringify([...fotosAntiguasOrdenadas, ...nuevasUrls]);
     const esHero = (destacado_hero === '1' || destacado_hero === true || destacado_hero === 'true') ? 1 : 0;
-    const stockVal = estado_stock || 'En Stock';
+    const stockVal = estado_stock !== undefined && estado_stock !== '' ? parseInt(estado_stock) : 10;
 
     const sql = `UPDATE productos SET nombre = ?, familia = ?, descripcion = ?, precio = ?, tipo = ?, genero = ?, estacion = ?, notas_salida = ?, notas_corazon = ?, notas_fondo = ?, destacado_hero = ?, estado_stock = ?, imagen_url = ? WHERE id = ?`;
 

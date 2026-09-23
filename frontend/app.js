@@ -271,10 +271,16 @@ function renderizarCatalogo() {
   grid.innerHTML = '';
   productosFiltrados.forEach(prod => {
     const fotos = extraerListaFotos(prod.imagen_url);
-    const stockVal = prod.estado_stock || 'En Stock';
+    const stockCantidad = Number(prod.estado_stock) || 0;
     let stockBadgeHTML = '';
-    if (stockVal === 'Pocas Unidades') stockBadgeHTML = '<span class="stock-badge-pocas">Pocas Unidades</span>';
-    if (stockVal === 'Sin Stock') stockBadgeHTML = '<span class="stock-badge-sin" style="background:#FFEBEE; color:#C62828; font-size:0.65rem; font-weight:800; padding:0.2rem 0.6rem; border-radius:10px;">Sin Stock</span>';
+
+    if (stockCantidad === 0) {
+      stockBadgeHTML = '<span class="stock-badge-sin" style="background:#FFEBEE; color:#C62828; font-size:0.65rem; font-weight:800; padding:0.2rem 0.6rem; border-radius:10px;">Sin Stock</span>';
+    } else if (stockCantidad <= 3) {
+      stockBadgeHTML = `<span class="stock-badge-pocas">Pocas Unidades (${stockCantidad})</span>`;
+    } else {
+      stockBadgeHTML = `<span class="stock-badge-en" style="font-size:0.65rem; font-weight:800; padding:0.2rem 0.6rem; border-radius:10px;">Stock: ${stockCantidad}</span>`;
+    }
 
     const card = document.createElement('div');
     card.className = 'product-card';
@@ -291,7 +297,7 @@ function renderizarCatalogo() {
         <div class="product-price">$${Number(prod.precio).toLocaleString('es-AR')}</div>
         <div class="card-actions-row">
           <a href="#" onclick="verDetalle(${prod.id}); return false;" class="btn-ver-detalle">Ver Detalle</a>
-          ${stockVal === 'Sin Stock'
+          ${stockCantidad === 0
             ? `<a href="https://wa.me/5491135890259?text=Hola,%20quiero%20saber%20cuándo%20reingresa%20el%20perfume%20${encodeURIComponent(prod.nombre)}" target="_blank" class="btn-card-add-cart" style="background:#1565C0; text-decoration:none;" title="Avisarme cuando haya stock">📲 Avisar</a>`
             : `<button class="btn-card-add-cart" onclick="agregarAlCarrito(${prod.id})" title="Añadir al Carrito"><svg class="ui-icon-btn" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>`
           }
@@ -347,8 +353,9 @@ async function verDetalle(id) {
     <img src="${f}" class="detail-thumb ${idx === 0 ? 'active' : ''}" onclick="seleccionarMiniaturaDetalle(${idx})" alt="Miniatura">
   `).join('');
 
+  const stockCantidad = Number(prod.estado_stock) || 0;
   const actionsBox = document.getElementById('detalle-actions-box');
-  if (prod.estado_stock === 'Sin Stock') {
+  if (stockCantidad === 0) {
     actionsBox.innerHTML = `
       <a href="https://wa.me/5491135890259?text=Hola,%20quiero%20saber%20cuándo%20reingresa%20${encodeURIComponent(prod.nombre)}" target="_blank" class="btn-primary" style="background:#1565C0; width:100%; text-decoration:none; text-align:center;">📲 Avisarme por WhatsApp cuando haya stock</a>
       <button type="button" class="btn-secondary" onclick="cerrarDetalle()">← Volver al Catálogo</button>
