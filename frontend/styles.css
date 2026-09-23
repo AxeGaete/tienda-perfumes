@@ -1697,6 +1697,33 @@ body {
     font-size: 13.5px;
   }
 
+  /* NAVBAR MÓVIL: Menú/Izquierda, Logo/Centro, Acciones/Derecha */
+  .navbar {
+    display: grid !important;
+    grid-template-columns: auto 1fr auto !important;
+    align-items: center !important;
+    padding: 0.5rem 0.8rem !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  .nav-left, .nav-menu-toggle {
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  .brand-logo {
+    grid-column: 2;
+    justify-self: center;
+    margin: 0 auto;
+  }
+
+  .nav-actions-group {
+    grid-column: 3;
+    justify-self: end;
+    gap: 0.5rem;
+  }
+
   .hero-section {
     padding-top: 6.5rem;
     padding-bottom: 2rem;
