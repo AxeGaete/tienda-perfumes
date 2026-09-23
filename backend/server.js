@@ -12,6 +12,9 @@ const helmet = require('helmet');
 
 const app = express();
 
+// Solución para Render / express-rate-limit (Trust Proxy)
+app.set('trust proxy', 1);
+
 app.use(cors());
 app.use(express.json());
 
