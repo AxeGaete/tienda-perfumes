@@ -110,7 +110,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  margin-left: 0; /* Eliminado el margen negativo que desbordaba la pantalla en celular */
+  margin-left: 0;
   padding-left: 0 !important;
   transition: opacity 0.25s ease;
 }
@@ -119,22 +119,24 @@ body {
   opacity: 0.85;
 }
 
-.brand-badge-p {
-  width: 32px;
-  height: 32px;
-  background-color: var(--c-red);
-  color: #FFFFFF;
+.brand-badge-ps {
+  width: 36px;
+  height: 36px;
+  background-color: #FFFFFF;
+  color: var(--c-red);
+  border: 2px solid var(--c-red);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 800;
-  box-shadow: 0 4px 12px rgba(193, 0, 0, 0.3);
+  letter-spacing: -0.5px;
+  box-shadow: 0 4px 12px rgba(193, 0, 0, 0.15);
   transition: var(--transition);
 }
 
-.brand-logo:hover .brand-badge-p {
+.brand-logo:hover .brand-badge-ps {
   transform: scale(1.05);
 }
 
