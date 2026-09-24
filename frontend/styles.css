@@ -2027,11 +2027,11 @@ body {
   }
 }
 
-/* Notificación Toast Flotante Adaptativa */
+/* Notificación Toast Flotante Superior Izquierda */
 #toast-notification {
   position: fixed;
-  bottom: 25px;
-  right: 25px;
+  top: 25px;
+  left: 25px;
   background: var(--bg-main, #121212);
   color: var(--text-dark, #F5F5F5);
   border: 1px solid var(--c-border);
@@ -2044,7 +2044,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  transform: translateY(100px);
+  transform: translateY(-50px);
   opacity: 0;
   transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
 }
