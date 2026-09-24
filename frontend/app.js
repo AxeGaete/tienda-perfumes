@@ -17,6 +17,9 @@ async function cargarProductos() {
   try {
     const res = await fetch('/api/productos');
     todosLosProductos = await res.json();
+    
+    // Ordenar por defecto alfabéticamente por nombre (A-Z)
+    todosLosProductos.sort((a, b) => a.nombre.localeCompare(b.nombre));
     productosFiltrados = [...todosLosProductos];
     
     renderizarHeroSlider();
@@ -260,9 +263,17 @@ function filtrarProductos() {
     return coincideTexto && coincidePrecio && coincideTipo && coincideGenero && coincideFamilia && coincideNota && coincideEstacion;
   });
 
-  if (orden === 'precio-menor') productosFiltrados.sort((a, b) => a.precio - b.precio);
-  if (orden === 'precio-mayor') productosFiltrados.sort((a, b) => b.precio - a.precio);
-  if (orden === 'recientes') productosFiltrados.sort((a, b) => b.id - a.id);
+  // Ordenamiento
+  if (orden === 'precio-menor') {
+    productosFiltrados.sort((a, b) => a.precio - b.precio);
+  } else if (orden === 'precio-mayor') {
+    productosFiltrados.sort((a, b) => b.precio - a.precio);
+  } else if (orden === 'recientes') {
+    productosFiltrados.sort((a, b) => b.id - a.id);
+  } else {
+    // Orden predeterminado: Alfabéticamente por nombre (A-Z)
+    productosFiltrados.sort((a, b) => a.nombre.localeCompare(b.nombre));
+  }
 
   renderizarCatalogo();
 }
@@ -601,7 +612,6 @@ function actualizarUICarrito() {
     if (descuentoRow) descuentoRow.style.display = 'none';
     if (envioRow) envioRow.style.display = 'none';
     
-    // Ocultar banner de envío gratis si está vacío
     const bannerEnvioGratis = document.getElementById('envio-gratis-banner');
     if (bannerEnvioGratis) bannerEnvioGratis.style.display = 'none';
     return;
@@ -630,7 +640,6 @@ function actualizarUICarrito() {
     contenedor.appendChild(div);
   });
 
-  // Indicador de Envío Gratis Restante ($80.000) - Usando clases adaptadas a Dark/Light Mode
   const bannerEnvioGratis = document.getElementById('envio-gratis-banner');
   const UMBRAL_ENVIO_GRATIS = 80000;
 
@@ -758,7 +767,7 @@ function cargarCarritoDesdeStorage() {
   }
 }
 
-let imagenesTemporales = []; // Mantener por compatibilidad
+let imagenesTemporales = [];
 
 function extraerListaFotos(imagen_url) {
   try {
@@ -774,9 +783,6 @@ function extraerListaFotos(imagen_url) {
   return [imagen_url];
 }
 
-// =========================================================
-// INTERSECTION OBSERVER PARA ANIMACIONES SCROLL-REVEAL
-// =========================================================
 document.addEventListener("DOMContentLoaded", () => {
   const observerOptions = {
     root: null,
