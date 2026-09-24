@@ -609,7 +609,7 @@ function actualizarUICarrito() {
     contenedor.appendChild(div);
   });
 
-  // Indicador de Envío Gratis Restante ($80.000)
+  // Indicador de Envío Gratis Restante ($80.000) - Usando clases adaptadas a Dark/Light Mode
   const bannerEnvioGratis = document.getElementById('envio-gratis-banner');
   const UMBRAL_ENVIO_GRATIS = 80000;
 
@@ -618,14 +618,12 @@ function actualizarUICarrito() {
       bannerEnvioGratis.style.display = 'none';
     } else if (subtotal >= UMBRAL_ENVIO_GRATIS) {
       bannerEnvioGratis.style.display = 'block';
-      bannerEnvioGratis.style.background = '#E8F5E9';
-      bannerEnvioGratis.style.color = '#2E7D32';
+      bannerEnvioGratis.className = 'envio-logrado';
       bannerEnvioGratis.textContent = '🎉 ¡Felicitaciones! Tenés ENVÍO GRATIS.';
     } else {
       const falta = UMBRAL_ENVIO_GRATIS - subtotal;
       bannerEnvioGratis.style.display = 'block';
-      bannerEnvioGratis.style.background = 'var(--bg-soft)';
-      bannerEnvioGratis.style.color = 'var(--c-red)';
+      bannerEnvioGratis.className = 'envio-faltante';
       bannerEnvioGratis.textContent = `🚚 ¡Te faltan $${falta.toLocaleString('es-AR')} para obtener ENVÍO GRATIS!`;
     }
   }

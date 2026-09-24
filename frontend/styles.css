@@ -1700,12 +1700,10 @@ body {
     font-size: 13.5px;
   }
 
-  /* Ocultar el texto del logo en celular para dejar solo el icono PS */
   .brand-logo .logo-text-group {
     display: none !important;
   }
 
-  /* NAVBAR MÓVIL: Menú/Izquierda, Logo/Centro, Acciones/Derecha */
   .navbar {
     display: grid !important;
     grid-template-columns: auto 1fr auto !important;
@@ -1748,7 +1746,6 @@ body {
     font-size: 2rem;
   }
 
-  /* Catálogo en 2 columnas obligatorias */
   .products-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 0.8rem !important;
@@ -1803,7 +1800,6 @@ body {
     gap: 0.3rem;
   }
 
-  /* Vista detalle en móvil con botones abajo */
   .detail-card {
     display: flex;
     flex-direction: column;
@@ -1914,7 +1910,7 @@ body {
   z-index: 1050;
   overflow: hidden;
   white-space: nowrap;
-  padding: 0.3rem 0; /* Altura más delgada y sutil */
+  padding: 0.3rem 0;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -1926,7 +1922,7 @@ body {
 
 .marquee-track span {
   display: inline-block;
-  font-size: 0.75rem; /* Letra más fina y delicada */
+  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.5px;
   margin-right: 3.5rem;
@@ -1948,7 +1944,6 @@ body {
   }
 }
 
-/* Ajuste proporcional de la navbar para que acompañe al banner fino */
 .navbar-wrapper {
   top: 2.3rem !important; 
 }
@@ -1978,7 +1973,6 @@ body {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
-/* Botón hamburguesa y menú móvil */
 .nav-menu-toggle {
   background: var(--bg-soft);
   border: 1px solid var(--c-border);
@@ -1986,22 +1980,21 @@ body {
   height: 42px;
   border-radius: 50%;
   cursor: pointer;
-  display: none; /* Oculto en PC */
+  display: none;
   align-items: center;
   justify-content: center;
   transition: var(--transition);
 }
 
 .mobile-dropdown {
-  display: none; /* Se despliega mediante JS o clase active */
+  display: none;
 }
 
 @media (max-width: 768px) {
   .nav-menu-toggle {
-    display: flex; /* Visible solo en celular */
+    display: flex;
   }
 
-  /* Estilo del menú desplegable que aparece a la izquierda */
   .mobile-dropdown.active {
     display: flex;
     flex-direction: column;
@@ -2057,4 +2050,29 @@ body {
 #toast-notification.active {
   transform: translateY(0);
   opacity: 1;
+}
+
+/* Banner dinámico de Envío Gratis en el Carrito (Adaptable Dark/Light) */
+#envio-gratis-banner {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 0.6rem;
+  border-radius: 8px;
+  margin-bottom: 0.8rem;
+  background: var(--bg-soft);
+  border: 1px solid var(--c-border);
+  color: var(--text-dark);
+}
+
+#envio-gratis-banner.envio-logrado {
+  background: rgba(46, 125, 50, 0.15);
+  color: #4CAF50;
+  border-color: rgba(46, 125, 50, 0.3);
+}
+
+#envio-gratis-banner.envio-faltante {
+  background: var(--c-red-subtle);
+  color: var(--c-coral);
+  border-color: var(--c-border);
 }
