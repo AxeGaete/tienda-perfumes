@@ -2027,18 +2027,19 @@ body {
   }
 }
 
-/* Notificación Toast Flotante */
+/* Notificación Toast Flotante Adaptativa */
 #toast-notification {
   position: fixed;
   bottom: 25px;
   right: 25px;
-  background: var(--text-dark, #121214);
-  color: var(--bg-white, #fff);
-  padding: 0.8rem 1.2rem;
-  border-radius: 8px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  background: var(--bg-main, #121212);
+  color: var(--text-dark, #F5F5F5);
+  border: 1px solid var(--c-border);
+  padding: 0.85rem 1.3rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
   font-size: 0.88rem;
-  font-weight: 600;
+  font-weight: 700;
   z-index: 9999;
   display: flex;
   align-items: center;
@@ -2047,6 +2048,7 @@ body {
   opacity: 0;
   transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
 }
+
 #toast-notification.active {
   transform: translateY(0);
   opacity: 1;
