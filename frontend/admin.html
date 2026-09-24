@@ -3,1164 +3,577 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PARFUM STUDIO — Panel de Control</title>
+  <!-- Favicon con la P corporativa -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='46' fill='%23FFFFFF' stroke='%23C10000' stroke-width='8'/><text x='50' y='67' font-size='42' font-weight='800' font-family='sans-serif' fill='%23C10000' text-anchor='middle'>PS</text></svg>">
+  <title>PARFUM STUDIO — Fragancias Exclusivas</title>
 
+  <!-- Metadatos SEO y OpenGraph para la previsualización de WhatsApp -->
+  <meta name="description" content="Parfum Studio Colecciones exclusivas">
+  <meta property="og:title" content="Parfum Studio">
+  <meta property="og:description" content="Colecciones exclusivas">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://tienda-perfumes-an2e.onrender.com">
+  <meta property="og:image" content="https://tienda-perfumes-an2e.onrender.com/logo.png">
+
+  <!-- Fuente moderna redondeada -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <style>
-    :root {
-      --bg-white: #ffffff;
-      --bg-main: #FFFFFF;
-      --bg-soft: #F8F9FA;
-      --c-light: #EEEEEE;
-      --c-border: #DEDEDE;
-      --c-coral: #FF4949;
-      --c-red: #C10000;
-      --c-red-subtle: #FFEAEA;
-      --text-dark: #121214;
-      --text-muted: #6b6b76;
-      --font-display: 'Space Grotesk', sans-serif;
-      --font-body: 'Plus Jakarta Sans', sans-serif;
-      --transition: all 0.22s cubic-bezier(0.2, 0, 0, 1);
-    }
-
-    [data-theme="dark"] {
-      --bg-white: #181818;
-      --bg-main: #121212;
-      --bg-soft: #1A1A1A;
-      --c-light: #1A1A1A;
-      --c-border: #2A2A2A;
-      --c-coral: #FF5252;
-      --c-red: #D32F2F;
-      --c-red-subtle: rgba(211, 47, 47, 0.15);
-      --text-dark: #F5F5F5;
-      --text-muted: #AAAAAA;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: var(--font-body);
-      background-color: var(--c-light);
-      color: var(--text-dark);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      -webkit-font-smoothing: antialiased;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    header {
-      background: var(--bg-white);
-      border-bottom: 2px solid var(--c-border);
-      padding: 1.2rem 3rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      transition: background-color 0.3s ease, border-color 0.3s ease;
-    }
-
-    .brand-logo {
-      font-family: var(--font-display);
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--text-dark);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .brand-logo::before {
-      content: '';
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      background: var(--c-red);
-      border-radius: 50%;
-    }
-    .badge-admin {
-      background: var(--c-light);
-      border: 1px solid var(--c-border);
-      color: var(--c-red);
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 0.2rem 0.6rem;
-      border-radius: 4px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .nav-actions { display: flex; gap: 0.8rem; align-items: center; }
-    
-    .nav-search-btn {
-      background: var(--bg-soft);
-      border: 1.5px solid var(--c-border);
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--c-red);
-      transition: var(--transition);
-    }
-    .nav-search-btn:hover {
-      background: var(--c-red-subtle);
-      border-color: var(--c-coral);
-    }
-    .ui-icon {
-      width: 18px;
-      height: 18px;
-      stroke: var(--c-red);
-      stroke-width: 2.2px;
-      fill: none;
-    }
-
-    .btn-outline {
-      background: var(--bg-white);
-      border: 1.5px solid var(--c-border);
-      color: var(--text-dark);
-      padding: 0.55rem 1.1rem;
-      border-radius: 4px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      transition: var(--transition);
-    }
-    .btn-outline:hover { border-color: var(--c-red); color: var(--c-red); }
-
-    main {
-      max-width: 1240px;
-      margin: 2.5rem auto 4rem;
-      padding: 0 1.5rem;
-      width: 100%;
-      flex-grow: 1;
-    }
-
-    #seccion-login {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 60vh;
-    }
-    .login-card {
-      background: var(--bg-white);
-      border: 2px solid var(--c-border);
-      border-radius: 6px;
-      padding: 2.5rem;
-      width: 100%;
-      max-width: 420px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-      text-align: center;
-      transition: background-color 0.3s ease, border-color 0.3s ease;
-    }
-    .login-card h2 {
-      font-family: var(--font-display);
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-    .login-card p {
-      color: var(--text-muted);
-      font-size: 0.88rem;
-      margin-bottom: 1.8rem;
-    }
-    .input-field {
-      width: 100%;
-      background: var(--bg-soft);
-      border: 1.5px solid var(--c-border);
-      border-radius: 4px;
-      padding: 0.8rem 1rem;
-      font-family: var(--font-body);
-      font-size: 0.95rem;
-      color: var(--text-dark);
-      outline: none;
-      margin-bottom: 1.2rem;
-      transition: var(--transition);
-    }
-    .input-field:focus {
-      background: var(--bg-white);
-      border-color: var(--c-coral);
-      box-shadow: 0 0 0 3px rgba(255, 73, 73, 0.12);
-    }
-
-    .btn-primary {
-      width: 100%;
-      background: var(--c-red);
-      color: #fff;
-      border: none;
-      padding: 0.85rem;
-      border-radius: 4px;
-      font-size: 0.9rem;
-      font-weight: 700;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      transition: var(--transition);
-    }
-    .btn-primary:hover { background: var(--c-coral); }
-
-    .msg-error {
-      background: #ffebeb;
-      border: 1px solid #ffd1d1;
-      color: var(--c-red);
-      padding: 0.7rem;
-      border-radius: 4px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-top: 1rem;
-      display: none;
-    }
-
-    #seccion-panel { display: none; }
-    .panel-grid {
-      display: grid;
-      grid-template-columns: 430px 1fr;
-      gap: 2rem;
-      align-items: start;
-    }
-
-    .panel-box {
-      background: var(--bg-white);
-      border: 1.5px solid var(--c-border);
-      border-radius: 6px;
-      padding: 1.8rem;
-      transition: background-color 0.3s ease, border-color 0.3s ease;
-    }
-    .panel-box h3 {
-      font-family: var(--font-display);
-      font-size: 1.2rem;
-      font-weight: 700;
-      margin-bottom: 1.2rem;
-      padding-bottom: 0.8rem;
-      border-bottom: 1px solid var(--c-border);
-    }
-
-    .form-group { margin-bottom: 0.9rem; }
-    .form-group label {
-      display: block;
-      font-size: 0.78rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--text-dark);
-      margin-bottom: 0.35rem;
-    }
-    .field-hint {
-      display: block;
-      font-size: 0.74rem;
-      color: var(--text-muted);
-      margin-top: -0.8rem;
-      margin-bottom: 0.9rem;
-    }
-    textarea.input-field {
-      resize: vertical;
-      min-height: 70px;
-    }
-
-    .checkbox-group {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      background: var(--bg-soft);
-      padding: 0.8rem 1rem;
-      border-radius: 6px;
-      border: 1px solid var(--c-border);
-      margin-bottom: 1.2rem;
-      cursor: pointer;
-    }
-    .checkbox-group input {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--c-red);
-      cursor: pointer;
-    }
-    .checkbox-group span {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--text-dark);
-    }
-
-    .preview-header {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--c-red);
-      margin-bottom: 0.4rem;
-    }
-    .preview-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-      margin-bottom: 1.2rem;
-    }
-    .preview-card {
-      position: relative;
-      width: 90px;
-      height: 90px;
-      border-radius: 8px;
-      border: 2px solid var(--c-border);
-      background: var(--bg-soft);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }
-    .preview-card img {
-      width: 100%;
-      height: 60px;
-      object-fit: contain;
-      background: #fff;
-    }
-    .preview-card-controls {
-      display: flex;
-      width: 100%;
-      height: 30px;
-      background: #1A1A1E;
-    }
-    .preview-ctrl-btn {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: #fff;
-      font-size: 0.75rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: var(--transition);
-    }
-    .preview-ctrl-btn:hover { background: var(--c-red); }
-    .preview-ctrl-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-    .badge-cover-order {
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      background: var(--c-red);
-      color: #fff;
-      font-size: 0.58rem;
-      font-weight: 800;
-      padding: 1px 4px;
-      border-radius: 4px;
-      text-transform: uppercase;
-    }
-
-    .table-responsive { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
-    th {
-      font-family: var(--font-display);
-      text-align: left;
-      padding: 0.8rem;
-      border-bottom: 2px solid var(--c-border);
-      color: var(--text-muted);
-      font-weight: 700;
-      text-transform: uppercase;
-      font-size: 0.75rem;
-    }
-    td { padding: 0.9rem 0.8rem; border-bottom: 1px solid var(--c-border); vertical-align: middle; }
-    .td-img-wrapper { position: relative; width: 50px; height: 50px; }
-    .td-img { width: 50px; height: 50px; border-radius: 4px; object-fit: contain; background: #FFFFFF; }
-    .td-img-count {
-      position: absolute; bottom: -4px; right: -4px;
-      background: var(--c-red); color: #fff; font-size: 0.65rem;
-      font-weight: 700; padding: 1px 4px; border-radius: 10px;
-    }
-    .td-title { font-weight: 700; color: var(--text-dark); }
-    .td-family { color: var(--c-coral); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
-    .td-tipo-tag {
-      display: inline-block;
-      font-size: 0.68rem;
-      font-weight: 800;
-      background: #FFEAEA;
-      color: var(--c-red);
-      padding: 1px 6px;
-      border-radius: 10px;
-      margin-left: 0.3rem;
-      text-transform: uppercase;
-    }
-    .td-hero-tag {
-      display: inline-block;
-      font-size: 0.68rem;
-      font-weight: 800;
-      background: #E8F5E9;
-      color: #2E7D32;
-      padding: 1px 6px;
-      border-radius: 10px;
-      margin-left: 0.3rem;
-      text-transform: uppercase;
-    }
-    .td-stock-tag {
-      display: inline-block;
-      font-size: 0.68rem;
-      font-weight: 800;
-      padding: 1px 6px;
-      border-radius: 10px;
-      margin-top: 3px;
-      text-transform: uppercase;
-    }
-    .stock-en { background: #E3F2FD; color: #1565C0; }
-    .stock-pocas { background: #FFF3E0; color: #E65100; }
-    .stock-sin { background: #FFEBEE; color: #C62828; }
-
-    .td-badges { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
-    .td-price { font-weight: 800; color: var(--c-red); font-size: 0.95rem; }
-    .table-actions { display: flex; gap: 0.4rem; }
-    .btn-action {
-      background: transparent; border: 1px solid var(--c-border);
-      padding: 0.4rem 0.6rem; border-radius: 4px; cursor: pointer;
-      font-size: 0.78rem; font-weight: 600; transition: var(--transition);
-      color: var(--text-dark);
-    }
-    .btn-edit { color: var(--text-dark); }
-    .btn-edit:hover { background: var(--text-dark); color: var(--bg-white); border-color: var(--text-dark); }
-    .btn-delete { color: var(--c-coral); }
-    .btn-delete:hover { background: var(--c-red-subtle); border-color: var(--c-red); color: var(--c-red); }
-
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(4px);
-      z-index: 2000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-    }
-    .modal-overlay.active { display: flex; }
-    .modal-content {
-      background: var(--bg-white);
-      color: var(--text-dark);
-      border-radius: 8px;
-      width: 100%;
-      max-width: 600px;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 2rem;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
-      position: relative;
-      transition: background-color 0.3s ease;
-    }
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.4rem;
-      padding-bottom: 0.8rem;
-      border-bottom: 1px solid var(--c-border);
-    }
-    .modal-header h3 {
-      font-family: var(--font-display);
-      font-size: 1.3rem;
-      font-weight: 700;
-    }
-    .modal-close {
-      background: transparent;
-      border: none;
-      font-size: 1.4rem;
-      cursor: pointer;
-      color: var(--text-muted);
-    }
-    .modal-close:hover { color: var(--c-red); }
-
-    @media (max-width: 860px) {
-      .panel-grid { grid-template-columns: 1fr; }
-      header { padding: 1rem 1.2rem; }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <header>
-    <div style="display: flex; align-items: center; gap: 0.8rem;">
-      <div class="brand-logo">Parfum Studio</div>
-      <span class="badge-admin">Admin</span>
-    </div>
-    <div class="nav-actions">
-      <button class="nav-search-btn" id="theme-toggle-btn" title="Cambiar modo visual" onclick="alternarTemaVisual()">
-        <svg class="ui-icon" id="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-        </svg>
-      </button>
-      <a href="index.html" class="btn-outline">Ver Tienda</a>
-      <button id="btn-cerrar-sesion" class="btn-outline" style="display: none;" onclick="cerrarSesion()">Salir</button>
-    </div>
+  <!-- ================= BARRA SUPERIOR DE ENVÍO GRATIS CON MOVIMIENTO ================= -->
+<div class="free-shipping-banner">
+  <div class="marquee-track">
+    <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
+    <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
+    <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
+    <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
+    <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
+    <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
+    <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
+    <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
+    <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
+    <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
+    <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
+    <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
+    <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
+    <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
+    <span>🚚 <strong>¡ENVÍO GRATIS</strong> en compras superiores a $80.000!</span>
+  </div>
+</div>
+
+  <!-- Barra de navegación flotante redondeada -->
+  <header class="navbar-wrapper">
+    <nav class="navbar">
+      <!-- Menú Desplegable / Botón Hamburguesa a la izquierda (Solo visible en celular) -->
+      <div class="nav-left">
+        <button class="nav-menu-toggle" onclick="toggleMobileMenu()" aria-label="Abrir menú">
+          <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12h18M3 6h18M3 18h18"></path>
+          </svg>
+        </button>
+        <div id="mobile-dropdown-menu" class="mobile-dropdown">
+          <a href="#hero" onclick="cerrarDetalle(); toggleMobileMenu();">Inicio</a>
+          <a href="#catalogo" onclick="cerrarDetalle(); toggleMobileMenu();">Colección</a>
+          <a href="#pagos" onclick="cerrarDetalle(); toggleMobileMenu();">Pagos</a>
+          <a href="#nosotros" onclick="cerrarDetalle(); toggleMobileMenu();">Nosotros</a>
+          <a href="admin.html" class="nav-admin-btn">Panel Admin</a>
+        </div>
+      </div>
+
+      <!-- Logo centrado en celular / a la izquierda en PC -->
+      <a href="index.html" class="brand-logo">
+        <div class="brand-badge-ps">PS</div>
+        <div class="logo-text-group">
+          <span class="logo-main-title">PARFUM</span>
+          <span class="logo-sub-title">STUDIO</span>
+        </div>
+      </a>
+
+      <!-- Enlaces normales para PC -->
+      <div class="nav-links">
+        <a href="#hero" onclick="cerrarDetalle()">Inicio</a>
+        <a href="#catalogo" onclick="cerrarDetalle()">Colección</a>
+        <a href="#pagos" onclick="cerrarDetalle()">Pagos</a>
+        <a href="#nosotros" onclick="cerrarDetalle()">Nosotros</a>
+        <a href="admin.html" class="nav-admin-btn">Panel Admin</a>
+      </div>
+
+      <!-- Acciones a la derecha -->
+      <div class="nav-actions-group">
+        <!-- Botón Modo Oscuro / Claro -->
+        <button class="nav-search-btn" id="theme-toggle-btn" title="Cambiar modo visual" onclick="alternarTemaVisual()">
+          <svg class="ui-icon" id="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <!-- Lupa SVG en el Header -->
+        <button class="nav-search-btn" title="Buscar perfume" onclick="activarBuscadorHeader()">
+          <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+
+        <!-- Carrito SVG con Contador -->
+        <button class="cart-trigger-btn" onclick="abrirCarrito()" title="Ver carrito">
+          <svg class="ui-icon cart-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <span class="cart-badge" id="cart-badge">0</span>
+        </button>
+      </div>
+    </nav>
   </header>
 
-  <main>
-    <section id="seccion-login">
-      <div class="login-card">
-        <h2>Panel de Gestión</h2>
-        <p>Ingresá la contraseña maestra para administrar el catálogo.</p>
-        <input type="password" id="clave-admin" class="input-field" placeholder="••••••••••••" onkeydown="if(event.key === 'Enter') loginAdmin()">
-        <button class="btn-primary" onclick="loginAdmin()">Ingresar</button>
-        <div id="login-error" class="msg-error"></div>
-      </div>
-    </section>
-
-    <section id="seccion-panel">
-      <div class="panel-grid">
-        
-        <!-- Formulario Crear Nuevo Perfume -->
-        <div class="panel-box">
-          <h3>Nuevo Perfume</h3>
-          <form id="form-nuevo-perfume" onsubmit="crearPerfume(event)">
-            <div class="form-group">
-              <label>Nombre</label>
-              <input type="text" id="prod-nombre" class="input-field" required placeholder="Ej: Erba Pura">
-            </div>
-
-            <div class="form-group">
-              <label>Tipo de Perfume</label>
-              <select id="prod-tipo" class="input-field" required>
-                <option value="Diseñador">Diseñador</option>
-                <option value="Árabe">Árabe</option>
-                <option value="Nicho">Nicho / Autor</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label>Stock Disponible (Cantidad numérica)</label>
-              <input type="number" id="prod-stock" class="input-field" min="0" value="10" required placeholder="Ej: 5">
-              <span class="field-hint">Si ponés 0, aparecerá como Sin Stock automáticamente.</span>
-            </div>
-
-            <div class="form-group">
-              <label>Familia Olfativa</label>
-              <select id="prod-familia" class="input-field" required>
-                <option value="Cítrico / Acuático">Cítrico / Acuático</option>
-                <option value="Oriental / Especiado">Oriental / Especiado</option>
-                <option value="Amaderado">Amaderado</option>
-                <option value="Floral">Floral</option>
-                <option value="Gourmand">Gourmand</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label>Género / Destino</label>
-              <select id="prod-genero" class="input-field" required>
-                <option value="Unisex">Unisex</option>
-                <option value="Masculino">Masculino</option>
-                <option value="Femenino">Femenino</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label>Estación / Ocasión recomendada</label>
-              <select id="prod-estacion" class="input-field" required>
-                <option value="Todo el año">Todo el año / Versátil</option>
-                <option value="Verano / Día">Verano / Días cálidos (Fresco)</option>
-                <option value="Invierno / Noche">Invierno / Noche (Cálido & Intenso)</option>
-                <option value="Eventos / Cita">Ocasiones Especiales / Citas</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label>Precio ($)</label>
-              <input type="number" id="prod-precio" step="0.01" class="input-field" required placeholder="45000">
-            </div>
-
-            <label class="checkbox-group">
-              <input type="checkbox" id="prod-hero">
-              <span>🚀 Mostrar foto de este perfume en el Carrusel del Hero</span>
-            </label>
-
-            <div class="form-group">
-              <label>Notas de Salida (Opcional)</label>
-              <input type="text" id="prod-salida" class="input-field" placeholder="Ej: Naranja siciliana, Bergamota">
-            </div>
-
-            <div class="form-group">
-              <label>Notas de Corazón (Opcional)</label>
-              <input type="text" id="prod-corazon" class="input-field" placeholder="Ej: Frutas mediterráneas">
-            </div>
-
-            <div class="form-group">
-              <label>Notas de Fondo (Opcional)</label>
-              <input type="text" id="prod-fondo" class="input-field" placeholder="Ej: Almizcle blanco, Vainilla de Madagascar, Ámbar">
-            </div>
-
-            <div class="form-group">
-              <label>Descripción General</label>
-              <textarea id="prod-desc" class="input-field" placeholder="Información adicional, concentración..."></textarea>
-            </div>
-
-            <div class="form-group">
-              <label>Fotografías (1 a 5 imágenes)</label>
-              <input type="file" id="prod-imagen" class="input-field" accept="image/*" multiple required onchange="manejarSeleccionArchivos(event, 'crear')">
-              <span class="field-hint">La primera foto será la portada. Podés reordenarlas con las flechas.</span>
-            </div>
-
-            <div id="preview-section-crear" style="display: none;">
-              <p class="preview-header">👇 Ordená las fotos (la 1ª es la portada):</p>
-              <div id="preview-container-crear" class="preview-container"></div>
-            </div>
-
-            <button type="submit" class="btn-primary" id="btn-submit-perfume">Cargar al Catálogo</button>
-          </form>
+  <!-- 1. Hero moderno con identidad y carrusel dinámico -->
+  <section id="hero" class="hero-section">
+    <div class="hero-grid">
+      <div class="hero-text-side">
+        <span class="badge-pill">Colección 2026</span>
+        <h1>Fragancias que dejan huella a tu paso</h1>
+        <p>Inspiraciones de alta gama formuladas en concentración Eau de Parfum. Esencias puras, proyección duradera y máxima sofisticación.</p>
+        <div class="hero-buttons">
+          <a href="#catalogo" class="btn-primary" onclick="cerrarDetalle()">Ver Colección</a>
+          <a href="https://wa.me/5491135890259?text=Hola!%20Quería%20hacer%20una%20consulta%20por%20los%20perfumes" target="_blank" class="btn-secondary">Asesoramiento WhatsApp</a>
         </div>
-
-        <!-- Columna Derecha: Productos Publicados -->
-        <div>
-          <div class="panel-box">
-            <h3>Perfumes Publicados</h3>
-            <div class="table-responsive">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Foto</th>
-                    <th>Detalles</th>
-                    <th>Precio</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody id="tabla-productos"></tbody>
-              </table>
-            </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-num">+24hs</span>
+            <span class="stat-desc">Fijación en piel</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-num">100%</span>
+            <span class="stat-desc">Esencias importadas</span>
           </div>
         </div>
-
       </div>
-    </section>
-  </main>
 
-  <!-- ================= MODAL PARA EDITAR PERFUME ================= -->
-  <div class="modal-overlay" id="modal-editar">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Editar Perfume</h3>
-        <button class="modal-close" onclick="cerrarModalEditar()">✕</button>
+      <!-- Carrusel dinámico de perfumes subidos -->
+      <div class="hero-carousel-side">
+        <div class="carousel-container" id="hero-carousel">
+          <div class="carousel-track" id="hero-carousel-track"></div>
+          <button class="carousel-btn prev" onclick="moverCarruselHero(-1)">&#10094;</button>
+          <button class="carousel-btn next" onclick="moverCarruselHero(1)">&#10095;</button>
+          <div class="carousel-dots" id="hero-carousel-dots"></div>
+        </div>
       </div>
-      <form id="form-editar-perfume" onsubmit="guardarEdicionPerfume(event)">
-        <input type="hidden" id="edit-id">
-
-        <div class="form-group">
-          <label>Nombre</label>
-          <input type="text" id="edit-nombre" class="input-field" required>
-        </div>
-
-        <div class="form-group">
-          <label>Tipo de Perfume</label>
-          <select id="edit-tipo" class="input-field" required>
-            <option value="Diseñador">Diseñador</option>
-            <option value="Árabe">Árabe</option>
-            <option value="Nicho">Nicho / Autor</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Stock Disponible (Cantidad numérica)</label>
-          <input type="number" id="edit-stock" class="input-field" min="0" required>
-        </div>
-
-        <div class="form-group">
-          <label>Familia Olfativa</label>
-          <select id="edit-familia" class="input-field" required>
-            <option value="Cítrico / Acuático">Cítrico / Acuático</option>
-            <option value="Oriental / Especiado">Oriental / Especiado</option>
-            <option value="Amaderado">Amaderado</option>
-            <option value="Floral">Floral</option>
-            <option value="Gourmand">Gourmand</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Género / Destino</label>
-          <select id="edit-genero" class="input-field" required>
-            <option value="Unisex">Unisex</option>
-            <option value="Masculino">Masculino</option>
-            <option value="Femenino">Femenino</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Estación / Ocasión</label>
-          <select id="edit-estacion" class="input-field" required>
-            <option value="Todo el año">Todo el año / Versátil</option>
-            <option value="Verano / Día">Verano / Días cálidos (Fresco)</option>
-            <option value="Invierno / Noche">Invierno / Noche (Cálido & Intenso)</option>
-            <option value="Eventos / Cita">Ocasiones Especiales / Citas</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Precio ($)</label>
-          <input type="number" id="edit-precio" step="0.01" class="input-field" required>
-        </div>
-
-        <label class="checkbox-group">
-          <input type="checkbox" id="edit-hero">
-          <span>🚀 Mostrar en el Carrusel del Hero</span>
-        </label>
-
-        <div class="form-group">
-          <label>Notas de Salida</label>
-          <input type="text" id="edit-salida" class="input-field">
-        </div>
-
-        <div class="form-group">
-          <label>Notas de Corazón</label>
-          <input type="text" id="edit-corazon" class="input-field">
-        </div>
-
-        <div class="form-group">
-          <label>Notas de Fondo</label>
-          <input type="text" id="edit-fondo" class="input-field">
-        </div>
-
-        <div class="form-group">
-          <label>Descripción</label>
-          <textarea id="edit-desc" class="input-field"></textarea>
-        </div>
-
-        <div class="form-group">
-          <label>Gestionar / Reordenar Fotografías</label>
-          <span class="field-hint">Usá las flechas para cambiar el orden o agregá nuevas fotos abajo.</span>
-        </div>
-
-        <div id="preview-section-editar" class="preview-container"></div>
-
-        <div class="form-group">
-          <label>Agregar más fotos (Opcional)</label>
-          <input type="file" id="edit-imagen" class="input-field" accept="image/*" multiple onchange="manejarSeleccionArchivos(event, 'editar')">
-        </div>
-
-        <button type="submit" class="btn-primary" id="btn-save-edit">Guardar Cambios</button>
-      </form>
     </div>
-  </div>
+  </section>
 
-  <script>
-    let adminClave = sessionStorage.getItem('admin_token') || '';
-    let productosCargados = [];
-    
-    let listaArchivosCrear = [];
-    let listaFotosEditar = [];
+  <!-- Divisor Gradual -->
+  <hr class="section-divider">
 
-    document.addEventListener('DOMContentLoaded', () => {
-      cargarTemaVisualAdmin();
-      if (adminClave) mostrarPanel();
-    });
+  <!-- 2. Catálogo con barra de filtros colapsable -->
+  <section id="catalogo" class="catalog-section scroll-reveal">
+    <div class="section-title">
+      <span class="badge-pill-small">Nuestra Galería</span>
+      <h2>Colección de Fragancias</h2>
+      <p>Buscá tu fragancia favorita o desplegá los filtros para una búsqueda a medida</p>
+    </div>
 
-    function alternarTemaVisual() {
-      const currentTheme = document.documentElement.getAttribute('data-theme');
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      
-      document.documentElement.setAttribute('data-theme', newTheme);
-      localStorage.setItem('parfum_theme', newTheme);
-      actualizarIconoTemaAdmin(newTheme);
-    }
+    <div class="filters-card">
+      <div class="search-sort-bar">
+        <input type="text" id="buscador" placeholder="Buscar por perfume, marca o notas..." />
+        <button type="button" class="btn-toggle-filters" id="btn-toggle-filtros" onclick="alternarFiltros()">
+          <svg class="ui-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" y1="21" x2="4" y2="14"></line>
+            <line x1="4" y1="10" x2="4" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12" y2="3"></line>
+            <line x1="20" y1="21" x2="20" y2="16"></line>
+            <line x1="20" y1="12" x2="20" y2="3"></line>
+            <line x1="1" y1="14" x2="7" y2="14"></line>
+            <line x1="9" y1="8" x2="15" y2="8"></line>
+            <line x1="17" y1="16" x2="23" y2="16"></line>
+          </svg>
+          <span>Filtros</span>
+          <span class="toggle-arrow" id="toggle-arrow">▼</span>
+        </button>
+        <select id="select-orden" class="sort-select">
+          <option value="recientes">Más recientes</option>
+          <option value="precio-menor">Menor precio</option>
+          <option value="precio-mayor">Mayor precio</option>
+        </select>
+      </div>
 
-    function cargarTemaVisualAdmin() {
-      const savedTheme = localStorage.getItem('parfum_theme') || 'light';
-      document.documentElement.setAttribute('data-theme', savedTheme);
-      actualizarIconoTemaAdmin(savedTheme);
-    }
+      <div id="filtros-desplegables" class="filters-collapsible" style="display: none;">
+        <div class="filters-header">
+          <span class="filters-title">Criterios de Búsqueda</span>
+          <button class="btn-reset-filters" id="btn-reset-filtros" onclick="resetearFiltros()">Limpiar Filtros</button>
+        </div>
 
-    function actualizarIconoTemaAdmin(theme) {
-      const icon = document.getElementById('theme-icon');
-      if (!icon) return;
-      
-      if (theme === 'dark') {
-        icon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
-      } else {
-        icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
-      }
-    }
+        <div class="price-slider-box">
+          <label for="slider-precio">Presupuesto máx: <span id="label-precio-max">$150.000</span></label>
+          <input type="range" id="slider-precio" min="0" max="150000" step="5000" value="150000">
+        </div>
 
-    async function loginAdmin() {
-      const claveInput = document.getElementById('clave-admin').value.trim();
-      const errBox = document.getElementById('login-error');
-      errBox.style.display = 'none';
-
-      if (!claveInput) {
-        errBox.textContent = 'Por favor ingresá la contraseña';
-        errBox.style.display = 'block';
-        return;
-      }
-
-      try {
-        const res = await fetch('/api/admin/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ clave: claveInput })
-        });
-
-        const data = await res.json();
-        if (res.ok && data.ok) {
-          adminClave = claveInput;
-          sessionStorage.setItem('admin_token', adminClave);
-          mostrarPanel();
-        } else {
-          errBox.textContent = data.error || 'Contraseña incorrecta';
-          errBox.style.display = 'block';
-        }
-      } catch (err) {
-        errBox.textContent = 'Error de conexión con el servidor.';
-        errBox.style.display = 'block';
-      }
-    }
-
-    function mostrarPanel() {
-      document.getElementById('seccion-login').style.display = 'none';
-      document.getElementById('seccion-panel').style.display = 'block';
-      document.getElementById('btn-cerrar-sesion').style.display = 'inline-block';
-      cargarTablaProductos();
-    }
-
-    function cerrarSesion() {
-      sessionStorage.removeItem('admin_token');
-      adminClave = '';
-      window.location.reload();
-    }
-
-    function manejarSeleccionArchivos(event, modo) {
-      const files = event.target.files;
-      if (!files || files.length === 0) return;
-
-      if (modo === 'crear') {
-        listaArchivosCrear = Array.from(files);
-        if (listaArchivosCrear.length > 5) {
-          alert('Podés subir un máximo de 5 fotos.');
-          listaArchivosCrear = listaArchivosCrear.slice(0, 5);
-        }
-        renderizarPreviewsCrear();
-      } else if (modo === 'editar') {
-        const nuevosFiles = Array.from(files);
-        if (listaFotosEditar.length + nuevosFiles.length > 5) {
-          alert('El límite máximo es de 5 fotos en total.');
-          return;
-        }
-        nuevosFiles.forEach(file => {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            listaFotosEditar.push({ tipo: 'nuevo', file: file, url: e.target.result });
-            renderizarPreviewsEditar();
-          };
-          reader.readAsDataURL(file);
-        });
-        event.target.value = '';
-      }
-    }
-
-    function renderizarPreviewsCrear() {
-      const container = document.getElementById('preview-container-crear');
-      const section = document.getElementById('preview-section-crear');
-      container.innerHTML = '';
-
-      if (listaArchivosCrear.length === 0) {
-        section.style.display = 'none';
-        return;
-      }
-
-      section.style.display = 'block';
-      listaArchivosCrear.forEach((file, index) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const card = document.createElement('div');
-          card.className = 'preview-card';
-          card.innerHTML = `
-            ${index === 0 ? '<span class="badge-cover-order">Portada</span>' : ''}
-            <img src="${e.target.result}" alt="Preview">
-            <div class="preview-card-controls">
-              <button type="button" class="preview-ctrl-btn" onclick="moverFotoCrear(${index}, -1)" ${index === 0 ? 'disabled' : ''}>◀</button>
-              <button type="button" class="preview-ctrl-btn" onclick="moverFotoCrear(${index}, 1)" ${index === listaArchivosCrear.length - 1 ? 'disabled' : ''}>▶</button>
-            </div>
-          `;
-          container.appendChild(card);
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-
-    window.moverFotoCrear = function(index, dir) {
-      const nuevoIndex = index + dir;
-      if (nuevoIndex < 0 || nuevoIndex >= listaArchivosCrear.length) return;
-      const temp = listaArchivosCrear[index];
-      listaArchivosCrear[index] = listaArchivosCrear[nuevoIndex];
-      listaArchivosCrear[nuevoIndex] = temp;
-      renderizarPreviewsCrear();
-    };
-
-    function renderizarPreviewsEditar() {
-      const container = document.getElementById('preview-section-editar');
-      container.innerHTML = '';
-
-      listaFotosEditar.forEach((item, index) => {
-        const card = document.createElement('div');
-        card.className = 'preview-card';
-        card.innerHTML = `
-          ${index === 0 ? '<span class="badge-cover-order">Portada</span>' : ''}
-          <img src="${item.url}" alt="Preview">
-          <div class="preview-card-controls">
-            <button type="button" class="preview-ctrl-btn" onclick="moverFotoEditar(${index}, -1)" ${index === 0 ? 'disabled' : ''}>◀</button>
-            <button type="button" class="preview-ctrl-btn" onclick="quitarFotoEditar(${index})" title="Eliminar">✕</button>
-            <button type="button" class="preview-ctrl-btn" onclick="moverFotoEditar(${index}, 1)" ${index === listaFotosEditar.length - 1 ? 'disabled' : ''}>▶</button>
+        <div class="filter-group">
+          <span class="filter-group-label">Tipo de Fragancia:</span>
+          <div class="filter-chips-row" id="chips-tipo">
+            <button class="chip active" data-tipo="todos">Todos los Tipos</button>
+            <button class="chip" data-tipo="Diseñador">Diseñador</button>
+            <button class="chip" data-tipo="Árabe">Árabe</button>
+            <button class="chip" data-tipo="Nicho">Nicho</button>
           </div>
-        `;
-        container.appendChild(card);
-      });
-    }
+        </div>
 
-    window.moverFotoEditar = function(index, dir) {
-      const nuevoIndex = index + dir;
-      if (nuevoIndex < 0 || nuevoIndex >= listaFotosEditar.length) return;
-      const temp = listaFotosEditar[index];
-      listaFotosEditar[index] = listaFotosEditar[nuevoIndex];
-      listaFotosEditar[nuevoIndex] = temp;
-      renderizarPreviewsEditar();
-    };
+        <div class="filter-group">
+          <span class="filter-group-label">Destino / Género:</span>
+          <div class="filter-chips-row" id="chips-genero">
+            <button class="chip active" data-genero="todos">Todos</button>
+            <button class="chip" data-genero="Unisex">Unisex</button>
+            <button class="chip" data-genero="Masculino">Masculino</button>
+            <button class="chip" data-genero="Femenino">Femenino</button>
+          </div>
+        </div>
 
-    window.quitarFotoEditar = function(index) {
-      if (listaFotosEditar.length <= 1) {
-        alert('El perfume debe tener al menos una fotografía.');
-        return;
-      }
-      listaFotosEditar.splice(index, 1);
-      renderizarPreviewsEditar();
-    };
+        <div class="filter-group">
+          <span class="filter-group-label">Familia Olfativa:</span>
+          <div class="filter-chips-row" id="chips-familia">
+            <button class="chip active" data-categoria="todos">Todas las Familias</button>
+            <button class="chip" data-categoria="Cítrico / Acuático">Cítricos & Acuáticos</button>
+            <button class="chip" data-categoria="Oriental / Especiado">Orientales & Especiados</button>
+            <button class="chip" data-categoria="Amaderado">Amaderados</button>
+            <button class="chip" data-categoria="Floral">Florales</button>
+            <button class="chip" data-categoria="Gourmand">Gourmand</button>
+          </div>
+        </div>
 
-    function extraerFotos(imagen_url) {
-      try {
-        const parsed = JSON.parse(imagen_url);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return { portada: parsed[0], total: parsed.length, todas: parsed };
-        }
-      } catch (e) {}
-      return { portada: imagen_url || '', total: 1, todas: [imagen_url || ''] };
-    }
+        <!-- Filtro ampliado por Notas / Componentes Principales -->
+        <div class="filter-group">
+          <span class="filter-group-label">Notas Principales:</span>
+          <div class="filter-chips-row" id="chips-nota">
+            <button class="chip active" data-nota="todos">Todas</button>
+            <button class="chip" data-nota="Vainilla">Vainilla</button>
+            <button class="chip" data-nota="Almizcle">Almizcle</button>
+            <button class="chip" data-nota="Bergamota">Bergamota</button>
+            <button class="chip" data-nota="Ámbar">Ámbar</button>
+            <button class="chip" data-nota="Cuero">Cuero</button>
+            <button class="chip" data-nota="Oudh">Oudh</button>
+            <button class="chip" data-nota="Jazmín">Jazmín</button>
+            <button class="chip" data-nota="Sándalo">Sándalo</button>
+            <button class="chip" data-nota="Café">Café</button>
+            <button class="chip" data-nota="Tabaco">Tabaco</button>
+          </div>
+        </div>
 
-    async function cargarTablaProductos() {
-      const tbody = document.getElementById('tabla-productos');
-      tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Cargando catálogo...</td></tr>';
+        <div class="filter-group">
+          <span class="filter-group-label">Momento / Ocasión:</span>
+          <div class="filter-chips-row" id="chips-estacion">
+            <button class="chip active" data-estacion="todos">Cualquiera</button>
+            <button class="chip" data-estacion="Verano / Día">Verano / Día</button>
+            <button class="chip" data-estacion="Invierno / Noche">Invierno / Noche</button>
+            <button class="chip" data-estacion="Eventos / Cita">Ocasiones Especiales</button>
+            <button class="chip" data-estacion="Todo el año">Versátiles</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      try {
-        const res = await fetch('/api/productos');
-        productosCargados = await res.json();
+    <div id="grid-productos" class="products-grid"></div>
+  </section>
 
-        if (productosCargados.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No hay perfumes cargados todavía.</td></tr>';
-          return;
-        }
+  <!-- 3. Sección Detalle del Perfume -->
+  <section id="detalle" class="detail-section" style="display: none;">
+    <div class="detail-card">
+      <div class="detail-gallery">
+        <div class="detail-main-image">
+          <button class="detail-nav-btn prev" onclick="cambiarFotoDetalle(-1)">&#10094;</button>
+          <img id="detalle-img-principal" src="" alt="Perfume seleccionado">
+          <button class="detail-nav-btn next" onclick="cambiarFotoDetalle(1)">&#10095;</button>
+        </div>
+        <div id="detalle-thumbnails" class="detail-thumbnails"></div>
+      </div>
 
-        tbody.innerHTML = '';
-        productosCargados.forEach(prod => {
-          const { portada, total } = extraerFotos(prod.imagen_url);
-          const stockCantidad = Number(prod.estado_stock) || 0;
-          let stockText = `Stock: ${stockCantidad}`;
-          let stockClass = 'stock-en';
+      <div class="detail-info-box">
+        <div class="detail-tags">
+          <span id="detalle-familia" class="detail-family"></span>
+          <span class="badge-tag">Eau de Parfum</span>
+        </div>
+        <h1 id="detalle-nombre" class="detail-title"></h1>
+        <p id="detalle-precio" class="detail-price"></p>
+        
+        <div class="notes-pyramid">
+          <div class="note-row" id="row-salida">
+            <span class="note-label">Salida</span>
+            <span class="note-value" id="detalle-salida">-</span>
+          </div>
+          <div class="note-row" id="row-corazon">
+            <span class="note-label">Corazón</span>
+            <span class="note-value" id="detalle-corazon">-</span>
+          </div>
+          <div class="note-row" id="row-fondo">
+            <span class="note-label">Fondo</span>
+            <span class="note-value" id="detalle-fondo">-</span>
+          </div>
+        </div>
 
-          if (stockCantidad === 0) {
-            stockText = 'Sin Stock';
-            stockClass = 'stock-sin';
-          } else if (stockCantidad <= 3) {
-            stockText = `Pocas Unidades (${stockCantidad})`;
-            stockClass = 'stock-pocas';
-          }
+        <p id="detalle-descripcion" class="detail-description"></p>
+        
+        <div class="detail-actions" id="detalle-actions-box">
+          <button type="button" class="btn-primary" id="btn-detalle-agregar" onclick="agregarAlCarritoDesdeDetalle()">
+            <svg class="ui-icon-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="9" cy="21" r="1"></circle>
+              <circle cx="20" cy="21" r="1"></circle>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+            <span>Agregar al Carrito</span>
+          </button>
+          <button type="button" class="btn-secondary" onclick="cerrarDetalle()">
+            ← Volver al Catálogo
+          </button>
+        </div>
 
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>
-              <div class="td-img-wrapper">
-                <img src="${portada}" class="td-img" alt="${prod.nombre}" onerror="this.src='https://via.placeholder.com/50?text=Foto'">
-                ${total > 1 ? `<span class="td-img-count">+${total}</span>` : ''}
-              </div>
-            </td>
-            <td>
-              <div class="td-title">
-                ${prod.nombre}
-                <span class="td-tipo-tag">${prod.tipo || 'Diseñador'}</span>
-                ${prod.destacado_hero ? '<span class="td-hero-tag">En Hero 🚀</span>' : ''}
-              </div>
-              <div class="td-family">${prod.familia}</div>
-              <div class="td-badges">${prod.genero || 'Unisex'} • ${prod.estacion || 'Todo el año'}</div>
-              <div><span class="td-stock-tag ${stockClass}">${stockText}</span></div>
-            </td>
-            <td>
-              <span class="td-price">$${Number(prod.precio).toLocaleString('es-AR')}</span>
-            </td>
-            <td>
-              <div class="table-actions">
-                <button class="btn-action btn-edit" onclick="abrirModalEditar(${prod.id})">Editar</button>
-                <button class="btn-action btn-delete" onclick="eliminarProducto(${prod.id})">Borrar</button>
-              </div>
-            </td>
-          `;
-          tbody.appendChild(tr);
-        });
-      } catch (err) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--c-red);">Error al cargar productos.</td></tr>';
-      }
-    }
+        <!-- Botón Compartir Perfume -->
+        <button type="button" class="btn-share-product" onclick="compartirPerfumeActual()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+          <span>Compartir este perfume</span>
+        </button>
+      </div>
+    </div>
 
-    async function crearPerfume(e) {
-      e.preventDefault();
-      if (listaArchivosCrear.length === 0) {
-        alert('Tenés que seleccionar al menos una foto.');
-        return;
-      }
+    <!-- Sección de Perfumes Relacionados -->
+    <div style="max-width: 1200px; margin: 3rem auto 0; padding: 0 1.5rem;">
+      <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1.5rem; text-align: left; color: var(--text-dark);">También te puede interesar</h3>
+      <div id="grid-relacionados" class="products-grid"></div>
+    </div>
+  </section>
 
-      const btn = document.getElementById('btn-submit-perfume');
-      btn.disabled = true;
-      btn.textContent = 'Subiendo...';
+  <!-- Divisor Gradual -->
+  <hr class="section-divider">
 
-      const formData = new FormData();
-      formData.append('nombre', document.getElementById('prod-nombre').value.trim());
-      formData.append('tipo', document.getElementById('prod-tipo').value);
-      formData.append('estado_stock', document.getElementById('prod-stock').value);
-      formData.append('familia', document.getElementById('prod-familia').value);
-      formData.append('genero', document.getElementById('prod-genero').value);
-      formData.append('estacion', document.getElementById('prod-estacion').value);
-      formData.append('precio', document.getElementById('prod-precio').value);
-      formData.append('descripcion', document.getElementById('prod-desc').value.trim());
-      formData.append('notas_salida', document.getElementById('prod-salida').value.trim());
-      formData.append('notas_corazon', document.getElementById('prod-corazon').value.trim());
-      formData.append('notas_fondo', document.getElementById('prod-fondo').value.trim());
-      formData.append('destacado_hero', document.getElementById('prod-hero').checked ? '1' : '0');
+  <!-- 4. Sección Métodos de Pago con Iconos Planos Rojos -->
+  <section id="pagos" class="payments-section scroll-reveal">
+    <div class="section-title">
+      <span class="badge-pill-small">Transparencia & Seguridad</span>
+      <h2>Métodos de Pago</h2>
+      <p>Aboná de la forma más práctica y accesible</p>
+    </div>
+    <div class="payments-grid">
+      <!-- Transferencia -->
+      <div class="payment-card">
+        <div class="payment-icon-wrapper">
+          <svg class="brand-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="21" x2="21" y2="21"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+            <polyline points="5 10 5 21"></polyline>
+            <polyline points="19 10 19 21"></polyline>
+            <polyline points="10 10 10 21"></polyline>
+            <polyline points="14 10 14 21"></polyline>
+            <polygon points="12 2 20 7 4 7 12 2"></polygon>
+          </svg>
+        </div>
+        <h3>Transferencia Bancaria</h3>
+        <p>Transferí directo por CBU/CVU o alias bancario con acreditación instantánea y envío de comprobante.</p>
+        <span class="payment-badge">Recomendado</span>
+      </div>
 
-      listaArchivosCrear.forEach(file => {
-        formData.append('imagenes', file);
-      });
+      <!-- Mercado Pago -->
+      <div class="payment-card">
+        <div class="payment-icon-wrapper">
+          <svg class="brand-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+          </svg>
+        </div>
+        <h3>Mercado Pago</h3>
+        <p>Pagá con dinero en cuenta, tarjetas de débito o crédito a través de link de pago o código QR oficial.</p>
+        <span class="payment-badge">Fácil & Rápido</span>
+      </div>
 
-      try {
-        const res = await fetch('/api/productos', {
-          method: 'POST',
-          headers: { 'x-admin-key': adminClave },
-          body: formData
-        });
+      <!-- Efectivo -->
+      <div class="payment-card">
+        <div class="payment-icon-wrapper">
+          <svg class="brand-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+            <circle cx="12" cy="12" r="2"></circle>
+            <path d="M6 12h.01M18 12h.01"></path>
+          </svg>
+        </div>
+        <h3>Efectivo</h3>
+        <p>Aboná en mano al momento de retirar en persona por nuestro punto de entrega o contraentrega coordinada.</p>
+        <span class="payment-badge">Presencial</span>
+      </div>
+    </div>
+  </section>
 
-        const data = await res.json();
-        if (res.ok) {
-          alert('¡Perfume agregado con éxito!');
-          document.getElementById('form-nuevo-perfume').reset();
-          document.getElementById('preview-section-crear').style.display = 'none';
-          listaArchivosCrear = [];
-          cargarTablaProductos();
-        } else {
-          alert('Error: ' + (data.error || 'No se pudo agregar'));
-        }
-      } catch (err) {
-        alert('Error de conexión al cargar producto.');
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Cargar al Catálogo';
-      }
-    }
+  <!-- Divisor Gradual -->
+  <hr class="section-divider">
 
-    window.abrirModalEditar = function(id) {
-      const prod = productosCargados.find(p => p.id === id);
-      if (!prod) return;
+  <!-- 5. Propuesta de Valor con Iconos Planos Rojos -->
+  <section id="nosotros" class="about-section scroll-reveal">
+    <div class="section-title">
+      <span class="badge-pill-small">Compromiso</span>
+      <h2>¿Por qué elegirnos?</h2>
+      <p>Cuidamos cada aspecto para una experiencia de autor inigualable</p>
+    </div>
+    <div class="features-grid">
+      <!-- Maceración -->
+      <div class="feature-card">
+        <div class="feature-icon-wrapper">
+          <svg class="brand-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+          </svg>
+        </div>
+        <h3>Maceración Artesanal</h3>
+        <p>Proceso de reposo controlado que equilibra cada nota olfativa para asegurar máxima fijación en piel.</p>
+      </div>
 
-      document.getElementById('edit-id').value = prod.id;
-      document.getElementById('edit-nombre').value = prod.nombre || '';
-      document.getElementById('edit-tipo').value = prod.tipo || 'Diseñador';
-      document.getElementById('edit-stock').value = prod.estado_stock !== undefined ? prod.estado_stock : 10;
-      document.getElementById('edit-familia').value = prod.familia || 'Cítrico / Acuático';
-      document.getElementById('edit-genero').value = prod.genero || 'Unisex';
-      document.getElementById('edit-estacion').value = prod.estacion || 'Todo el año';
-      document.getElementById('edit-precio').value = prod.precio || '';
-      document.getElementById('edit-hero').checked = prod.destacado_hero === 1 || prod.destacado_hero === '1';
-      document.getElementById('edit-salida').value = prod.notas_salida || '';
-      document.getElementById('edit-corazon').value = prod.notas_corazon || '';
-      document.getElementById('edit-fondo').value = prod.notas_fondo || '';
-      document.getElementById('edit-desc').value = prod.descripcion || '';
+      <!-- Envíos -->
+      <div class="feature-card">
+        <div class="feature-icon-wrapper">
+          <svg class="brand-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="21 8 21 21 3 21 3 8"></polyline>
+            <rect x="1" y="3" width="22" height="5"></rect>
+            <line x1="10" y1="12" x2="14" y2="12"></line>
+          </svg>
+        </div>
+        <h3>Envíos Cuidados</h3>
+        <p>Packaging premium protegido para que tus fragancias lleguen intactas a cualquier destino.</p>
+      </div>
 
-      const { todas } = extraerFotos(prod.imagen_url);
-      listaFotosEditar = todas.map(url => ({ tipo: 'existente', url: url }));
+      <!-- Asesoramiento -->
+      <div class="feature-card">
+        <div class="feature-icon-wrapper">
+          <svg class="brand-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </div>
+        <h3>Atención Personalizada</h3>
+        <p>Te ayudamos a elegir la combinación y acordes ideales para tu estilo o para hacer un regalo especial.</p>
+      </div>
+    </div>
+  </section>
 
-      renderizarPreviewsEditar();
-      document.getElementById('edit-imagen').value = '';
-      document.getElementById('modal-editar').classList.add('active');
-    };
+  <!-- Divisor Gradual -->
+  <hr class="section-divider">
 
-    window.cerrarModalEditar = function() {
-      document.getElementById('modal-editar').classList.remove('active');
-    };
+  <!-- 6. Footer con Sección de Contacto Completa -->
+  <footer id="contacto" class="footer-master">
+    <div class="footer-container">
+      <div class="footer-col brand-col">
+        <div class="footer-brand">
+          <span class="logo-dot"></span>
+          PARFUM STUDIO
+        </div>
+        <p class="footer-desc">Haute Parfumerie. Fragancias de autor y colecciones exclusivas en alta concentración.</p>
+      </div>
 
-    async function guardarEdicionPerfume(e) {
-      e.preventDefault();
-      const id = document.getElementById('edit-id').value;
-      const btn = document.getElementById('btn-save-edit');
-      btn.disabled = true;
-      btn.textContent = 'Guardando cambios...';
+      <div class="footer-col">
+        <h4>Navegación</h4>
+        <ul class="footer-links">
+          <li><a href="#hero">Inicio</a></li>
+          <li><a href="#catalogo">Colección</a></li>
+          <li><a href="#pagos">Métodos de Pago</a></li>
+          <li><a href="#nosotros">Nosotros</a></li>
+        </ul>
+      </div>
 
-      const formData = new FormData();
-      formData.append('nombre', document.getElementById('edit-nombre').value.trim());
-      formData.append('tipo', document.getElementById('edit-tipo').value);
-      formData.append('estado_stock', document.getElementById('edit-stock').value);
-      formData.append('familia', document.getElementById('edit-familia').value);
-      formData.append('genero', document.getElementById('edit-genero').value);
-      formData.append('estacion', document.getElementById('edit-estacion').value);
-      formData.append('precio', document.getElementById('edit-precio').value);
-      formData.append('descripcion', document.getElementById('edit-desc').value.trim());
-      formData.append('notas_salida', document.getElementById('edit-salida').value.trim());
-      formData.append('notas_corazon', document.getElementById('edit-corazon').value.trim());
-      formData.append('notas_fondo', document.getElementById('edit-fondo').value.trim());
-      formData.append('destacado_hero', document.getElementById('edit-hero').checked ? '1' : '0');
+      <div class="footer-col">
+        <h4>Contacto Directo</h4>
+        <ul class="footer-contact-list">
+          <li>
+            <svg class="footer-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+            <a href="tel:1135890259">1135890259</a>
+          </li>
+          <li>
+            <svg class="footer-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            </svg>
+            <a href="https://wa.me/5491135890259" target="_blank">WhatsApp: 11 3589-0259</a>
+          </li>
+          <li>
+            <svg class="footer-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <a href="mailto:parfumstudioba@gmail.com">parfumstudioba@gmail.com</a>
+          </li>
+          <li>
+            <svg class="footer-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <span>Ciudadela, Buenos Aires</span>
+          </li>
+        </ul>
+      </div>
+    </div>
 
-      const urlsExistentes = [];
-      listaFotosEditar.forEach(item => {
-        if (item.tipo === 'existente') {
-          urlsExistentes.push(item.url);
-        } else if (item.tipo === 'nuevo') {
-          formData.append('imagenes', item.file);
-        }
-      });
+    <div class="footer-bottom">
+      <p>&copy; 2026 <strong>PARFUM STUDIO</strong> — Todos los derechos reservados. Ciudadela, Buenos Aires.</p>
+    </div>
+  </footer>
 
-      formData.append('fotos_existentes', JSON.stringify(urlsExistentes));
+  <!-- ================= CARRITO LATERAL (DRAWER) CON ENVÍO Y CUPÓN ================= -->
+  <div class="cart-overlay" id="cart-overlay" onclick="cerrarCarrito()"></div>
+  <aside class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-header">
+      <div class="cart-title-wrapper">
+        <h3>Tu Carrito</h3>
+        <span class="cart-count-label" id="cart-total-items">(0 productos)</span>
+      </div>
+      <button class="cart-close-btn" onclick="cerrarCarrito()">✕</button>
+    </div>
 
-      try {
-        const res = await fetch(`/api/productos/${id}`, {
-          method: 'PUT',
-          headers: { 'x-admin-key': adminClave },
-          body: formData
-        });
+    <div class="cart-items-container" id="cart-items-container"></div>
 
-        const data = await res.json();
-        if (res.ok) {
-          alert('¡Perfume actualizado con éxito!');
-          cerrarModalEditar();
-          cargarTablaProductos();
-        } else {
-          alert('Error: ' + (data.error || 'No se pudo actualizar'));
-        }
-      } catch (err) {
-        alert('Error de red al actualizar perfume.');
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Guardar Cambios';
-      }
-    }
+    <div class="cart-footer">
+      <!-- Indicador de Envío Gratis Dinámico -->
+      <div id="envio-gratis-banner" style="display: none;"></div>
 
-    async function eliminarProducto(id) {
-      if (!confirm('¿Estás seguro de que querés eliminar este perfume?')) return;
+      <!-- Calculador de Envío por Zona con Estilo Propio -->
+      <div class="envio-box" style="background: var(--bg-main); border: 1px solid var(--c-border); border-radius: var(--radius-md, 12px); padding: 1rem; margin-bottom: 0.8rem;">
+        <label for="select-envio" style="display: block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5px; color: var(--text-dark);">Método de Envío / Retiro:</label>
+        <select id="select-envio" class="input-field" style="width: 100%; margin-bottom: 0; font-size: 0.85rem; padding: 0.65rem; border-radius: 8px; border: 1px solid var(--c-border); background: var(--bg-soft); color: var(--text-dark); cursor: pointer;" onchange="actualizarUICarrito()">
+          <option value="retiro">📦 Retiro sin cargo en Ciudadela</option>
+          <option value="moto_oeste">🏍️ Moto Express (Ciudadela/Ramos/Haedo) — $3.500</option>
+          <option value="moto_caba">🛵 Moto CABA — $6.500</option>
+        </select>
+      </div>
 
-      try {
-        const res = await fetch(`/api/productos/${id}`, {
-          method: 'DELETE',
-          headers: { 'x-admin-key': adminClave }
-        });
+      <!-- Campo de Cupones de Descuento Estilizado -->
+      <div class="cupon-box" style="background: var(--bg-main); border: 1px solid var(--c-border); border-radius: var(--radius-md, 12px); padding: 1rem; margin-bottom: 0.8rem;">
+        <label for="cupon-input" style="display: block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; color: var(--text-dark);">Código de Descuento:</label>
+        <div style="display: flex; gap: 0.5rem;">
+          <input type="text" id="cupon-input" placeholder="Ingresar cupón" class="input-field" style="flex: 1; margin-bottom: 0; font-size: 0.85rem; padding: 0.65rem; border-radius: 8px; border: 1px solid var(--c-border); background: var(--bg-soft); color: var(--text-dark);">
+          <button type="button" class="btn-secondary" onclick="aplicarCupon()" style="padding: 0.65rem 1rem; font-size: 0.8rem; border-radius: 8px; cursor: pointer;">Aplicar</button>
+        </div>
+      </div>
+      <div id="cupon-msg" style="font-size: 0.75rem; font-weight: 700; color: #2E7D32; display: none; margin-bottom: 0.5rem;"></div>
 
-        const data = await res.json();
-        if (res.ok) {
-          cargarTablaProductos();
-        } else {
-          alert('Error: ' + (data.error || 'No se pudo eliminar'));
-        }
-      } catch (err) {
-        alert('Error de red al eliminar.');
-      }
-    }
-  </script>
+      <div class="cart-subtotal-row" id="fila-subtotal" style="display: none; font-size: 0.95rem; color: var(--text-muted);">
+        <span>Subtotal:</span>
+        <span id="cart-subtotal-price">$0</span>
+      </div>
+      <div id="fila-descuento" class="cart-subtotal-row" style="display: none; font-size: 0.95rem; color: #2E7D32;">
+        <span>Descuento:</span>
+        <span id="cart-descuento-price">-$0</span>
+      </div>
+      <div class="cart-subtotal-row" id="fila-envio" style="display: none; font-size: 0.95rem; color: var(--text-muted);">
+        <span>Envío:</span>
+        <span id="cart-envio-price">$0</span>
+      </div>
+
+      <div class="cart-subtotal-row">
+        <span>Total:</span>
+        <span class="cart-total-price" id="cart-total-price">$0</span>
+      </div>
+      <button class="btn-primary btn-checkout-wsp" onclick="finalizarCompraWhatsApp()">
+        <span>Finalizar Pedido por WhatsApp</span>
+        <span class="checkout-arrow">→</span>
+      </button>
+      <button class="cart-clear-btn" onclick="vaciarCarrito()">Vaciar carrito</button>
+    </div>
+  </aside>
+
+  <!-- ================= BOTÓN FLOTANTE DE WHATSAPP ================= -->
+  <a href="https://wa.me/5491135890259?text=Hola!%20Quería%20hacer%20una%20consulta%20por%20los%20perfumes" 
+     class="whatsapp-float-btn" 
+     target="_blank" 
+     rel="noopener noreferrer" 
+     title="Hablá con nosotros por WhatsApp">
+    <svg viewBox="0 0 32 32" class="whatsapp-float-svg" style="width: 32px; height: 32px; fill: #FFFFFF;">
+      <path d="M16 2a14 14 0 0 0-12 21.4l-1.5 5.5 5.7-1.5A14 14 0 1 0 16 2zm0 25.2c-2.3 0-4.5-.6-6.4-1.8l-.5-.3-3.3.9.9-3.2-.3-.5A11.7 11.7 0 1 1 16 27.2zm6.8-8.8c-.4-.2-2.2-1.1-2.5-1.2s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.8 0a9.8 9.8 0 0 1-2.9-1.8 10.8 10.8 0 0 1-2-2.5c-.2-.3 0-.5.2-.7l.5-.6c.2-.2.3-.3.4-.5s.2-.4 0-.6c-.2-.2-.7-1.7-1-2.3s-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4s-1.1 1.1-1.1 2.6 1.2 3 1.4 3.2c.2.2 2.4 3.7 5.9 5.2.8.4 1.5.6 2 .8.9.3 1.7.2 2.3.1.7-.1 2.2-.9 2.5-1.8s.3-1.7.2-1.8c-.1-.1-.4-.2-.8-.4z"/>
+    </svg>
+  </a>
+
+  <script src="app.js"></script>
 </body>
 </html>

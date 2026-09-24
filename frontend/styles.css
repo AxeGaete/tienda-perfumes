@@ -2078,3 +2078,28 @@ body {
   color: var(--c-coral);
   border-color: var(--c-border);
 }
+
+/* Botón Compartir en Detalle */
+.btn-share-product {
+  background: transparent;
+  border: 1px dashed var(--c-border);
+  color: var(--text-muted);
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 30px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  transition: var(--transition);
+}
+
+.btn-share-product:hover {
+  border-color: var(--c-red);
+  color: var(--c-red);
+  background-color: var(--c-red-subtle);
+}
