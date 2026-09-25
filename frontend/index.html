@@ -140,8 +140,8 @@
       <div class="hero-carousel-side">
         <div class="carousel-container" id="hero-carousel">
           <div class="carousel-track" id="hero-carousel-track"></div>
-          <button class="carousel-btn prev" onclick="moverCarruselHero(-1)">&#10094;</button>
-          <button class="carousel-btn next" onclick="moverCarruselHero(1)">&#10095;</button>
+          <button class="carousel-btn prev" onclick="moverCarruselHero(-1)">❮</button>
+          <button class="carousel-btn next" onclick="moverCarruselHero(1)">❯</button>
           <div class="carousel-dots" id="hero-carousel-dots"></div>
         </div>
       </div>
@@ -266,9 +266,9 @@
     <div class="detail-card">
       <div class="detail-gallery">
         <div class="detail-main-image">
-          <button class="detail-nav-btn prev" onclick="cambiarFotoDetalle(-1)">&#10094;</button>
+          <button class="detail-nav-btn prev" onclick="cambiarFotoDetalle(-1)">❮</button>
           <img id="detalle-img-principal" src="" alt="Perfume seleccionado">
-          <button class="detail-nav-btn next" onclick="cambiarFotoDetalle(1)">&#10095;</button>
+          <button class="detail-nav-btn next" onclick="cambiarFotoDetalle(1)">❯</button>
         </div>
         <div id="detalle-thumbnails" class="detail-thumbnails"></div>
       </div>
@@ -311,6 +311,18 @@
             ← Volver al Catálogo
           </button>
         </div>
+
+        <!-- Botón Compartir Perfume -->
+        <button type="button" class="btn-share-product" onclick="compartirPerfumeActual()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+          <span>Compartir este perfume</span>
+        </button>
       </div>
     </div>
 
@@ -485,7 +497,7 @@
     </div>
 
     <div class="footer-bottom">
-      <p>&copy; 2026 <strong>PARFUM STUDIO</strong> — Todos los derechos reservados. Ciudadela, Buenos Aires.</p>
+      <p>© 2026 <strong>PARFUM STUDIO</strong> — Todos los derechos reservados. Ciudadela, Buenos Aires.</p>
     </div>
   </footer>
 
@@ -503,6 +515,9 @@
     <div class="cart-items-container" id="cart-items-container"></div>
 
     <div class="cart-footer">
+      <!-- Indicador de Envío Gratis Dinámico -->
+      <div id="envio-gratis-banner" style="display: none;"></div>
+
       <!-- Calculador de Envío por Zona con Estilo Propio -->
       <div class="envio-box" style="background: var(--bg-main); border: 1px solid var(--c-border); border-radius: var(--radius-md, 12px); padding: 1rem; margin-bottom: 0.8rem;">
         <label for="select-envio" style="display: block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5px; color: var(--text-dark);">Método de Envío / Retiro:</label>
