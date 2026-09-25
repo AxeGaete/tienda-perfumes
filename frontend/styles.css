@@ -2167,11 +2167,37 @@ body {
   transition: transform 0.3s ease;
 }
 
-/* ================= RESPONSIVE PANEL ADMIN PARA CELULARES ================= */
+/* ================= RESPONSIVE PANEL ADMIN PARA CELULARES (CORREGIDO Y AJUSTADO) ================= */
 @media (max-width: 768px) {
   /* Contenedor principal y secciones */
   .admin-container, body {
     padding: 0.5rem !important;
+  }
+
+  /* Ajustar barra superior del panel admin para evitar desbordes */
+  header, .admin-header, .navbar-admin {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.8rem !important;
+    padding: 1rem !important;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  .admin-nav-actions, .header-buttons-box {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    width: 100% !important;
+  }
+
+  .admin-nav-actions button, .admin-nav-actions a, 
+  #btn-cerrar-sesion, .btn-ver-tienda {
+    font-size: 0.85rem !important;
+    padding: 0.5rem 0.8rem !important;
+    margin: 0 !important;
   }
 
   /* Ajustar tarjetas de formularios y tablas */
@@ -2214,7 +2240,6 @@ body {
     padding: 0.5rem !important;
   }
 
-  /* Ocultar columnas menos críticas en pantallas muy chicas si es necesario, o apilarlas */
   .td-badges, .td-family {
     font-size: 0.75rem;
   }
