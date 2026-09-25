@@ -495,27 +495,6 @@ function cargarRelacionados(productoActual) {
   });
 }
 
-// ================= COMPARTIR PERFUME =================
-function compartirPerfumeActual() {
-  const prod = todosLosProductos.find(p => p.id === productoActualId);
-  if (!prod) return;
-
-  const textoCompartir = `¡Mirá este perfume en Parfum Studio! ${prod.nombre} (${prod.familia}) a solo $${Number(prod.precio).toLocaleString('es-AR')}.`;
-  const urlActual = window.location.href;
-
-  if (navigator.share) {
-    navigator.share({
-      title: prod.nombre + ' — Parfum Studio',
-      text: textoCompartir,
-      url: urlActual,
-    }).catch(() => {});
-  } else {
-    const mensajeWsp = `¡Hola! Te comparto esta fragancia que encontré en Parfum Studio: *${prod.nombre}* (${prod.familia}) a $${Number(prod.precio).toLocaleString('es-AR')}. ¡Mirala acá!`;
-    const urlWsp = `https://wa.me/?text=${encodeURIComponent(mensajeWsp)}`;
-    window.open(urlWsp, '_blank');
-  }
-}
-
 // ================= NOTIFICACIÓN TOAST FLOTANTE =================
 function mostrarToast(mensaje) {
   let toast = document.getElementById('toast-notification');
