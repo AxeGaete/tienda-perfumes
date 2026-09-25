@@ -371,6 +371,11 @@ async function verDetalle(id) {
   document.getElementById('detalle-familia').textContent = prod.familia;
   document.getElementById('detalle-nombre').textContent = prod.nombre;
   document.getElementById('detalle-precio').textContent = `$${Number(prod.precio).toLocaleString('es-AR')}`;
+  
+  // Inyectar etiqueta de Época y Momento guardados en el admin
+  const estacionTexto = prod.estacion || 'Versátil';
+  document.getElementById('detalle-epoca-badge').textContent = `🌤️ ${estacionTexto}`;
+
   document.getElementById('detalle-salida').textContent = prod.notas_salida || 'No especificado';
   document.getElementById('detalle-corazon').textContent = prod.notas_corazon || 'No especificado';
   document.getElementById('detalle-fondo').textContent = prod.notas_fondo || 'No especificado';

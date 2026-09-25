@@ -287,29 +287,35 @@
       </div>
 
       <div class="detail-info-box">
-        <div class="detail-tags">
+        <div class="detail-tags" style="flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.8rem;">
           <span id="detalle-familia" class="detail-family"></span>
           <span class="badge-tag">Eau de Parfum</span>
+          <!-- Insignias dinámicas de Época y Momento -->
+          <span id="detalle-epoca-badge" class="badge-tag" style="background: var(--c-red-subtle); color: var(--c-red);"></span>
         </div>
+        
         <h1 id="detalle-nombre" class="detail-title"></h1>
         <p id="detalle-precio" class="detail-price"></p>
         
         <div class="notes-pyramid">
           <div class="note-row" id="row-salida">
-            <span class="note-label">Salida</span>
+            <span class="note-label">SALIDA</span>
             <span class="note-value" id="detalle-salida">-</span>
           </div>
           <div class="note-row" id="row-corazon">
-            <span class="note-label">Corazón</span>
+            <span class="note-label">CORAZÓN</span>
             <span class="note-value" id="detalle-corazon">-</span>
           </div>
           <div class="note-row" id="row-fondo">
-            <span class="note-label">Fondo</span>
+            <span class="note-label">FONDO</span>
             <span class="note-value" id="detalle-fondo">-</span>
           </div>
         </div>
 
-        <p id="detalle-descripcion" class="detail-description"></p>
+        <div style="background: var(--bg-soft); border-left: 3px solid var(--c-red); padding: 1rem 1.2rem; border-radius: 0 8px 8px 0; margin-bottom: 2rem;">
+          <h4 style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 0.3rem;">Descripción de la Fragancia</h4>
+          <p id="detalle-descripcion" class="detail-description" style="margin-bottom: 0; font-size: 0.92rem; line-height: 1.6;"></p>
+        </div>
         
         <div class="detail-actions" id="detalle-actions-box">
           <button type="button" class="btn-primary" id="btn-detalle-agregar" onclick="agregarAlCarritoDesdeDetalle()">
