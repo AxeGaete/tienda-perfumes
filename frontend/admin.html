@@ -555,13 +555,33 @@
               </select>
             </div>
 
+            <!-- Épocas del Año (Multiselección con Checkboxes) -->
             <div class="form-group">
-              <label>Estación / Ocasión recomendada</label>
-              <select id="prod-estacion" class="input-field" required>
-                <option value="Todo el año">Todo el año / Versátil</option>
-                <option value="Verano / Día">Verano / Días cálidos (Fresco)</option>
-                <option value="Invierno / Noche">Invierno / Noche (Cálido & Intenso)</option>
-                <option value="Eventos / Cita">Ocasiones Especiales / Citas</option>
+              <label>Épocas del año aptas (Podes marcar varias)</label>
+              <div style="display: flex; flex-wrap: wrap; gap: 0.8rem; background: var(--bg-soft); padding: 0.8rem; border-radius: 6px; border: 1px solid var(--c-border); margin-bottom: 0.9rem;">
+                <label style="font-weight: 500; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem; text-transform: none; cursor: pointer;">
+                  <input type="checkbox" name="epocas-crear" value="Verano"> Verano
+                </label>
+                <label style="font-weight: 500; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem; text-transform: none; cursor: pointer;">
+                  <input type="checkbox" name="epocas-crear" value="Otoño"> Otoño
+                </label>
+                <label style="font-weight: 500; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem; text-transform: none; cursor: pointer;">
+                  <input type="checkbox" name="epocas-crear" value="Primavera"> Primavera
+                </label>
+                <label style="font-weight: 500; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem; text-transform: none; cursor: pointer;">
+                  <input type="checkbox" name="epocas-crear" value="Invierno"> Invierno
+                </label>
+              </div>
+            </div>
+
+            <!-- Momento / Ocasión -->
+            <div class="form-group">
+              <label>Momento / Ocasión</label>
+              <select id="prod-momento" class="input-field" required>
+                <option value="Versátil">Versátil (Día y Noche)</option>
+                <option value="Día">Día (Fresco / Luminoso)</option>
+                <option value="Noche">Noche (Intenso / Cálido)</option>
+                <option value="Cita / Evento">Cita / Evento Especial</option>
               </select>
             </div>
 
@@ -683,13 +703,32 @@
           </select>
         </div>
 
+        <!-- Épocas del Año (Multiselección Editar) -->
         <div class="form-group">
-          <label>Estación / Ocasión</label>
-          <select id="edit-estacion" class="input-field" required>
-            <option value="Todo el año">Todo el año / Versátil</option>
-            <option value="Verano / Día">Verano / Días cálidos (Fresco)</option>
-            <option value="Invierno / Noche">Invierno / Noche (Cálido & Intenso)</option>
-            <option value="Eventos / Cita">Ocasiones Especiales / Citas</option>
+          <label>Épocas del año aptas (Podes marcar varias)</label>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.8rem; background: var(--bg-soft); padding: 0.8rem; border-radius: 6px; border: 1px solid var(--c-border); margin-bottom: 0.9rem;">
+            <label style="font-weight: 500; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem; text-transform: none; cursor: pointer;">
+              <input type="checkbox" name="epocas-editar" value="Verano"> Verano
+            </label>
+            <label style="font-weight: 500; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem; text-transform: none; cursor: pointer;">
+              <input type="checkbox" name="epocas-editar" value="Otoño"> Otoño
+            </label>
+            <label style="font-weight: 500; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem; text-transform: none; cursor: pointer;">
+              <input type="checkbox" name="epocas-editar" value="Primavera"> Primavera
+            </label>
+            <label style="font-weight: 500; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem; text-transform: none; cursor: pointer;">
+              <input type="checkbox" name="epocas-editar" value="Invierno"> Invierno
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Momento / Ocasión</label>
+          <select id="edit-momento" class="input-field" required>
+            <option value="Versátil">Versátil (Día y Noche)</option>
+            <option value="Día">Día (Fresco / Luminoso)</option>
+            <option value="Noche">Noche (Intenso / Cálido)</option>
+            <option value="Cita / Evento">Cita / Evento Especial</option>
           </select>
         </div>
 
@@ -983,7 +1022,7 @@
                 ${prod.destacado_hero ? '<span class="td-hero-tag">En Hero 🚀</span>' : ''}
               </div>
               <div class="td-family">${prod.familia}</div>
-              <div class="td-badges">${prod.genero || 'Unisex'} • ${prod.estacion || 'Todo el año'}</div>
+              <div class="td-badges">${prod.genero || 'Unisex'} • ${prod.estacion || 'General'}</div>
               <div><span class="td-stock-tag ${stockClass}">${stockText}</span></div>
             </td>
             <td>
@@ -1010,6 +1049,10 @@
         return;
       }
 
+      const epocasSeleccionadas = Array.from(document.querySelectorAll('input[name="epocas-crear"]:checked')).map(cb => cb.value);
+      const momentoSeleccionado = document.getElementById('prod-momento').value;
+      const estacionCombinada = [...epocasSeleccionadas, momentoSeleccionado].join(' | ');
+
       const btn = document.getElementById('btn-submit-perfume');
       btn.disabled = true;
       btn.textContent = 'Subiendo...';
@@ -1020,7 +1063,7 @@
       formData.append('estado_stock', document.getElementById('prod-stock').value);
       formData.append('familia', document.getElementById('prod-familia').value);
       formData.append('genero', document.getElementById('prod-genero').value);
-      formData.append('estacion', document.getElementById('prod-estacion').value);
+      formData.append('estacion', estacionCombinada || 'Versátil');
       formData.append('precio', document.getElementById('prod-precio').value);
       formData.append('descripcion', document.getElementById('prod-desc').value.trim());
       formData.append('notas_salida', document.getElementById('prod-salida').value.trim());
@@ -1067,13 +1110,22 @@
       document.getElementById('edit-stock').value = prod.estado_stock !== undefined ? prod.estado_stock : 10;
       document.getElementById('edit-familia').value = prod.familia || 'Cítrico / Acuático';
       document.getElementById('edit-genero').value = prod.genero || 'Unisex';
-      document.getElementById('edit-estacion').value = prod.estacion || 'Todo el año';
       document.getElementById('edit-precio').value = prod.precio || '';
       document.getElementById('edit-hero').checked = prod.destacado_hero === 1 || prod.destacado_hero === '1';
       document.getElementById('edit-salida').value = prod.notas_salida || '';
       document.getElementById('edit-corazon').value = prod.notas_corazon || '';
       document.getElementById('edit-fondo').value = prod.notas_fondo || '';
       document.getElementById('edit-desc').value = prod.descripcion || '';
+
+      // Marcar checkboxes y momento guardados
+      const estacionTexto = prod.estacion || '';
+      document.querySelectorAll('input[name="epocas-editar"]').forEach(cb => {
+        cb.checked = estacionTexto.includes(cb.value);
+      });
+      if (estacionTexto.includes('Noche')) document.getElementById('edit-momento').value = 'Noche';
+      else if (estacionTexto.includes('Día')) document.getElementById('edit-momento').value = 'Día';
+      else if (estacionTexto.includes('Cita')) document.getElementById('edit-momento').value = 'Cita / Evento';
+      else document.getElementById('edit-momento').value = 'Versátil';
 
       const { todas } = extraerFotos(prod.imagen_url);
       listaFotosEditar = todas.map(url => ({ tipo: 'existente', url: url }));
@@ -1090,6 +1142,11 @@
     async function guardarEdicionPerfume(e) {
       e.preventDefault();
       const id = document.getElementById('edit-id').value;
+      
+      const epocasSeleccionadas = Array.from(document.querySelectorAll('input[name="epocas-editar"]:checked')).map(cb => cb.value);
+      const momentoSeleccionado = document.getElementById('edit-momento').value;
+      const estacionCombinada = [...epocasSeleccionadas, momentoSeleccionado].join(' | ');
+
       const btn = document.getElementById('btn-save-edit');
       btn.disabled = true;
       btn.textContent = 'Guardando cambios...';
@@ -1100,7 +1157,7 @@
       formData.append('estado_stock', document.getElementById('edit-stock').value);
       formData.append('familia', document.getElementById('edit-familia').value);
       formData.append('genero', document.getElementById('edit-genero').value);
-      formData.append('estacion', document.getElementById('edit-estacion').value);
+      formData.append('estacion', estacionCombinada || 'Versátil');
       formData.append('precio', document.getElementById('edit-precio').value);
       formData.append('descripcion', document.getElementById('edit-desc').value.trim());
       formData.append('notas_salida', document.getElementById('edit-salida').value.trim());

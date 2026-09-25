@@ -165,7 +165,8 @@ let filtroTipoActivo = 'todos';
 let filtroGeneroActivo = 'todos';
 let filtroFamiliaActivo = 'todos';
 let filtroNotaActivo = 'todos';
-let filtroEstacionActivo = 'todos';
+let filtroEpocaActivo = 'todos';
+let filtroMomentoActivo = 'todos';
 let precioMaximoFiltro = 150000;
 
 function alternarFiltros() {
@@ -204,7 +205,8 @@ function inicializarFiltrosEventos() {
   configurarChipsGrupo('chips-genero', 'data-genero', (val) => { filtroGeneroActivo = val; filtrarProductos(); });
   configurarChipsGrupo('chips-familia', 'data-categoria', (val) => { filtroFamiliaActivo = val; filtrarProductos(); });
   configurarChipsGrupo('chips-nota', 'data-nota', (val) => { filtroNotaActivo = val; filtrarProductos(); });
-  configurarChipsGrupo('chips-estacion', 'data-estacion', (val) => { filtroEstacionActivo = val; filtrarProductos(); });
+  configurarChipsGrupo('chips-epoca', 'data-epoca', (val) => { filtroEpocaActivo = val; filtrarProductos(); });
+  configurarChipsGrupo('chips-momento', 'data-momento', (val) => { filtroMomentoActivo = val; filtrarProductos(); });
 }
 
 function configurarChipsGrupo(containerId, atributo, callback) {
@@ -229,7 +231,8 @@ function resetearFiltros() {
   filtroGeneroActivo = 'todos';
   filtroFamiliaActivo = 'todos';
   filtroNotaActivo = 'todos';
-  filtroEstacionActivo = 'todos';
+  filtroEpocaActivo = 'todos';
+  filtroMomentoActivo = 'todos';
 
   document.querySelectorAll('.filter-chips-row').forEach(row => {
     row.querySelectorAll('.chip').forEach((c, idx) => {
@@ -258,9 +261,12 @@ function filtrarProductos() {
     const coincideGenero = filtroGeneroActivo === 'todos' || prod.genero === filtroGeneroActivo;
     const coincideFamilia = filtroFamiliaActivo === 'todos' || prod.familia === filtroFamiliaActivo;
     const coincideNota = filtroNotaActivo === 'todos' || notasTexto.includes(filtroNotaActivo.toLowerCase());
-    const coincideEstacion = filtroEstacionActivo === 'todos' || prod.estacion === filtroEstacionActivo;
+    
+    const estacionProd = (prod.estacion || '').toLowerCase();
+    const coincideEpoca = filtroEpocaActivo === 'todos' || estacionProd.includes(filtroEpocaActivo.toLowerCase());
+    const coincideMomento = filtroMomentoActivo === 'todos' || estacionProd.includes(filtroMomentoActivo.toLowerCase());
 
-    return coincideTexto && coincidePrecio && coincideTipo && coincideGenero && coincideFamilia && coincideNota && coincideEstacion;
+    return coincideTexto && coincidePrecio && coincideTipo && coincideGenero && coincideFamilia && coincideNota && coincideEpoca && coincideMomento;
   });
 
   // Ordenamiento
