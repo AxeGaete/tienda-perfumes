@@ -106,8 +106,8 @@ function renderizarHeroSlider() {
     const slide = document.createElement('div');
     slide.className = `carousel-slide ${index === 0 ? 'active' : ''}`;
     slide.innerHTML = `
-      <img src="${fotos[0]}" alt="${prod.nombre}" onclick="verDetalle(${prod.id})" style="cursor: pointer;">
-      <div class="slide-caption">${prod.nombre} — $${Number(prod.precio).toLocaleString('es-AR')}</div>
+      <img src="${escapeHtml(urlImagenSegura(fotos[0]))}" alt="${escapeHtml(prod.nombre)}" onclick="verDetalle(${enteroSeguro(prod.id)})" style="cursor: pointer;">
+      <div class="slide-caption">${escapeHtml(prod.nombre)} — $${Number(prod.precio).toLocaleString('es-AR')}</div>
     `;
     track.appendChild(slide);
 
@@ -310,21 +310,21 @@ function renderizarCatalogo() {
     const card = document.createElement('div');
     card.className = 'product-card';
     card.innerHTML = `
-      <a href="#" onclick="verDetalle(${prod.id}); return false;" class="card-image-link">
-        <img src="${fotos[0]}" alt="${prod.nombre}" onerror="this.src='https://via.placeholder.com/280?text=Perfume'">
+      <a href="#" onclick="verDetalle(${enteroSeguro(prod.id)}); return false;" class="card-image-link">
+        <img src="${escapeHtml(urlImagenSegura(fotos[0]))}" alt="${escapeHtml(prod.nombre)}" onerror="this.onerror=null;this.src=PLACEHOLDER_IMG">
       </a>
       <div class="product-info">
         <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 0.2rem;">
           ${stockBadgeHTML}
         </div>
-        <h3 class="product-title"><a href="#" onclick="verDetalle(${prod.id}); return false;" class="card-title-link">${prod.nombre}</a></h3>
-        <p class="product-desc">${prod.descripcion || 'Fragancia exclusiva de alta gama.'}</p>
+        <h3 class="product-title"><a href="#" onclick="verDetalle(${enteroSeguro(prod.id)}); return false;" class="card-title-link">${escapeHtml(prod.nombre)}</a></h3>
+        <p class="product-desc">${escapeHtml(prod.descripcion || 'Fragancia exclusiva de alta gama.')}</p>
         <div class="product-price">$${Number(prod.precio).toLocaleString('es-AR')}</div>
         <div class="card-actions-row">
-          <a href="#" onclick="verDetalle(${prod.id}); return false;" class="btn-ver-detalle">Ver Detalle</a>
+          <a href="#" onclick="verDetalle(${enteroSeguro(prod.id)}); return false;" class="btn-ver-detalle">Ver Detalle</a>
           ${stockCantidad === 0
-            ? `<a href="https://wa.me/5491135890259?text=Hola,%20quiero%20saber%20cuándo%20reingresa%20el%20perfume%20${encodeURIComponent(prod.nombre)}" target="_blank" class="btn-card-add-cart" style="background:#1565C0; text-decoration:none;" title="Avisarme cuando haya stock">📲 Avisar</a>`
-            : `<button class="btn-card-add-cart" onclick="agregarAlCarrito(${prod.id})" title="Añadir al Carrito"><svg class="ui-icon-btn" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>`
+            ? `<a href="https://wa.me/5491135890259?text=Hola,%20quiero%20saber%20cuándo%20reingresa%20el%20perfume%20${encodeURIComponent(prod.nombre)}" target="_blank" rel="noopener noreferrer" class="btn-card-add-cart" style="background:#1565C0; text-decoration:none;" title="Avisarme cuando haya stock">📲 Avisar</a>`
+            : `<button class="btn-card-add-cart" onclick="agregarAlCarrito(${enteroSeguro(prod.id)})" title="Añadir al Carrito"><svg class="ui-icon-btn" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>`
           }
         </div>
       </div>
@@ -365,8 +365,8 @@ async function verDetalle(id) {
   fotoDetalleIndex = 0;
 
   const imgPrincipal = document.getElementById('detalle-img-principal');
-  imgPrincipal.src = listaFotosDetalleActuales[0];
-  imgPrincipal.onclick = () => abrirZoomImagen(listaFotosDetalleActuales[fotoDetalleIndex]);
+  imgPrincipal.src = urlImagenSegura(listaFotosDetalleActuales[0]);
+  imgPrincipal.onclick = () => abrirZoomImagen(urlImagenSegura(listaFotosDetalleActuales[fotoDetalleIndex]));
 
   document.getElementById('detalle-familia').textContent = prod.familia;
   document.getElementById('detalle-nombre').textContent = prod.nombre;
@@ -389,33 +389,33 @@ async function verDetalle(id) {
     descBox.innerHTML = perfumesArray.map((textoPerfume, index) => `
       <div style="background: var(--bg-soft); border-left: 3px solid var(--c-red); padding: 1rem 1.2rem; border-radius: 0 8px 8px 0; margin-bottom: 1rem;">
         <h4 style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--c-red); margin-bottom: 0.3rem;">✨ Perfume ${index + 1} del Set</h4>
-        <p style="margin-bottom: 0; font-size: 0.92rem; line-height: 1.6; color: var(--text-dark);">${textoPerfume.trim()}</p>
+        <p style="margin-bottom: 0; font-size: 0.92rem; line-height: 1.6; color: var(--text-dark);">${escapeHtml(textoPerfume.trim())}</p>
       </div>
     `).join('');
   } else {
     descBox.innerHTML = `
       <div style="background: var(--bg-soft); border-left: 3px solid var(--c-red); padding: 1rem 1.2rem; border-radius: 0 8px 8px 0; margin-bottom: 2rem;">
         <h4 style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 0.3rem;">Descripción de la Fragancia</h4>
-        <p style="margin-bottom: 0; font-size: 0.92rem; line-height: 1.6; color: var(--text-dark);">${descTexto}</p>
+        <p style="margin-bottom: 0; font-size: 0.92rem; line-height: 1.6; color: var(--text-dark);">${escapeHtml(descTexto)}</p>
       </div>
     `;
   }
 
   const thumbContainer = document.getElementById('detalle-thumbnails');
   thumbContainer.innerHTML = listaFotosDetalleActuales.map((f, idx) => `
-    <img src="${f}" class="detail-thumb ${idx === 0 ? 'active' : ''}" onclick="seleccionarMiniaturaDetalle(${idx})" alt="Miniatura">
+    <img src="${escapeHtml(urlImagenSegura(f))}" class="detail-thumb ${idx === 0 ? 'active' : ''}" onclick="seleccionarMiniaturaDetalle(${idx})" alt="Miniatura">
   `).join('');
 
   const stockCantidad = Number(prod.estado_stock) || 0;
   const actionsBox = document.getElementById('detalle-actions-box');
   if (stockCantidad === 0) {
     actionsBox.innerHTML = `
-      <a href="https://wa.me/5491135890259?text=Hola,%20quiero%20saber%20cuándo%20reingresa%20${encodeURIComponent(prod.nombre)}" target="_blank" class="btn-primary" style="background:#1565C0; width:100%; text-decoration:none; text-align:center;">📲 Avisarme por WhatsApp cuando haya stock</a>
+      <a href="https://wa.me/5491135890259?text=Hola,%20quiero%20saber%20cuándo%20reingresa%20${encodeURIComponent(prod.nombre)}" target="_blank" rel="noopener noreferrer" class="btn-primary" style="background:#1565C0; width:100%; text-decoration:none; text-align:center;">📲 Avisarme por WhatsApp cuando haya stock</a>
       <button type="button" class="btn-secondary" onclick="cerrarDetalle()">← Volver al Catálogo</button>
     `;
   } else {
     actionsBox.innerHTML = `
-      <button type="button" class="btn-primary" onclick="agregarAlCarritoDesdeDetalle(${prod.id})">Agregar al Carrito</button>
+      <button type="button" class="btn-primary" onclick="agregarAlCarritoDesdeDetalle(${enteroSeguro(prod.id)})">Agregar al Carrito</button>
       <button type="button" class="btn-secondary" onclick="cerrarDetalle()">← Volver al Catálogo</button>
     `;
   }
@@ -436,8 +436,8 @@ function cerrarDetalle() {
 function seleccionarMiniaturaDetalle(idx) {
   fotoDetalleIndex = idx;
   const imgPrincipal = document.getElementById('detalle-img-principal');
-  imgPrincipal.src = listaFotosDetalleActuales[idx];
-  imgPrincipal.onclick = () => abrirZoomImagen(listaFotosDetalleActuales[fotoDetalleIndex]);
+  imgPrincipal.src = urlImagenSegura(listaFotosDetalleActuales[idx]);
+  imgPrincipal.onclick = () => abrirZoomImagen(urlImagenSegura(listaFotosDetalleActuales[fotoDetalleIndex]));
 
   document.querySelectorAll('.detail-thumb').forEach((t, i) => {
     if (i === idx) t.classList.add('active');
@@ -504,19 +504,19 @@ function cargarRelacionados(productoActual) {
     const card = document.createElement('div');
     card.className = 'product-card';
     card.innerHTML = `
-      <a href="#" onclick="verDetalle(${prod.id}); return false;" class="card-image-link">
-        <img src="${fotos[0]}" alt="${prod.nombre}" loading="lazy" onerror="this.src='https://via.placeholder.com/280?text=Perfume'">
+      <a href="#" onclick="verDetalle(${enteroSeguro(prod.id)}); return false;" class="card-image-link">
+        <img src="${escapeHtml(urlImagenSegura(fotos[0]))}" alt="${escapeHtml(prod.nombre)}" loading="lazy" onerror="this.onerror=null;this.src=PLACEHOLDER_IMG">
       </a>
       <div class="product-info">
-        <span class="product-family">${prod.familia}</span>
+        <span class="product-family">${escapeHtml(prod.familia)}</span>
         <h3 class="product-title">
-          <a href="#" onclick="verDetalle(${prod.id}); return false;" class="card-title-link">${prod.nombre}</a>
+          <a href="#" onclick="verDetalle(${enteroSeguro(prod.id)}); return false;" class="card-title-link">${escapeHtml(prod.nombre)}</a>
         </h3>
-        <p class="product-desc">${prod.descripcion || 'Fragancia exclusiva de alta duración.'}</p>
+        <p class="product-desc">${escapeHtml(prod.descripcion || 'Fragancia exclusiva de alta duración.')}</p>
         <div class="product-price">$${Number(prod.precio).toLocaleString('es-AR')}</div>
         <div class="card-actions-row">
-          <a href="#" onclick="verDetalle(${prod.id}); return false;" class="btn-ver-detalle">Ver Detalle</a>
-          <button class="btn-card-add-cart" onclick="agregarAlCarrito(${prod.id})" title="Añadir al carrito">
+          <a href="#" onclick="verDetalle(${enteroSeguro(prod.id)}); return false;" class="btn-ver-detalle">Ver Detalle</a>
+          <button class="btn-card-add-cart" onclick="agregarAlCarrito(${enteroSeguro(prod.id)})" title="Añadir al carrito">
             <svg class="ui-icon-btn" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
           </button>
         </div>
@@ -526,6 +526,7 @@ function cargarRelacionados(productoActual) {
   });
 }
 
+
 // ================= NOTIFICACIÓN TOAST FLOTANTE =================
 function mostrarToast(mensaje) {
   let toast = document.getElementById('toast-notification');
@@ -534,7 +535,10 @@ function mostrarToast(mensaje) {
     toast.id = 'toast-notification';
     document.body.appendChild(toast);
   }
-  toast.innerHTML = `🛍️ <span>${mensaje}</span>`;
+  toast.textContent = '🛍️ ';
+  const spanMensaje = document.createElement('span');
+  spanMensaje.textContent = mensaje;
+  toast.appendChild(spanMensaje);
   toast.classList.add('active');
 
   setTimeout(() => {
@@ -669,16 +673,16 @@ function actualizarUICarrito() {
     const div = document.createElement('div');
     div.className = 'cart-item';
     div.innerHTML = `
-      <img src="${item.imagen}" class="cart-item-img" alt="${item.nombre}">
+      <img src="${escapeHtml(urlImagenSegura(item.imagen))}" class="cart-item-img" alt="${escapeHtml(item.nombre)}">
       <div class="cart-item-details">
-        <span class="cart-item-title">${item.nombre}</span>
-        <span class="cart-item-meta">${item.familia}</span>
+        <span class="cart-item-title">${escapeHtml(item.nombre)}</span>
+        <span class="cart-item-meta">${escapeHtml(item.familia)}</span>
         <span class="cart-item-price">$${(item.precio * item.cantidad).toLocaleString('es-AR')}</span>
       </div>
       <div class="cart-item-controls">
-        <button class="qty-btn" onclick="cambiarCantidad(${item.id}, -1)">-</button>
-        <span class="cart-item-qty">${item.cantidad}</span>
-        <button class="qty-btn" onclick="cambiarCantidad(${item.id}, 1)">+</button>
+        <button class="qty-btn" onclick="cambiarCantidad(${enteroSeguro(item.id)}, -1)">-</button>
+        <span class="cart-item-qty">${enteroSeguro(item.cantidad)}</span>
+        <button class="qty-btn" onclick="cambiarCantidad(${enteroSeguro(item.id)}, 1)">+</button>
       </div>
     `;
     contenedor.appendChild(div);
@@ -794,18 +798,36 @@ function finalizarCompraWhatsApp() {
   mensaje += '\n\n¿Me confirmar datos para coordinar el pago?';
 
   const urlWsp = `https://wa.me/5491135890259?text=${encodeURIComponent(mensaje)}`;
-  window.open(urlWsp, '_blank');
+  window.open(urlWsp, '_blank', 'noopener,noreferrer');
 }
 
 function guardarCarritoStorage() {
   localStorage.setItem('parfum_cart', JSON.stringify(carrito));
 }
 
+// El localStorage lo puede editar cualquiera desde la consola: se valida cada ítem.
+function sanearItemCarrito(item) {
+  if (!item || typeof item !== 'object') return null;
+  const id = enteroSeguro(item.id, -1);
+  const cantidad = enteroSeguro(item.cantidad, 0);
+  const precio = Number(item.precio);
+  if (id < 0 || cantidad < 1 || cantidad > 99 || !Number.isFinite(precio) || precio < 0) return null;
+  return {
+    id,
+    cantidad,
+    precio,
+    nombre: String(item.nombre === undefined || item.nombre === null ? '' : item.nombre).slice(0, 200),
+    familia: String(item.familia === undefined || item.familia === null ? '' : item.familia).slice(0, 100),
+    imagen: String(item.imagen === undefined || item.imagen === null ? '' : item.imagen).slice(0, 500)
+  };
+}
+
 function cargarCarritoDesdeStorage() {
   const guardado = localStorage.getItem('parfum_cart');
   if (guardado) {
     try {
-      carrito = JSON.parse(guardado);
+      const datos = JSON.parse(guardado);
+      carrito = Array.isArray(datos) ? datos.map(sanearItemCarrito).filter(Boolean) : [];
       actualizarUICarrito();
     } catch(e) {}
   }
@@ -817,7 +839,7 @@ function extraerListaFotos(imagen_url) {
   try {
     const parsed = JSON.parse(imagen_url);
     if (Array.isArray(parsed) && parsed.length > 0) {
-      return parsed.map(url => url.startsWith('/uploads/') ? 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=600&q=80' : url);
+      return parsed.map(url => String(url).startsWith('/uploads/') ? 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=600&q=80' : String(url));
     }
   } catch (e) {}
 

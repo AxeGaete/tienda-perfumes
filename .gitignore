@@ -3,3 +3,8 @@ backend/node_modules/
 backend/uploads/
 backend/.env
 .env
+.env.*
+!.env.example
+*.log
+.DS_Store
+npm-debug.log*
