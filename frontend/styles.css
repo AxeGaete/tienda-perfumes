@@ -2266,3 +2266,69 @@ body {
   }
 }
 
+/* ================= RESPONSIVE PANEL ADMIN PARA CELULARES ================= */
+@media (max-width: 768px) {
+  /* Contenedor principal y espaciados generales */
+  .admin-container, body {
+    padding: 0.5rem !important;
+  }
+
+  main {
+    padding: 0 0.5rem !important;
+    margin: 1.5rem auto 3rem !important;
+  }
+
+  /* Ajustar la grilla principal del panel para que pase a una sola columna */
+  .panel-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.2rem !important;
+  }
+
+  /* Tarjetas y contenedores del panel */
+  .panel-box {
+    padding: 1.2rem !important;
+    border-radius: 8px !important;
+  }
+
+  /* Títulos */
+  h1, h2, .panel-box h3 {
+    font-size: 1.25rem !important;
+  }
+
+  /* Campos de formulario y botones de acción a ancho completo */
+  .input-field, select.input-field, textarea.input-field {
+    font-size: 0.9rem !important;
+    padding: 0.75rem !important;
+  }
+
+  .btn-primary, .btn-secondary, .btn-outline {
+    width: 100% !important;
+    justify-content: center !important;
+    text-align: center !important;
+    margin-bottom: 0.4rem !important;
+  }
+
+  /* Adaptar la tabla de productos publicados para desplazamiento horizontal fluido */
+  .table-responsive {
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 500px;
+    font-size: 0.82rem !important;
+  }
+
+  th, td {
+    padding: 0.6rem 0.4rem !important;
+  }
+
+  /* Ajustar los modales para que se adapten a la pantalla del móvil */
+  .modal-content {
+    width: 95% !important;
+    max-height: 85vh !important;
+    padding: 1.2rem !important;
+    margin: auto;
+  }
+}
