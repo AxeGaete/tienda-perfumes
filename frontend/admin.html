@@ -610,9 +610,20 @@
               <input type="text" id="prod-fondo" class="input-field" placeholder="Ej: Almizcle blanco, Vainilla de Madagascar, Ámbar">
             </div>
 
+            <!-- Descripciones Dinámicas (Ideal para Combos) -->
             <div class="form-group">
-              <label>Descripción General</label>
-              <textarea id="prod-desc" class="input-field" placeholder="Información adicional, concentración..."></textarea>
+              <label>Descripción de los Perfumes del Set</label>
+              <span class="field-hint">Si es un combo, agregá una descripción para cada perfume que incluya.</span>
+              
+              <div id="contenedor-descripciones" style="display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 0.8rem;">
+                <div class="desc-item-box" style="display: flex; gap: 0.5rem; align-items: start;">
+                  <textarea class="input-field desc-input" placeholder="Descripción del Perfume 1..." style="margin-bottom: 0;" required></textarea>
+                </div>
+              </div>
+
+              <button type="button" class="btn-outline" onclick="agregarCampoDescripcion()" style="font-size: 0.78rem; padding: 0.4rem 0.8rem; border-color: var(--c-red); color: var(--c-red);">
+                ➕ Agregar descripción de otro perfume
+              </button>
             </div>
 
             <div class="form-group">
@@ -757,9 +768,13 @@
           <input type="text" id="edit-fondo" class="input-field">
         </div>
 
+        <!-- Descripciones Dinámicas en Edición -->
         <div class="form-group">
-          <label>Descripción</label>
-          <textarea id="edit-desc" class="input-field"></textarea>
+          <label>Descripción de los Perfumes del Set</label>
+          <div id="contenedor-descripciones-editar" style="display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 0.8rem;"></div>
+          <button type="button" class="btn-outline" onclick="agregarCampoDescripcionEditar()" style="font-size: 0.78rem; padding: 0.4rem 0.8rem; border-color: var(--c-red); color: var(--c-red);">
+            ➕ Agregar descripción de otro perfume
+          </button>
         </div>
 
         <div class="form-group">
@@ -790,6 +805,36 @@
       cargarTemaVisualAdmin();
       if (adminClave) mostrarPanel();
     });
+
+    function agregarCampoDescripcion(texto = '') {
+      const container = document.getElementById('contenedor-descripciones');
+      const div = document.createElement('div');
+      div.className = 'desc-item-box';
+      div.style.cssText = 'display: flex; gap: 0.5rem; align-items: start;';
+      div.innerHTML = `
+        <textarea class="input-field desc-input" placeholder="Descripción del perfume..." style="margin-bottom: 0;" required>${texto}</textarea>
+        <button type="button" class="btn-action btn-delete" onclick="this.parentElement.remove()" style="padding: 0.8rem;">✕</button>
+      `;
+      container.appendChild(div);
+    }
+
+    function agregarCampoDescripcionEditar(texto = '') {
+      const container = document.getElementById('contenedor-descripciones-editar');
+      const div = document.createElement('div');
+      div.className = 'desc-item-box-edit';
+      div.style.cssText = 'display: flex; gap: 0.5rem; align-items: start;';
+      div.innerHTML = `
+        <textarea class="input-field desc-input-edit" placeholder="Descripción del perfume..." style="margin-bottom: 0;" required>${texto}</textarea>
+        <button type="button" class="btn-action btn-delete" onclick="this.parentElement.remove()" style="padding: 0.8rem;">✕</button>
+      `;
+      container.appendChild(div);
+    }
+
+    function obtenerDescripcionesConcatenadas(selector) {
+      const inputs = document.querySelectorAll(selector);
+      const textos = Array.from(inputs).map(i => i.value.trim()).filter(t => t.length > 0);
+      return textos.join(' ||| ');
+    }
 
     function alternarTemaVisual() {
       const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -1052,6 +1097,7 @@
       const epocasSeleccionadas = Array.from(document.querySelectorAll('input[name="epocas-crear"]:checked')).map(cb => cb.value);
       const momentoSeleccionado = document.getElementById('prod-momento').value;
       const estacionCombinada = [...epocasSeleccionadas, momentoSeleccionado].join(' | ');
+      const descripcionesConcatenadas = obtenerDescripcionesConcatenadas('.desc-input');
 
       const btn = document.getElementById('btn-submit-perfume');
       btn.disabled = true;
@@ -1065,7 +1111,7 @@
       formData.append('genero', document.getElementById('prod-genero').value);
       formData.append('estacion', estacionCombinada || 'Versátil');
       formData.append('precio', document.getElementById('prod-precio').value);
-      formData.append('descripcion', document.getElementById('prod-desc').value.trim());
+      formData.append('descripcion', descripcionesConcatenadas);
       formData.append('notas_salida', document.getElementById('prod-salida').value.trim());
       formData.append('notas_corazon', document.getElementById('prod-corazon').value.trim());
       formData.append('notas_fondo', document.getElementById('prod-fondo').value.trim());
@@ -1086,6 +1132,7 @@
         if (res.ok) {
           alert('¡Perfume agregado con éxito!');
           document.getElementById('form-nuevo-perfume').reset();
+          document.getElementById('contenedor-descripciones').innerHTML = '<div class="desc-item-box" style="display: flex; gap: 0.5rem; align-items: start;"><textarea class="input-field desc-input" placeholder="Descripción del Perfume 1..." style="margin-bottom: 0;" required></textarea></div>';
           document.getElementById('preview-section-crear').style.display = 'none';
           listaArchivosCrear = [];
           cargarTablaProductos();
@@ -1115,7 +1162,14 @@
       document.getElementById('edit-salida').value = prod.notas_salida || '';
       document.getElementById('edit-corazon').value = prod.notas_corazon || '';
       document.getElementById('edit-fondo').value = prod.notas_fondo || '';
-      document.getElementById('edit-desc').value = prod.descripcion || '';
+
+      // Cargar descripciones dinámicas en edición
+      const contenedorEdit = document.getElementById('contenedor-descripciones-editar');
+      contenedorEdit.innerHTML = '';
+      const descripcionesGuardadas = (prod.descripcion || '').split(' ||| ');
+      descripcionesGuardadas.forEach(textoDesc => {
+        agregarCampoDescripcionEditar(textoDesc);
+      });
 
       // Marcar checkboxes y momento guardados
       const estacionTexto = prod.estacion || '';
@@ -1146,6 +1200,7 @@
       const epocasSeleccionadas = Array.from(document.querySelectorAll('input[name="epocas-editar"]:checked')).map(cb => cb.value);
       const momentoSeleccionado = document.getElementById('edit-momento').value;
       const estacionCombinada = [...epocasSeleccionadas, momentoSeleccionado].join(' | ');
+      const descripcionesConcatenadas = obtenerDescripcionesConcatenadas('.desc-input-edit');
 
       const btn = document.getElementById('btn-save-edit');
       btn.disabled = true;
@@ -1159,7 +1214,7 @@
       formData.append('genero', document.getElementById('edit-genero').value);
       formData.append('estacion', estacionCombinada || 'Versátil');
       formData.append('precio', document.getElementById('edit-precio').value);
-      formData.append('descripcion', document.getElementById('edit-desc').value.trim());
+      formData.append('descripcion', descripcionesConcatenadas);
       formData.append('notas_salida', document.getElementById('edit-salida').value.trim());
       formData.append('notas_corazon', document.getElementById('edit-corazon').value.trim());
       formData.append('notas_fondo', document.getElementById('edit-fondo').value.trim());

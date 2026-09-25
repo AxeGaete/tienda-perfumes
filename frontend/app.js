@@ -380,25 +380,25 @@ async function verDetalle(id) {
   document.getElementById('detalle-corazon').textContent = prod.notas_corazon || 'No especificado';
   document.getElementById('detalle-fondo').textContent = prod.notas_fondo || 'No especificado';
 
-  // Lógica para formatear ordenadamente la descripción (si es combo o kit)
+  // Lógica para renderizar descripciones dinámicas separadas por |||
   const descBox = document.getElementById('detalle-descripcion');
   const descTexto = prod.descripcion || 'Sin descripción adicional.';
   
-  if (prod.nombre.toLowerCase().includes('combo') || prod.nombre.toLowerCase().includes('kit')) {
-    const perfumesEnCombo = descTexto.split(/(?=[A-Z][a-z]+ Pura|[A-Z][a-z]+ de la familia|Erba Pura|XJ1861|[A-Z][a-z]+\s[A-Z][a-z]+\sde\sla)/g);
-    
-    if (perfumesEnCombo.length > 1) {
-      descBox.innerHTML = perfumesEnCombo.map((part, index) => `
-        <div style="margin-bottom: ${index < perfumesEnCombo.length - 1 ? '1.2rem' : '0'};">
-          <strong style="color: var(--c-red); display: block; margin-bottom: 0.2rem; text-transform: uppercase; font-size: 0.85rem;">✨ Perfume ${index + 1} del Set</strong>
-          <p style="margin-bottom: 0; color: var(--text-dark);">${part.trim()}</p>
-        </div>
-      `).join('');
-    } else {
-      descBox.textContent = descTexto;
-    }
+  if (descTexto.includes('|||')) {
+    const perfumesArray = descTexto.split('|||');
+    descBox.innerHTML = perfumesArray.map((textoPerfume, index) => `
+      <div style="background: var(--bg-soft); border-left: 3px solid var(--c-red); padding: 1rem 1.2rem; border-radius: 0 8px 8px 0; margin-bottom: 1rem;">
+        <h4 style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--c-red); margin-bottom: 0.3rem;">✨ Perfume ${index + 1} del Set</h4>
+        <p style="margin-bottom: 0; font-size: 0.92rem; line-height: 1.6; color: var(--text-dark);">${textoPerfume.trim()}</p>
+      </div>
+    `).join('');
   } else {
-    descBox.textContent = descTexto;
+    descBox.innerHTML = `
+      <div style="background: var(--bg-soft); border-left: 3px solid var(--c-red); padding: 1rem 1.2rem; border-radius: 0 8px 8px 0; margin-bottom: 2rem;">
+        <h4 style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 0.3rem;">Descripción de la Fragancia</h4>
+        <p style="margin-bottom: 0; font-size: 0.92rem; line-height: 1.6; color: var(--text-dark);">${descTexto}</p>
+      </div>
+    `;
   }
 
   const thumbContainer = document.getElementById('detalle-thumbnails');
