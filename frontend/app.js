@@ -379,7 +379,27 @@ async function verDetalle(id) {
   document.getElementById('detalle-salida').textContent = prod.notas_salida || 'No especificado';
   document.getElementById('detalle-corazon').textContent = prod.notas_corazon || 'No especificado';
   document.getElementById('detalle-fondo').textContent = prod.notas_fondo || 'No especificado';
-  document.getElementById('detalle-descripcion').textContent = prod.descripcion || 'Sin descripción adicional.';
+
+  // Lógica para formatear ordenadamente la descripción (si es combo o kit)
+  const descBox = document.getElementById('detalle-descripcion');
+  const descTexto = prod.descripcion || 'Sin descripción adicional.';
+  
+  if (prod.nombre.toLowerCase().includes('combo') || prod.nombre.toLowerCase().includes('kit')) {
+    const perfumesEnCombo = descTexto.split(/(?=[A-Z][a-z]+ Pura|[A-Z][a-z]+ de la familia|Erba Pura|XJ1861|[A-Z][a-z]+\s[A-Z][a-z]+\sde\sla)/g);
+    
+    if (perfumesEnCombo.length > 1) {
+      descBox.innerHTML = perfumesEnCombo.map((part, index) => `
+        <div style="margin-bottom: ${index < perfumesEnCombo.length - 1 ? '1.2rem' : '0'};">
+          <strong style="color: var(--c-red); display: block; margin-bottom: 0.2rem; text-transform: uppercase; font-size: 0.85rem;">✨ Perfume ${index + 1} del Set</strong>
+          <p style="margin-bottom: 0; color: var(--text-dark);">${part.trim()}</p>
+        </div>
+      `).join('');
+    } else {
+      descBox.textContent = descTexto;
+    }
+  } else {
+    descBox.textContent = descTexto;
+  }
 
   const thumbContainer = document.getElementById('detalle-thumbnails');
   thumbContainer.innerHTML = listaFotosDetalleActuales.map((f, idx) => `
