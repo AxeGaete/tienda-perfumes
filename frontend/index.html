@@ -58,6 +58,7 @@
         <div id="mobile-dropdown-menu" class="mobile-dropdown">
           <a href="#hero" onclick="cerrarDetalle(); toggleMobileMenu();">Inicio</a>
           <a href="#catalogo" onclick="cerrarDetalle(); toggleMobileMenu();">Colección</a>
+          <a href="#quiz" onclick="cerrarDetalle(); toggleMobileMenu();">✨ Asesor Virtual</a>
           <a href="#pagos" onclick="cerrarDetalle(); toggleMobileMenu();">Pagos</a>
           <a href="#nosotros" onclick="cerrarDetalle(); toggleMobileMenu();">Nosotros</a>
           <a href="admin.html" class="nav-admin-btn">Panel Admin</a>
@@ -77,6 +78,7 @@
       <div class="nav-links">
         <a href="#hero" onclick="cerrarDetalle()">Inicio</a>
         <a href="#catalogo" onclick="cerrarDetalle()">Colección</a>
+        <a href="#quiz" onclick="cerrarDetalle()">✨ Asesor Virtual</a>
         <a href="#pagos" onclick="cerrarDetalle()">Pagos</a>
         <a href="#nosotros" onclick="cerrarDetalle()">Nosotros</a>
         <a href="admin.html" class="nav-admin-btn">Panel Admin</a>
@@ -261,6 +263,74 @@
     <div id="grid-productos" class="products-grid"></div>
   </section>
 
+  <!-- Divisor Gradual -->
+  <hr class="section-divider">
+
+  <!-- ================= SECCIÓN QUIZ / ASESOR VIRTUAL ================= -->
+  <section id="quiz" class="catalog-section scroll-reveal" style="padding-top: 2rem; padding-bottom: 2rem;">
+    <div class="section-title">
+      <span class="badge-pill-small">Asesoría a Medida</span>
+      <h2>¿Cuál es tu perfume ideal?</h2>
+      <p>Respondé 3 breves preguntas y encontrá la fragancia perfecta para vos</p>
+    </div>
+
+    <div class="filters-card" style="max-width: 800px; margin: 0 auto; padding: 2.5rem; text-align: center;">
+      
+      <!-- Paso 1: Género -->
+      <div id="quiz-paso-1" class="quiz-step">
+        <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--text-dark);">1. ¿Para quién buscas la fragancia?</h3>
+        <div class="filter-chips-row" style="justify-content: center; gap: 0.8rem;" id="quiz-opciones-genero">
+          <button class="chip" onclick="seleccionarQuiz('genero', 'Unisex')">Unisex</button>
+          <button class="chip" onclick="seleccionarQuiz('genero', 'Masculino')">Masculino</button>
+          <button class="chip" onclick="seleccionarQuiz('genero', 'Femenino')">Femenino</button>
+        </div>
+      </div>
+
+      <!-- Paso 2: Familia Olfativa / Aroma -->
+      <div id="quiz-paso-2" class="quiz-step" style="display: none;">
+        <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--text-dark);">2. ¿Qué tipo de aroma preferís?</h3>
+        <div class="filter-chips-row" style="justify-content: center; gap: 0.8rem; flex-wrap: wrap;" id="quiz-opciones-familia">
+          <button class="chip" onclick="seleccionarQuiz('familia', 'Cítrico / Acuático')">Cítricos & Frescos</button>
+          <button class="chip" onclick="seleccionarQuiz('familia', 'Oriental / Especiado')">Orientales & Especiados</button>
+          <button class="chip" onclick="seleccionarQuiz('familia', 'Amaderado')">Amaderados</button>
+          <button class="chip" onclick="seleccionarQuiz('familia', 'Floral')">Florales</button>
+          <button class="chip" onclick="seleccionarQuiz('familia', 'Gourmand')">Dulces / Gourmand</button>
+        </div>
+        <div style="margin-top: 1.5rem;">
+          <button class="btn-secondary" onclick="reiniciarQuiz()" style="font-size: 0.8rem; padding: 0.4rem 1rem;">← Volver</button>
+        </div>
+      </div>
+
+      <!-- Paso 3: Ocasión / Estación -->
+      <div id="quiz-paso-3" class="quiz-step" style="display: none;">
+        <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--text-dark);">3. ¿En qué momento planeas usarlo más?</h3>
+        <div class="filter-chips-row" style="justify-content: center; gap: 0.8rem; flex-wrap: wrap;" id="quiz-opciones-estacion">
+          <button class="chip" onclick="seleccionarQuiz('estacion', 'Todo el año')">Todo el año (Versátil)</button>
+          <button class="chip" onclick="seleccionarQuiz('estacion', 'Verano / Día')">Días cálidos / Verano</button>
+          <button class="chip" onclick="seleccionarQuiz('estacion', 'Invierno / Noche')">Noches / Clima frío</button>
+          <button class="chip" onclick="seleccionarQuiz('estacion', 'Eventos / Cita')">Ocasiones especiales / Citas</button>
+        </div>
+        <div style="margin-top: 1.5rem;">
+          <button class="btn-secondary" onclick="reiniciarQuiz()" style="font-size: 0.8rem; padding: 0.4rem 1rem;">← Volver</button>
+        </div>
+      </div>
+
+      <!-- Resultados del Quiz -->
+      <div id="quiz-resultado" style="display: none;">
+        <h3 style="font-size: 1.3rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--c-red);">✨ ¡Encontramos tus fragancias ideales!</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem;">Basado en tus elecciones, estas son las mejores opciones para vos:</p>
+        
+        <div id="quiz-grid-resultados" class="products-grid" style="margin-bottom: 2rem;"></div>
+        
+        <button class="btn-primary" onclick="reiniciarQuiz()" style="max-width: 250px; margin: 0 auto; padding: 0.7rem 1.5rem; font-size: 0.85rem;">🔄 Hacer el Quiz de nuevo</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Divisor Gradual -->
+  <hr class="section-divider">
+
   <!-- 3. Sección Detalle del Perfume -->
   <section id="detalle" class="detail-section" style="display: none;">
     <div class="detail-card">
@@ -311,6 +381,18 @@
             ← Volver al Catálogo
           </button>
         </div>
+
+        <!-- Botón Compartir Perfume -->
+        <button type="button" class="btn-share-product" onclick="compartirPerfumeActual()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+          <span>Compartir este perfume</span>
+        </button>
       </div>
     </div>
 
@@ -503,6 +585,9 @@
     <div class="cart-items-container" id="cart-items-container"></div>
 
     <div class="cart-footer">
+      <!-- Indicador de Envío Gratis Dinámico -->
+      <div id="envio-gratis-banner" style="display: none;"></div>
+
       <!-- Calculador de Envío por Zona con Estilo Propio -->
       <div class="envio-box" style="background: var(--bg-main); border: 1px solid var(--c-border); border-radius: var(--radius-md, 12px); padding: 1rem; margin-bottom: 0.8rem;">
         <label for="select-envio" style="display: block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5px; color: var(--text-dark);">Método de Envío / Retiro:</label>

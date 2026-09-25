@@ -347,6 +347,7 @@ async function verDetalle(id) {
 
   document.getElementById('hero').style.display = 'none';
   document.getElementById('catalogo').style.display = 'none';
+  document.getElementById('quiz').style.display = 'none';
   document.getElementById('pagos').style.display = 'none';
   document.getElementById('nosotros').style.display = 'none';
   document.getElementById('contacto').style.display = 'none';
@@ -396,6 +397,7 @@ function cerrarDetalle() {
   document.getElementById('detalle').style.display = 'none';
   document.getElementById('hero').style.display = 'block';
   document.getElementById('catalogo').style.display = 'block';
+  document.getElementById('quiz').style.display = 'block';
   document.getElementById('pagos').style.display = 'block';
   document.getElementById('nosotros').style.display = 'block';
   document.getElementById('contacto').style.display = 'block';
@@ -446,6 +448,78 @@ function cerrarZoomImagen() {
   if (modal) {
     modal.classList.remove('active');
   }
+}
+
+// ================= ASESOR VIRTUAL / QUIZ INTERACTIVO =================
+let respuestasQuiz = { genero: '', familia: '', estacion: '' };
+
+function seleccionarQuiz(tipo, valor) {
+  respuestasQuiz[tipo] = valor;
+
+  if (tipo === 'genero') {
+    document.getElementById('quiz-paso-1').style.display = 'none';
+    document.getElementById('quiz-paso-2').style.display = 'block';
+  } else if (tipo === 'familia') {
+    document.getElementById('quiz-paso-2').style.display = 'none';
+    document.getElementById('quiz-paso-3').style.display = 'block';
+  } else if (tipo === 'estacion') {
+    document.getElementById('quiz-paso-3').style.display = 'none';
+    mostrarResultadosQuiz();
+  }
+}
+
+function mostrarResultadosQuiz() {
+  const contenedorResultados = document.getElementById('quiz-grid-resultados');
+  document.getElementById('quiz-resultado').style.display = 'block';
+  contenedorResultados.innerHTML = '';
+
+  let recomendados = todosLosProductos.filter(prod => {
+    const matchGenero = prod.genero === respuestasQuiz.genero || prod.genero === 'Unisex';
+    const matchFamilia = prod.familia === respuestasQuiz.familia;
+    return matchGenero && matchFamilia;
+  });
+
+  if (recomendados.length === 0) {
+    recomendados = todosLosProductos.filter(prod => prod.genero === respuestasQuiz.genero);
+  }
+  if (recomendados.length === 0) {
+    recomendados = todosLosProductos.slice(0, 3);
+  }
+
+  recomendados.slice(0, 3).forEach(prod => {
+    const fotos = extraerListaFotos(prod.imagen_url);
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.style.textAlign = 'left';
+    card.innerHTML = `
+      <a href="#" onclick="verDetalle(${prod.id}); return false;" class="card-image-link">
+        <img src="${fotos[0]}" alt="${prod.nombre}" onerror="this.src='https://via.placeholder.com/280?text=Perfume'">
+      </a>
+      <div class="product-info">
+        <span class="product-family">${prod.familia}</span>
+        <h3 class="product-title">
+          <a href="#" onclick="verDetalle(${prod.id}); return false;" class="card-title-link">${prod.nombre}</a>
+        </h3>
+        <p class="product-desc">${prod.descripcion || 'Fragancia recomendada para vos.'}</p>
+        <div class="product-price">$${Number(prod.precio).toLocaleString('es-AR')}</div>
+        <div class="card-actions-row">
+          <a href="#" onclick="verDetalle(${prod.id}); return false;" class="btn-ver-detalle">Ver Detalle</a>
+          <button class="btn-card-add-cart" onclick="agregarAlCarrito(${prod.id})" title="Añadir al carrito">
+            <svg class="ui-icon-btn" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          </button>
+        </div>
+      </div>
+    `;
+    contenedorResultados.appendChild(card);
+  });
+}
+
+function reiniciarQuiz() {
+  respuestasQuiz = { genero: '', familia: '', estacion: '' };
+  document.getElementById('quiz-resultado').style.display = 'none';
+  document.getElementById('quiz-paso-1').style.display = 'block';
+  document.getElementById('quiz-paso-2').style.display = 'none';
+  document.getElementById('quiz-paso-3').style.display = 'none';
 }
 
 // ================= PERFUMES RELACIONADOS =================
