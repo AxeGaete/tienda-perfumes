@@ -358,7 +358,10 @@ async function verDetalle(id) {
   listaFotosDetalleActuales = extraerListaFotos(prod.imagen_url);
   fotoDetalleIndex = 0;
 
-  document.getElementById('detalle-img-principal').src = listaFotosDetalleActuales[0];
+  const imgPrincipal = document.getElementById('detalle-img-principal');
+  imgPrincipal.src = listaFotosDetalleActuales[0];
+  imgPrincipal.onclick = () => abrirZoomImagen(listaFotosDetalleActuales[fotoDetalleIndex]);
+
   document.getElementById('detalle-familia').textContent = prod.familia;
   document.getElementById('detalle-nombre').textContent = prod.nombre;
   document.getElementById('detalle-precio').textContent = `$${Number(prod.precio).toLocaleString('es-AR')}`;
@@ -401,7 +404,10 @@ function cerrarDetalle() {
 
 function seleccionarMiniaturaDetalle(idx) {
   fotoDetalleIndex = idx;
-  document.getElementById('detalle-img-principal').src = listaFotosDetalleActuales[idx];
+  const imgPrincipal = document.getElementById('detalle-img-principal');
+  imgPrincipal.src = listaFotosDetalleActuales[idx];
+  imgPrincipal.onclick = () => abrirZoomImagen(listaFotosDetalleActuales[fotoDetalleIndex]);
+
   document.querySelectorAll('.detail-thumb').forEach((t, i) => {
     if (i === idx) t.classList.add('active');
     else t.classList.remove('active');
@@ -412,6 +418,34 @@ function cambiarFotoDetalle(dir) {
   if (listaFotosDetalleActuales.length <= 1) return;
   fotoDetalleIndex = (fotoDetalleIndex + dir + listaFotosDetalleActuales.length) % listaFotosDetalleActuales.length;
   seleccionarMiniaturaDetalle(fotoDetalleIndex);
+}
+
+// ================= ZOOM / LIGHTBOX DE IMÁGENES =================
+function abrirZoomImagen(urlSrc) {
+  let modal = document.getElementById('image-zoom-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'image-zoom-modal';
+    modal.className = 'image-zoom-modal';
+    modal.innerHTML = `
+      <button class="image-zoom-close" onclick="cerrarZoomImagen()">✕</button>
+      <img id="image-zoom-target" src="" alt="Zoom Imagen">
+    `;
+    modal.onclick = (e) => {
+      if (e.target === modal) cerrarZoomImagen();
+    };
+    document.body.appendChild(modal);
+  }
+
+  document.getElementById('image-zoom-target').src = urlSrc;
+  modal.classList.add('active');
+}
+
+function cerrarZoomImagen() {
+  const modal = document.getElementById('image-zoom-modal');
+  if (modal) {
+    modal.classList.remove('active');
+  }
 }
 
 // ================= PERFUMES RELACIONADOS =================

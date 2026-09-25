@@ -2103,3 +2103,66 @@ body {
   color: var(--c-red);
   background-color: var(--c-red-subtle);
 }
+
+/* ================= ZOOM / LIGHTBOX DE IMÁGENES ================= */
+.image-zoom-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  cursor: zoom-out;
+}
+
+.image-zoom-modal.active {
+  display: flex;
+}
+
+.image-zoom-modal img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  animation: zoomInModal 0.25s cubic-bezier(0.2, 0, 0, 1);
+}
+
+@keyframes zoomInModal {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.image-zoom-close {
+  position: absolute;
+  top: 25px;
+  right: 30px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: none;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.image-zoom-close:hover {
+  background: var(--c-red);
+}
+
+/* Cursor de lupa en la foto principal de detalle */
+#detalle-img-principal {
+  cursor: zoom-in;
+  transition: transform 0.3s ease;
+}
